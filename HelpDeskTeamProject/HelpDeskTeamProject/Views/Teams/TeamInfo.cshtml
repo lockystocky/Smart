@@ -1,0 +1,67 @@
+﻿@model HelpDeskTeamProject.DataModels.Team
+
+@{
+    ViewBag.Title = "TeamInfo";
+}
+
+<h2>TeamInfo</h2>
+@Html.ActionLink("Invite user", "InviteUser", new { teamId = Model.Id })
+<table class="table">
+    <tr>
+        <th>
+            @Html.DisplayNameFor(model => model.TeamGuid)
+        </th>
+        <th>
+            @Html.DisplayNameFor(model => model.Name)
+        </th>
+        <th>
+            @Html.DisplayNameFor(model => model.OwnerId)
+        </th>
+        <th>
+            @Html.DisplayNameFor(model => model.InvitationLink)
+        </th>
+
+    </tr>
+
+
+
+    <tr>
+        <td>
+            @Html.DisplayFor(model => model.TeamGuid)
+        </td>
+        <td>
+            @Html.DisplayFor(model => model.Name)
+        </td>
+        <td>
+            @Html.DisplayFor(model => model.OwnerId)
+        </td>
+        <td>
+            @Html.DisplayFor(model => model.InvitationLink)
+        </td>
+
+    </tr>
+</table>
+
+<p>Invited users:</p>
+<ul>
+    @foreach (var invitedUser in Model.InvitedEmails)
+    {
+        <li>@invitedUser</li>
+    }
+</ul>
+<p>Team users:</p>
+<ul>
+    @foreach (var user in Model.Users)
+    {
+        <li>@user.Email id: @user.Id</li>
+    }
+</ul>
+<p>Permissions:</p>
+<ul>
+    @foreach (var perm in Model.UserPermissions)
+    {
+    <li>UserId: @perm.UserId TeamId: @perm.TeamId RoleId: @perm.TeamRole.Id RoleName: @perm.TeamRole.Name</li>
+    }
+</ul>
+
+

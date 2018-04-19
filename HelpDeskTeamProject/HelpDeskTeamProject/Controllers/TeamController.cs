@@ -26,7 +26,7 @@ namespace HelpDeskTeamProject.Controllers
             if (ModelState.IsValid)
             {
                 dbContext.TeamRoles.Add(newTeamRole);
-                dbContext.SaveChanges();
+                await dbContext.SaveChangesAsync();
             }
             
             return View();
@@ -44,7 +44,7 @@ namespace HelpDeskTeamProject.Controllers
             if (ModelState.IsValid)
             {
                 dbContext.AppRoles.Add(newAppRole);
-                dbContext.SaveChanges();
+                await dbContext.SaveChangesAsync();
             }
 
             return View();
