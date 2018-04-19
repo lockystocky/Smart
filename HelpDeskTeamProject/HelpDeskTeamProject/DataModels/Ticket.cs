@@ -11,16 +11,16 @@ namespace HelpDeskTeamProject.DataModels
 
         public int UserId { get; set; }
 
-        public TicketType Type { get; set; }
+        public virtual TicketType Type { get; set; }
 
         public DateTime TimeCreated { get; set; }
 
-        public Ticket ParentTicket { get; set; }
+        public virtual Ticket ParentTicket { get; set; }
 
-        public List<Ticket> ChildTickets { get; set; }
+        public virtual List<Ticket> ChildTickets { get; set; }
 
-        public List<Comment> Comments { get; set; }
+        public virtual List<Comment> Comments { get; set; }
 
-        public List<TicketLog> Logs { get; set; }
+        public virtual List<TicketLog> Logs { get; set; }
     }
 }

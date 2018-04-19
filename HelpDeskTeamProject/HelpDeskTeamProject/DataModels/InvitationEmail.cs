@@ -5,14 +5,10 @@ using System.Web;
 
 namespace HelpDeskTeamProject.DataModels
 {
-    public class UserPermission
+    public class InvitationEmail
     {
         public int Id { get; set; }
 
-        public virtual TeamRole TeamRole { get; set; }
-
-        public int TeamId { get; set; }
-
-        public int UserId { get; set; }
+        public string Email { get; set; }
     }
 }

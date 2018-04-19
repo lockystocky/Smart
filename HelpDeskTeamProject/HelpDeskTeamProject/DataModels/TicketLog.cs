@@ -18,6 +18,6 @@ namespace HelpDeskTeamProject.DataModels
     {
         public int TicketId { get; set; }
 
-        public TicketAction Action { get; set; }
+        public virtual TicketAction Action { get; set; }
     }
 }

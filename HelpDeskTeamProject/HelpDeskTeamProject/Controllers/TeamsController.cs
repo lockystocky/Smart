@@ -84,7 +84,7 @@ namespace HelpDeskTeamProject.Controllers
                 OwnerId = ownerId,
                 TeamGuid = teamGuid,
                 InvitationLink = "/team/" + teamGuid,
-                InvitedEmails = new List<string>(),
+                InvitedEmails = new List<InvitationEmail>(),
                 UserPermissions = new List<UserPermission>(),
                 Tickets = new List<Ticket>(),
                 Users = new List<User>()
@@ -92,7 +92,8 @@ namespace HelpDeskTeamProject.Controllers
 
             return team;
         }
-        
+
+        [Route("teams/teaminfo/{teamId}")]
         public ActionResult TeamInfo(int? teamId)
         {
             var team = db.Teams

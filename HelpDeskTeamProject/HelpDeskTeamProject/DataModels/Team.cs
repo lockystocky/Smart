@@ -15,15 +15,15 @@ namespace HelpDeskTeamProject.DataModels
 
         public int OwnerId { get; set; }
 
-        public List<User> Users { get; set; }
+        public virtual List<User> Users { get; set; }
 
-        public List<UserPermission> UserPermissions { get; set; }
+        public virtual List<UserPermission> UserPermissions { get; set; }
 
-        public List<string> InvitedEmails { get; set; }
+        public virtual List<InvitationEmail> InvitedEmails { get; set; }
 
         public string InvitationLink { get; set; }
 
-        public List<Ticket> Tickets { get; set; }
+        public virtual List<Ticket> Tickets { get; set; }
 
         public Team()
         {

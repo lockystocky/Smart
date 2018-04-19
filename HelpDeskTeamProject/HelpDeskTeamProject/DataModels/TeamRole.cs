@@ -11,6 +11,6 @@ namespace HelpDeskTeamProject.DataModels
 
         public string Name { get; set; }
 
-        public TeamPermissions Permissions { get; set; }
+        public virtual TeamPermissions Permissions { get; set; }
     }
 }
