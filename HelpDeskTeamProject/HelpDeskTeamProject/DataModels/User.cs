@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Web;
+using System.Data.Entity.Core.Metadata;
 
 namespace HelpDeskTeamProject.DataModels
 {
@@ -13,8 +14,21 @@ namespace HelpDeskTeamProject.DataModels
 
         public bool IsBanned { get; set; }
 
-        ApplicationRole AppRole { get; set; }
+        public ApplicationRole AppRole { get; set; }
 
-        List<Team> Teams { get; set; }
+        public List<Team> Teams { get; set; }
+
+        public User()
+        {
+            Teams = new List<Team>();
+        }
+
+        public User(string email, ApplicationRole appRole)
+        {
+            Teams = new List<Team>();
+            Email = email;
+            AppRole = appRole;
+            IsBanned = false;
+        }
     }
 }

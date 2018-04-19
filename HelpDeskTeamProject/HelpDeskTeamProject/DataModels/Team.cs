@@ -24,5 +24,17 @@ namespace HelpDeskTeamProject.DataModels
         public string InvitationLink { get; set; }
 
         public List<Ticket> Tickets { get; set; }
+
+        public Team()
+        {
+
+        }
+
+        public Team(string name, Guid teamGuid, int ownerId)
+        {
+            Name = name;
+            TeamGuid = teamGuid;
+            OwnerId = ownerId;
+        }
     }
 }

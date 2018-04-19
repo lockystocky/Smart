@@ -9,7 +9,7 @@ namespace HelpDeskTeamProject.DataModels
     {
         public int Id { get; set; }
 
-        public int TeamRoleId { get; set; }
+        public TeamRole TeamRole { get; set; }
 
         public int TeamId { get; set; }
 

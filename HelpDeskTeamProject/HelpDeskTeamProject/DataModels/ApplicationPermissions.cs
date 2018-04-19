@@ -20,5 +20,21 @@ namespace HelpDeskTeamProject.DataModels
         public bool CanBlockUsers { get; set; }
 
         public bool CanCreateTeams { get; set; }
+
+        public ApplicationPermissions()
+        {
+
+        }
+
+        public ApplicationPermissions(bool isAdmin, bool canCreateUser, bool canManageUserRoles, bool canSeeAllTeams, bool canSeeListOfUsers, bool canBlockUsers, bool canCreateTeams)
+        {
+            IsAdmin = isAdmin;
+            CanCreateTeams = canCreateTeams;
+            CanCreateUser = canCreateUser;
+            CanManageUserRoles = canManageUserRoles;
+            CanSeeAllTeams = canSeeAllTeams;
+            CanSeeListOfUsers = canSeeListOfUsers;
+            CanBlockUsers = canBlockUsers;
+        }
     }
 }

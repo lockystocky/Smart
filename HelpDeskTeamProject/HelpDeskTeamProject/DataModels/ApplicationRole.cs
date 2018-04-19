@@ -12,5 +12,16 @@ namespace HelpDeskTeamProject.DataModels
         public string Name { get; set; }
 
         public ApplicationPermissions Permissions { get; set; }
+
+        public ApplicationRole()
+        {
+
+        }
+
+        public ApplicationRole(string name, ApplicationPermissions permissions)
+        {
+            Name = name;
+            Permissions = permissions;
+        }
     }
 }
