@@ -5,15 +5,20 @@ namespace HelpDeskTeamProject.Migrations
     using System.Data.Entity.Migrations;
     using System.Linq;
 
-    internal sealed class Configuration : DbMigrationsConfiguration<HelpDeskTeamProject.Context.DatabaseContext>
+    internal sealed class Configuration : DbMigrationsConfiguration<HelpDeskTeamProject.Context.AppContext>
     {
         public Configuration()
         {
             AutomaticMigrationsEnabled = false;
         }
 
-        protected override void Seed(HelpDeskTeamProject.Context.DatabaseContext context)
+        protected override void Seed(HelpDeskTeamProject.Context.AppContext context)
         {
+            HelpDeskTeamProject.DataModels.TeamRole role = new DataModels.TeamRole();
+            role.Permissions = new DataModels.TeamPermissions();
+            role.Permissions.CanCommentTicket = true;
+            role.Name = "somerole";
+            context.TeamRoles.Add(role);
             //  This method will be called after migrating to the latest version.
 
             //  You can use the DbSet<T>.AddOrUpdate() helper extension method 

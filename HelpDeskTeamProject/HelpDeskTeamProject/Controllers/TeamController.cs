@@ -11,7 +11,8 @@ namespace HelpDeskTeamProject.Controllers
 {
     public class TeamController : Controller
     {
-        DatabaseContext dbContext = new DatabaseContext();
+        AppContext dbContext = new AppContext();
+
 
         public async Task<ActionResult> CreateTeamRole()
         {
@@ -25,6 +26,7 @@ namespace HelpDeskTeamProject.Controllers
             if (ModelState.IsValid)
             {
                 dbContext.TeamRoles.Add(newTeamRole);
+                dbContext.SaveChanges();
             }
             
             return View();
@@ -42,6 +44,7 @@ namespace HelpDeskTeamProject.Controllers
             if (ModelState.IsValid)
             {
                 dbContext.AppRoles.Add(newAppRole);
+                dbContext.SaveChanges();
             }
 
             return View();
