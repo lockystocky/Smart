@@ -1,0 +1,86 @@
+﻿@model HelpDeskTeamProject.DataModels.ApplicationRole
+<style>
+    .checkboxMargin {
+        margin-left: 23px;
+        transform: scale(1.2);
+    }
+
+    .displayMargin{
+        margin-top: 5px;
+    }
+</style>
+
+<h2>Edit Application Role</h2>
+
+@using (Html.BeginForm("EditAppRole", "Role", FormMethod.Post, new { @class = "form-horizontal", role = "form" }))
+{
+    @Html.AntiForgeryToken()
+    <h4>Создайте новую учетную запись.</h4>
+    <hr />
+    @Html.ValidationSummary("", new { @class = "text-danger" })
+    <div class="form-group">
+        @Html.LabelFor(m => m.Id, new { @class = "col-md-2 control-label" })
+        <div class="col-md-10 displayMargin">
+            @Html.DisplayFor(m => m.Id)
+            @Html.TextBoxFor(m => m.Id, new { @type = "hidden" })
+        </div>
+    </div>
+    <div class="form-group">
+        @Html.LabelFor(m => m.Name, new { @class = "col-md-2 control-label" })
+        <div class="col-md-10">
+            @Html.TextBoxFor(m => m.Name, new { @class = "form-control" })
+        </div>
+    </div>
+    <div class="form-group">
+        @Html.LabelFor(m => m.Permissions.CanBlockUsers, new { @class = "col-md-2 control-label" })
+        <div class="col-md-1 checkbox checkboxMargin">
+            @Html.CheckBoxFor(m => m.Permissions.CanBlockUsers)
+        </div>
+    </div>
+    <div class="form-group">
+        @Html.LabelFor(m => m.Permissions.CanCreateTeams, new { @class = "col-md-2 control-label" })
+        <div class="col-md-1 checkbox checkboxMargin">
+            @Html.CheckBoxFor(m => m.Permissions.CanCreateTeams)
+        </div>
+    </div>
+    <div class="form-group">
+        @Html.LabelFor(m => m.Permissions.CanCreateUser, new { @class = "col-md-2 control-label" })
+        <div class="col-md-1 checkbox checkboxMargin">
+            @Html.CheckBoxFor(m => m.Permissions.CanCreateUser)
+        </div>
+    </div>
+    <div class="form-group">
+        @Html.LabelFor(m => m.Permissions.CanManageUserRoles, new { @class = "col-md-2 control-label" })
+        <div class="col-md-1 checkbox checkboxMargin">
+            @Html.CheckBoxFor(m => m.Permissions.CanManageUserRoles)
+        </div>
+    </div>
+    <div class="form-group">
+        @Html.LabelFor(m => m.Permissions.CanSeeAllTeams, new { @class = "col-md-2 control-label" })
+        <div class="col-md-1 checkbox checkboxMargin">
+            @Html.CheckBoxFor(m => m.Permissions.CanSeeAllTeams)
+        </div>
+    </div>
+    <div class="form-group">
+        @Html.LabelFor(m => m.Permissions.CanSeeListOfUsers, new { @class = "col-md-2 control-label" })
+        <div class="col-md-1 checkbox checkboxMargin">
+            @Html.CheckBoxFor(m => m.Permissions.CanSeeListOfUsers)
+        </div>
+    </div>
+    <div class="form-group">
+        @Html.LabelFor(m => m.Permissions.IsAdmin, new { @class = "col-md-2 control-label" })
+        <div class="col-md-1 checkbox checkboxMargin">
+            @Html.CheckBoxFor(m => m.Permissions.IsAdmin)
+        </div>
+    </div>
+    <div class="form-group">
+        <div class="col-md-offset-2 col-md-10">
+            <input type="submit" class="btn btn-default" value="Save" />
+        </div>
+    </div>
+}
+
+@section Scripts {
+    @Scripts.Render("~/bundles/jqueryval")
+}
+

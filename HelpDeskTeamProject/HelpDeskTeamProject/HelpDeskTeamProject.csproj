@@ -193,7 +193,7 @@
     <Compile Include="Controllers\AccountController.cs" />
     <Compile Include="Controllers\HomeController.cs" />
     <Compile Include="Controllers\ManageController.cs" />
-    <Compile Include="Controllers\TeamController.cs" />
+    <Compile Include="Controllers\RoleController.cs" />
     <Compile Include="Controllers\TeamsController.cs" />
     <Compile Include="DataModels\AdminLog.cs" />
     <Compile Include="DataModels\ApplicationPermissions.cs" />
@@ -201,6 +201,7 @@
     <Compile Include="DataModels\Comment.cs" />
     <Compile Include="DataModels\InvitationEmail.cs" />
     <Compile Include="DataModels\Log.cs" />
+    <Compile Include="DataModels\Role.cs" />
     <Compile Include="DataModels\Team.cs" />
     <Compile Include="DataModels\TeamPermissions.cs" />
     <Compile Include="DataModels\TeamRole.cs" />
@@ -299,8 +300,8 @@
     <Content Include="Views\Manage\VerifyPhoneNumber.cshtml" />
     <Content Include="Views\Shared\Lockout.cshtml" />
     <Content Include="Views\Shared\_LoginPartial.cshtml" />
-    <Content Include="Views\Team\CreateTeamRole.cshtml" />
-    <Content Include="Views\Team\CreateAppRole.cshtml" />
+    <Content Include="Views\Role\CreateTeamRole.cshtml" />
+    <Content Include="Views\Role\CreateAppRole.cshtml" />
     <Content Include="Views\Teams\AllTeams.cshtml" />
     <Content Include="Views\Teams\Create.cshtml" />
     <Content Include="Views\Teams\Delete.cshtml" />
@@ -309,6 +310,9 @@
     <Content Include="Views\Teams\Index.cshtml" />
     <Content Include="Views\Teams\InviteUser.cshtml" />
     <Content Include="Views\Teams\TeamInfo.cshtml" />
+    <Content Include="Views\Role\List.cshtml" />
+    <Content Include="Views\Role\EditAppRole.cshtml" />
+    <Content Include="Views\Role\EditTeamRole.cshtml" />
   </ItemGroup>
   <ItemGroup>
     <Folder Include="App_Data\" />

@@ -5,12 +5,19 @@ using System.Web;
 
 namespace HelpDeskTeamProject.DataModels
 {
-    public class TeamRole
+    public class TeamRole : Role
     {
-        public int Id { get; set; }
-
-        public string Name { get; set; }
-
         public virtual TeamPermissions Permissions { get; set; }
+
+        public TeamRole()
+        {
+
+        }
+
+        public TeamRole(string name, TeamPermissions permissions)
+        {
+            Name = name;
+            Permissions = permissions;
+        }
     }
 }

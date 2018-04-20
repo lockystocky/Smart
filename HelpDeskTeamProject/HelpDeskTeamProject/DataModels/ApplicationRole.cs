@@ -5,12 +5,8 @@ using System.Web;
 
 namespace HelpDeskTeamProject.DataModels
 {
-    public class ApplicationRole
+    public class ApplicationRole : Role
     {
-        public int Id { get; set; }
-
-        public string Name { get; set; }
-
         public virtual ApplicationPermissions Permissions { get; set; }
 
         public ApplicationRole()
