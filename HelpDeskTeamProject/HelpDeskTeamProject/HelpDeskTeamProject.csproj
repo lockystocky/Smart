@@ -233,6 +233,10 @@
     <Compile Include="Migrations\201804200809356_invEmailClass.Designer.cs">
       <DependentUpon>201804200809356_invEmailClass.cs</DependentUpon>
     </Compile>
+    <Compile Include="Migrations\201804202114448_userAndPermissionUpdate.cs" />
+    <Compile Include="Migrations\201804202114448_userAndPermissionUpdate.Designer.cs">
+      <DependentUpon>201804202114448_userAndPermissionUpdate.cs</DependentUpon>
+    </Compile>
     <Compile Include="Migrations\Configuration.cs" />
     <Compile Include="Models\AccountViewModels.cs" />
     <Compile Include="Models\IdentityModels.cs" />
@@ -244,6 +248,7 @@
   <ItemGroup>
     <Content Include="Content\bootstrap.css" />
     <Content Include="Content\bootstrap.min.css" />
+    <Content Include="Content\img_avatar.png" />
     <Content Include="favicon.ico" />
     <Content Include="fonts\glyphicons-halflings-regular.svg" />
     <Content Include="Global.asax" />
@@ -313,6 +318,7 @@
     <Content Include="Views\Role\List.cshtml" />
     <Content Include="Views\Role\EditAppRole.cshtml" />
     <Content Include="Views\Role\EditTeamRole.cshtml" />
+    <Content Include="Views\Teams\Tickets.cshtml" />
   </ItemGroup>
   <ItemGroup>
     <Folder Include="App_Data\" />
@@ -345,6 +351,9 @@
     </EmbeddedResource>
     <EmbeddedResource Include="Migrations\201804200809356_invEmailClass.resx">
       <DependentUpon>201804200809356_invEmailClass.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Migrations\201804202114448_userAndPermissionUpdate.resx">
+      <DependentUpon>201804202114448_userAndPermissionUpdate.cs</DependentUpon>
     </EmbeddedResource>
   </ItemGroup>
   <PropertyGroup>
