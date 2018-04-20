@@ -39,6 +39,11 @@ namespace HelpDeskTeamProject.Controllers
         [HttpPost]
         public ActionResult InviteUser(int _teamId, string userEmail)
         {
+            var teamToInvite = db.Teams.Find(_teamId);
+            var newInvitedEmail = new InvitationEmail() { Email = userEmail };
+            teamToInvite.InvitedEmails.Add(newInvitedEmail);
+            db.SaveChanges();
+
             return RedirectToAction("TeamInfo", new { teamId = _teamId });
         }
 
@@ -65,6 +70,7 @@ namespace HelpDeskTeamProject.Controllers
                     .FirstOrDefault();
 
                 Team createdTeam = CreateTeam(team.Name, helpDeskUser.Id);
+                createdTeam.Users.Add(helpDeskUser);
                 db.Teams.Add(createdTeam);
                 db.SaveChanges();
 
@@ -92,8 +98,7 @@ namespace HelpDeskTeamProject.Controllers
 
             return team;
         }
-
-        [Route("teams/teaminfo/{teamId}")]
+        
         public ActionResult TeamInfo(int? teamId)
         {
             var team = db.Teams

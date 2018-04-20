@@ -44,9 +44,9 @@
 
 <p>Invited users:</p>
 <ul>
-    @foreach (var invitedUser in Model.InvitedEmails)
+    @foreach (var email in Model.InvitedEmails)
     {
-        <li>@invitedUser</li>
+        <li>@email.Email</li>
     }
 </ul>
 <p>Team users:</p>
