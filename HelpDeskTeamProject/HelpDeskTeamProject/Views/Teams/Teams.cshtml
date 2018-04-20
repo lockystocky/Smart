@@ -1,0 +1,55 @@
+﻿
+@{
+    ViewBag.Title = "Teams";
+}
+
+<h2>Teams</h2>
+
+<div class="row">
+    <div class="col-md-3">
+        <div class="list-group" id="teamsmenu">
+                   
+        </div>
+
+    </div>
+    <div class="col-md-6">
+        
+    </div>
+
+</div>
+
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.3.1/jquery.min.js"></script>
+<script>
+   
+    function createTeamsMenu(teamsList) {
+        $.each(teamsList, function () {
+            var teamListItem = this;
+            var team = teamListItem.Team;
+            var lastTicket = teamListItem.LastTicket;
+            var menuItem = $('<div class="list-group-item list-group-item-action flex-column align-items-start">');
+            var teamIcon = $('<img style="width: 25px; margin-right: 10px; float: left;">');
+            teamIcon.attr('src', '/Content/Icons/group_icon.png');
+            menuItem.append(teamIcon);
+            var teamName = $('<h5>').text(team.Name);
+            menuItem.append(teamName);
+            if (lastTicket) {
+                var ticketTime = $('<p style="color:gray; float:right">').text(lastTicket.TimeCreated);
+                var ticketText = $('<p>').text(lastTicket.Description);
+                menuItem.append(ticketTime);
+                menuItem.append(ticketText);
+            }
+            $('#teamsmenu').append(menuItem);
+        });
+    };
+
+    function getTeamsListAndCreateTeamsMenu() {
+        $.getJSON("/Teams/GetCurrentUserTeamsList/")
+            .done(function (teamsList) {
+                createTeamsMenu(teamsList);
+            });       
+    };
+
+    $(function () {
+        getTeamsListAndCreateTeamsMenu();
+    });
+</script>

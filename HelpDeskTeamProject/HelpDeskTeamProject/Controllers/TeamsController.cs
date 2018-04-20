@@ -25,6 +25,7 @@ namespace HelpDeskTeamProject.Controllers
         }
 
         //invite user to team
+        [Authorize]
         public ActionResult InviteUser(int? teamId)
         {
             var teamToInvite = db.Teams.Find(teamId);
@@ -37,6 +38,7 @@ namespace HelpDeskTeamProject.Controllers
         }
 
         [HttpPost]
+        [Authorize]
         public ActionResult InviteUser(int _teamId, string userEmail)
         {
             var teamToInvite = db.Teams.Find(_teamId);
@@ -47,16 +49,63 @@ namespace HelpDeskTeamProject.Controllers
             return RedirectToAction("TeamInfo", new { teamId = _teamId });
         }
 
+        [Authorize]
+        public ActionResult Teams()
+        {
+            return View();
+        }
+
+        //used in view to create teams menu for curent user 
+        [Authorize]
+        public ActionResult GetCurrentUserTeamsList()
+        {
+            var context = new ApplicationDbContext();
+            var currentUserId = User.Identity.GetUserId();
+
+            db.Configuration.ProxyCreationEnabled = false;
+
+            var currentUser = db.Users
+                .Where(user => user.AppId == currentUserId)
+                .FirstOrDefault();
+
+            var currentUserTeamsList = db.Teams
+                .Include(t => t.Tickets)
+                .Where(t => t.Users.Select(u => u.Id).Contains(currentUser.Id))
+                .ToList();            
+
+            List<TeamWithLastChangesViewModel> data = new List<TeamWithLastChangesViewModel>();
+            foreach (var team in currentUserTeamsList)
+            {
+                Ticket lastTicketInTeam = team.Tickets
+                    .OrderByDescending(ticket => ticket.TimeCreated)
+                    .FirstOrDefault();
+
+                TeamWithLastChangesViewModel teamViewModel = new TeamWithLastChangesViewModel()
+                {
+                    Team = team,
+                    LastTicket = lastTicketInTeam
+                };
+
+                data.Add(teamViewModel);
+            }
+
+            return Json(data, JsonRequestBehavior.AllowGet);
+        }
+
+
+        
 
         //create new team
+        [Authorize]
         public ActionResult Create()
         {
             return View();
         }
 
-
+        
         //create new team
         [HttpPost]
+        [Authorize]
         [ValidateAntiForgeryToken]
         public ActionResult Create([Bind(Include = "Name")] Team team)
         {
