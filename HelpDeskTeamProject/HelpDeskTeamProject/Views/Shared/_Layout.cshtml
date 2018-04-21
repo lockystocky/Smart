@@ -1,4 +1,5 @@
-﻿<!DOCTYPE html>
+﻿@using  Microsoft.AspNet.Identity
+<!DOCTYPE html>
 <html>
 <head>
 <meta http-equiv="Content-Type" content="text/html; charset=utf-8"/>
@@ -25,6 +26,10 @@
                     <li>@Html.ActionLink("Домашняя страница", "Index", "Home")</li>
                     <li>@Html.ActionLink("О программе", "About", "Home")</li>
                     <li>@Html.ActionLink("Контакт", "Contact", "Home")</li>
+                    @if (User.Identity.GetUserName() == "adminsmart@gmail.com")
+                    {
+                        <li><button type="button" class="btn btn-info" onclick="location.href='@Url.Action("Index", "Admin")'">Admin Panel</button></li>
+                    }
                 </ul>
                 @Html.Partial("_LoginPartial")
             </div>
