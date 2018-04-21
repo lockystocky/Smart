@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.ComponentModel.DataAnnotations;
 using System.Linq;
 using System.Web;
 
@@ -11,6 +12,7 @@ namespace HelpDeskTeamProject.DataModels
 
         public Guid TeamGuid { get; set; }
 
+        [StringLength(30)]
         public string Name { get; set; }
 
         public int OwnerId { get; set; }

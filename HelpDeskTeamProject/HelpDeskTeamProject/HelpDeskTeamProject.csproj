@@ -236,6 +236,10 @@
     <Compile Include="Migrations\201804202301053_Ticket Description added.Designer.cs">
       <DependentUpon>201804202301053_Ticket Description added.cs</DependentUpon>
     </Compile>
+    <Compile Include="Migrations\201804212005055_String length limit set.cs" />
+    <Compile Include="Migrations\201804212005055_String length limit set.Designer.cs">
+      <DependentUpon>201804212005055_String length limit set.cs</DependentUpon>
+    </Compile>
     <Compile Include="Migrations\Configuration.cs" />
     <Compile Include="Models\AccountViewModels.cs" />
     <Compile Include="Models\IdentityModels.cs" />
@@ -351,6 +355,9 @@
     </EmbeddedResource>
     <EmbeddedResource Include="Migrations\201804202301053_Ticket Description added.resx">
       <DependentUpon>201804202301053_Ticket Description added.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Migrations\201804212005055_String length limit set.resx">
+      <DependentUpon>201804212005055_String length limit set.cs</DependentUpon>
     </EmbeddedResource>
   </ItemGroup>
   <PropertyGroup>

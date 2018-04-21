@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.ComponentModel.DataAnnotations;
 using System.Linq;
 using System.Web;
 
@@ -11,6 +12,7 @@ namespace HelpDeskTeamProject.DataModels
 
         public int UserId { get; set; }
 
+        [StringLength(400)]
         public string Description { get; set; }
 
         public virtual TicketType Type { get; set; }
