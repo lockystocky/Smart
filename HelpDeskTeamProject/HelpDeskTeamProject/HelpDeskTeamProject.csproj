@@ -321,6 +321,7 @@
     <Content Include="Views\Role\EditTeamRole.cshtml" />
     <Content Include="Views\Teams\Tickets.cshtml" />
     <Content Include="Views\Admin\Index.cshtml" />
+    <Content Include="Views\Admin\GetTeamsAndRoles.cshtml" />
   </ItemGroup>
   <ItemGroup>
     <Folder Include="App_Data\" />

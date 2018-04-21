@@ -22,8 +22,7 @@
                 <th>Name</th>
                 <th>Surname</th>
                 <th>AppRole</th>
-                <th>Teams</th>
-                <th>TeamRole</th>
+                <th>Teams and Roles</th>
             </tr>
         </thead>
         <tbody>
@@ -34,18 +33,7 @@
                     <td>@user.Name</td>
                     <td>@user.Surname</td>
                     <td>@user.AppRole.Name</td>
-                    @foreach (var team in user.Teams)
-                    {
-                        <td>@team.Name</td>
-                        if (user.Id == team.OwnerId)
-                        {
-                            <td>Owner</td>
-                        }
-                        else
-                        {
-                            <td>Customer</td>
-                        }
-                    }
+                    <td><button type="button" class="btn">@Html.ActionLink("Show Teams and Roles", "GetTeamsAndRoles", new { id = user.Id })</button>
                 </tr>
             }
         </tbody>

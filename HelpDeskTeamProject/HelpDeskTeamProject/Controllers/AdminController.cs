@@ -4,6 +4,7 @@ using System;
 using System.Collections.Generic;
 using System.Dynamic;
 using System.Linq;
+using System.Net;
 using System.Web;
 using System.Web.Mvc;
 
@@ -21,6 +22,20 @@ namespace HelpDeskTeamProject.Controllers
             compositeModel.TeamRoles = GetTeamRoles();
             compositeModel.AppRoles = GetAppRoles();
             return View(compositeModel);
+        }
+
+        public ActionResult GetTeamsAndRoles(int? id)
+        {
+            if (id == null)
+            {
+                return new HttpStatusCodeResult(HttpStatusCode.BadRequest);
+            }
+            var user = dbContext.Users.Find(id);
+            if (user == null)
+            {
+                return HttpNotFound();
+            }            
+            return View(user);
         }
 
         private List<User> GetUsers()
