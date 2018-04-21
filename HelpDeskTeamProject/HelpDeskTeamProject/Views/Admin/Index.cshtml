@@ -1,0 +1,61 @@
+﻿@using HelpDeskTeamProject.DataModels;
+@model dynamic
+@{
+    ViewBag.Title = "Index";
+}
+<h2>@ViewBag.Message</h2>
+
+<p><b>Users List</b></p>
+
+<table>
+    <tr>
+        <th>Id</th>
+        <th>Name</th>
+        <th>Surname</th>
+        <th>AppRole</th>
+    </tr>
+    @foreach (User user in Model.Users)
+    {
+    <tr>
+        <td>@user.Id</td>
+        <td>@user.Name</td>
+        <td>@user.Surname</td>
+        <td>@user.AppRole.Name</td>
+    </tr>
+    }
+</table>
+
+<hr />
+<p><b>TeamRoles List</b></p>
+
+<table>
+    <tr>
+        <th>Id</th>
+        <th>Name</th>
+    </tr>
+    @foreach (TeamRole teamRole in Model.TeamRoles)
+    {
+        <tr>
+            <td>@teamRole.Id</td>
+            <td>@teamRole.Name</td>
+        </tr>
+    }
+</table>
+
+<hr/>
+
+<p><b>AppRoles List</b></p>
+
+<table>
+    <tr>
+        <th>Id</th>
+        <th>Name</th>
+    </tr>
+    @foreach (ApplicationRole appRole in Model.AppRoles)
+    {
+        <tr>
+            <td>@appRole.Id</td>
+            <td>@appRole.Name</td>
+        </tr>
+    }
+</table>
