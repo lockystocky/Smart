@@ -1,4 +1,5 @@
 ﻿@using HelpDeskTeamProject.DataModels;
+@using Microsoft.AspNet.Identity;
 @model dynamic
 @{
     ViewBag.Title = "Index";
@@ -8,49 +9,56 @@
 
 <h2>@ViewBag.Message</h2>
 
-<p><b>Users List</b></p>
+@if (User.Identity.GetUserName() == "adminsmart@gmail.com")
+{
+    <h1>Admin Panel</h1>
 
-<table id="userList" class="display">
-    <thead>
-        <tr>
-            <th>Id</th>
-            <th>Name</th>
-            <th>Surname</th>
-            <th>AppRole</th>
-            <th>Teams</th>
-            <th>TeamRole</th>
-        </tr>
-    </thead>
-    <tbody>
-        @foreach (User user in Model.Users)
-        {
+    <h3>List of Users</h3>
+
+    <table id="userList" class="display">
+        <thead>
             <tr>
-                <td>@user.Id</td>
-                <td>@user.Name</td>
-                <td>@user.Surname</td>
-                <td>@user.AppRole.Name</td>
-                @foreach (var team in user.Teams)
-                {
-                    <td>@team.Name</td>
-                    if (user.Id == team.OwnerId)
-                    {
-                        <td>Owner</td>
-                    }
-                    else
-                    {
-                        <td>Customer</td>
-                    }
-                }
+                <th>Id</th>
+                <th>Name</th>
+                <th>Surname</th>
+                <th>AppRole</th>
+                <th>Teams</th>
+                <th>TeamRole</th>
             </tr>
-        }
-    </tbody>
-</table>
-
-<hr />
+        </thead>
+        <tbody>
+            @foreach (User user in Model.Users)
+            {
+                <tr>
+                    <td>@user.Id</td>
+                    <td>@user.Name</td>
+                    <td>@user.Surname</td>
+                    <td>@user.AppRole.Name</td>
+                    @foreach (var team in user.Teams)
+                    {
+                        <td>@team.Name</td>
+                        if (user.Id == team.OwnerId)
+                        {
+                            <td>Owner</td>
+                        }
+                        else
+                        {
+                            <td>Customer</td>
+                        }
+                    }
+                </tr>
+            }
+        </tbody>
+    </table>
+}
+else
+{
+    <h1>You are not allowed to visit this page.</h1>
+}
 
 
 @section scripts{
-    <script type="text/javascript" charset="utf8" src="https://cdn.datatables.net/1.10.16/js/jquery.dataTables.js"></script>    
+    <script type="text/javascript" charset="utf8" src="https://cdn.datatables.net/1.10.16/js/jquery.dataTables.js"></script>
     <script>
         $(document).ready(function () {
             $('#userList').DataTable();
