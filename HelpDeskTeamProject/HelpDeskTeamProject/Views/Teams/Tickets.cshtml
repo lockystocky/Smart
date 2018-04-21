@@ -9,15 +9,10 @@
         margin-bottom: 20px;
     }
 
-        /* On mouse-over, add a deeper shadow */
-        .card:hover {
-            box-shadow: 2px 4px 4px 2px rgba(0,0,0,0.2);
-        }    
-
-    /* Add some padding inside the card container */
-    .container {
-        padding: 2px 16px;
-    }
+    /* On mouse-over, add a deeper shadow */
+    .card:hover {
+        box-shadow: 2px 4px 4px 2px rgba(0,0,0,0.2);
+    }    
 
     .headerMargin{
         padding-top: 2px;
@@ -34,6 +29,7 @@
 
     .cardText{
         padding-left: 15px;
+        padding-right: 15px;
     }
 
     .replyRectangle {
@@ -62,7 +58,6 @@
     .statusRect{
         width: 100%;
         height: 5px;
-        background-color: limegreen;
     }
 </style>
 
@@ -70,9 +65,10 @@
 
 <div>
     <div class="card">
-        <div class="statusRect"></div>
+        <div class="statusRect" style="background-color: limegreen;"></div>
         <h5 class="headerMargin"><b>Andrew</b> <b>Slobodyanuk</b></h5>
         <h5 class="dateTime">Yesterday 9:40</h5>
+        <h5 class="dateTime" style="color:limegreen;"><b>Done</b></h5>
         <div class="cardText">
             <p>Команды, напоминаю, что просто присылать митинги - недостаточно, необходимо написать в чатах своих команд согласованное между собой время. Время должно быть, желательно в первой половине дня. Если из-за рабочих графиков данное время не подходит - присылайте отчеты 1 человеку, который сможет отчитаться за всех.</p>
         </div>
@@ -82,8 +78,10 @@
         </div>
     </div>
     <div class="card">
+        <div class="statusRect" style="background-color: orangered;"></div>
         <h5 class="headerMargin"><b>Andrew</b> <b>Slobodyanuk</b></h5>
         <h5 class="dateTime">Yesterday 9:40</h5>
+        <h5 class="dateTime" style="color:orangered;"><b>New</b></h5>
         <div class="cardText">
             <p>Команды, напоминаю, что просто присылать митинги - недостаточно, необходимо написать в чатах своих команд согласованное между собой время. Время должно быть, желательно в первой половине дня. Если из-за рабочих графиков данное время не подходит - присылайте отчеты 1 человеку, который сможет отчитаться за всех.</p>
         </div>
@@ -93,8 +91,23 @@
         </div>
     </div>
     <div class="card">
+        <div class="statusRect" style="background-color: darkorange;"></div>
         <h5 class="headerMargin"><b>Andrew</b> <b>Slobodyanuk</b></h5>
         <h5 class="dateTime">Yesterday 9:40</h5>
+        <h5 class="dateTime" style="color:darkorange;"><b>In Progress</b></h5>
+        <div class="cardText">
+            <p>Команды, напоминаю, что просто присылать митинги - недостаточно, необходимо написать в чатах своих команд согласованное между собой время. Время должно быть, желательно в первой половине дня. Если из-за рабочих графиков данное время не подходит - присылайте отчеты 1 человеку, который сможет отчитаться за всех.</p>
+        </div>
+        <div class="divideLine"></div>
+        <div class="replyRectangle">
+            <p class="replyTextMargin">Reply</p>
+        </div>
+    </div>
+    <div class="card">
+        <div class="statusRect" style="background-color: dimgrey;"></div>
+        <h5 class="headerMargin"><b>Andrew</b> <b>Slobodyanuk</b></h5>
+        <h5 class="dateTime">Yesterday 9:40</h5>
+        <h5 class="dateTime" style="color:dimgrey;"><b>Rejected</b></h5>
         <div class="cardText">
             <p>Команды, напоминаю, что просто присылать митинги - недостаточно, необходимо написать в чатах своих команд согласованное между собой время. Время должно быть, желательно в первой половине дня. Если из-за рабочих графиков данное время не подходит - присылайте отчеты 1 человеку, который сможет отчитаться за всех.</p>
         </div>

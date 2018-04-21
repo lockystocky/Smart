@@ -1,0 +1,302 @@
+﻿@model HelpDeskTeamProject.DataModels.Ticket
+@using HelpDeskTeamProject.DataModels
+@{
+    string[] statusColorsArray = { StatusColors.orangered.ToString(),
+        StatusColors.darkorange.ToString(),
+        StatusColors.limegreen.ToString(),
+        StatusColors.dimgrey.ToString() };
+}
+
+<style>
+    .card {
+        /* Add shadows to create the "card" effect */
+        box-shadow: 2px 2px 4px 2px rgba(0,0,0,0.2);
+        transition: 0.3s;
+        width: 100%;
+        margin-top: 20px;
+        margin-bottom: 20px;
+    }
+
+        /* On mouse-over, add a deeper shadow */
+    .card:hover {
+        box-shadow: 2px 4px 4px 2px rgba(0,0,0,0.2);
+    }
+
+    .headerMargin {
+        padding-top: 2px;
+        padding-left: 15px;
+        display: inline-block;
+    }
+
+    .dateTime {
+        padding-top: 2px;
+        padding-left: 5px;
+        display: inline-block;
+        color: grey;
+    }
+
+    .cardText {
+        padding-left: 15px;
+        padding-right: 15px;
+    }
+
+    .replyRectangle {
+        vertical-align: central;
+        width: 100%;
+        height: 30px;
+        background-color: #f2f2f2;
+    }
+
+    .divideLine {
+        height: 1px;
+        width: 100%;
+        background-color: #dddddd;
+    }
+
+    .replyTextMargin {
+        margin-left: 15px;
+        padding-top: 5px;
+        display: inline-block;
+    }
+
+    .replyTextMargin:hover {
+        color: deepskyblue;
+        cursor: pointer;
+    }
+
+    .statusRect {
+        width: 100%;
+        height: 5px;
+    }
+
+
+
+
+
+    .pageDivideLeft{
+        overflow: auto;
+        width: 50%;
+        float: left;
+        padding-right: 18px;
+        padding-left: 2px;
+    }
+
+    .pageDivideRight {
+        overflow: auto;
+        width: 50%;
+        float: right;
+        padding-right: 18px;
+        padding-left: 2px;
+    }
+
+    .commentText {
+        padding-left: 15px;
+        padding-right: 15px;
+        padding-bottom: 5px;
+    }
+
+    .deleteButton {
+        padding-top: 2px;
+        padding-left: 5px;
+        padding-right: 15px;
+        display: inline-block;
+        float: right;
+    }
+
+    .deleteButton:hover {
+        color: deepskyblue;
+        cursor: pointer;
+    }
+
+    .themeText{
+        color: grey;
+        display: inline-block;
+        padding-bottom: 10px;
+        padding-right: 5px;
+    }
+
+    .themeText:hover{
+        text-decoration: underline;
+        cursor: pointer;
+    }
+
+    .systemMessageText {
+        padding-left: 15px;
+        padding-right: 15px;
+        padding-top: 10px;
+        padding-bottom: 10px;
+        text-align: center;
+    }
+
+    .inputTicketDiv {
+        padding-left: 15px;
+        padding-right: 15px;
+        padding-bottom: 10px;
+        width: 100%;
+    }
+
+    .inputTicketText {
+        min-width: 100%;
+        height: 110px;
+        transition: 0.3s;
+    }
+
+    .selectType{
+        width: 75%;
+        display: inline-block;
+        height: 20px;
+    }
+
+    .addButtonDiv {
+        width: 20%;
+        display: inline-block;
+        background-color: #dddddd;
+        height: 20px;
+        text-align: center;
+        box-shadow: 1px 1px 1px 1px rgba(0,0,0,0.2);
+    }
+
+    .addButtonDiv:hover{
+        background-color: dodgerblue;
+        color: white;
+        cursor: pointer;
+    }
+</style>
+
+<script>
+    function addTicket() {
+        var textBox = document.getElementById("addTicketText");
+        var typeChoser = document.getElementById("addTicketType");
+        if (textBox.value == "") {
+            textBox.style.border = "groove";
+            textBox.style.borderColor = "orangered";
+            textBox.style.borderWidth = "1.5px";
+        }
+        else if (typeChoser.value == 0) {
+            typeChoser.style.border = "groove";
+            typeChoser.style.borderColor = "orangered";
+            typeChoser.style.borderWidth = "1.5px";
+        }
+        else {
+            uploadTicket(textBox.value, typeChoser.value);
+        }
+    }
+
+    function uploadTicket(text,type) {
+        var uploaderUrl = "/Teams/AddTicket";
+        var formData = new FormData();
+        formData.append("Description", text);
+        formData.append("TypeId", type);
+        formData.append("BaseTicketId", @Model.Id);
+        formData.append("BaseTeamId",@Model.Team.Id);
+        var xhr = new XMLHttpRequest();
+        xhr.open('POST', uploaderUrl, true);
+        
+        xhr.send(formData);
+        statusObject.innerText = "Waiting for response...";
+    }
+</script>
+
+<h2>ShowTicket</h2>
+
+<div>
+    <div class="pageDivideLeft">
+        <div class="card">
+            <div class="statusRect" style="background-color: @statusColorsArray[(int)Model.State];"></div>
+            <h5 class="headerMargin"><b>@Model.User.Name</b> <b>@Model.User.Surname</b></h5>
+            <h5 class="dateTime">@Model.TimeCreated.ToString()</h5>
+            <h5 class="dateTime" style="color:@statusColorsArray[(int)Model.State];"><b>@Model.State.ToString()</b></h5>
+            <h5 class="deleteButton">Delete</h5>
+            <div class="cardText">
+                <p>@Model.Description</p>
+                <div class="themeText">@Model.Type.Name</div>
+            </div>
+            <div class="divideLine"></div>
+            <div class="replyRectangle">
+                <div class="replyTextMargin">Reply</div>
+                <div class="replyTextMargin">Edit</div>
+                <div class="replyTextMargin"><img src="~/Content/comments.png" style="padding-bottom:1px;" /><b> @Model.Comments.Count</b></div>
+                <div class="replyTextMargin"><img src="~/Content/ticket.png" style="padding-bottom:1px;" /><b> @Model.ChildTickets.Count</b></div>
+            </div>
+        </div>
+        @if (Model.Comments.Count > 0)
+        {
+            foreach (var comment in Model.Comments)
+            {
+                <div class="card">
+                <h5 class="headerMargin"><b>@comment.User.Name</b> <b>@comment.User.Surname</b></h5>
+                <h5 class="dateTime">@comment.TimeCreated.ToString()</h5>
+                <h5 class="deleteButton">Delete</h5>
+                    <div class="commentText">
+                        <p>@comment.Text</p>
+                    </div>
+                </div>
+            }
+        }
+        else
+        {
+            <div class="card">
+                <div class="systemMessageText">
+                    This ticket does not have any comments, try adding more by clicking reply button.
+                </div>
+            </div>
+        }
+
+    </div>
+    <div class="pageDivideRight">
+        <div class="card">
+            <h5 class="headerMargin"><b>Add New Ticket</b></h5>
+            <div class="inputTicketDiv">
+                <textarea id="addTicketText" class="inputTicketText" placeholder="Write here your problem or suggestion..."></textarea>
+            </div>
+            <div style="padding-bottom: 15px; padding-right: 15px; padding-left: 15px;">
+                <div class="selectType">
+                    <select id="addTicketType" style="width:100%; min-width:100%; height: 20px; transition: 0.3s;">
+                        <option value="0">Select type</option>
+                        @for (int counter = 0;counter < ViewBag.TicketTypes.Count; counter++)
+                        {
+                            <option value="@(counter + 1)">@ViewBag.TicketTypes[counter].Name</option>
+                        }
+                    </select>
+                </div>
+                <div class="addButtonDiv" onclick="addTicket()">
+                    <p style="padding-top: 1px;">Add</p>
+                </div>
+            </div>
+        </div>
+        @if (Model.ChildTickets.Count > 0)
+        {
+            foreach (var childTicket in Model.ChildTickets)
+            {
+                <div class="card">
+                    <div class="statusRect" style="background-color: @statusColorsArray[(int)childTicket.State]"></div>
+                    <h5 class="headerMargin"><b>@childTicket.User.Name</b> <b>@childTicket.User.Surname</b></h5>
+                    <h5 class="dateTime">@childTicket.TimeCreated.ToString()</h5>
+                    <h5 class="dateTime" style="color:@statusColorsArray[(int)childTicket.State];"><b>@childTicket.State.ToString()</b></h5>
+                    <h5 class="deleteButton">Delete</h5>
+                    <div class="cardText">
+                        <p>@childTicket.Description</p>
+                        <div class="themeText">@childTicket.Type.Name</div>
+                    </div>
+                    <div class="divideLine"></div>
+                    <div class="replyRectangle">
+                        <div class="replyTextMargin">Show</div>
+                        <div class="replyTextMargin">Edit</div>
+                        <div class="replyTextMargin"><img src="~/Content/comments.png" style="padding-bottom:1px;" /><b> @childTicket.Comments.Count</b></div>
+                        <div class="replyTextMargin"><img src="~/Content/ticket.png" style="padding-bottom:1px;" /><b> @childTicket.ChildTickets.Count</b></div>
+                    </div>
+                </div>
+            }
+        }
+        else
+        {
+            <div class="card">
+                    <div class="systemMessageText">
+                        This ticket does not have any child tickets, try adding more by clicking add button.
+                    </div>
+            </div>
+        }
+    </div>
+</div>
+
+

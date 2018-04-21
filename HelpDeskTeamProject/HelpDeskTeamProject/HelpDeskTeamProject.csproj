@@ -65,6 +65,9 @@
     <Reference Include="System.ComponentModel.DataAnnotations" />
     <Reference Include="System.Core" />
     <Reference Include="System.Data.DataSetExtensions" />
+    <Reference Include="System.Web.Http.Common, Version=4.0.0.0, Culture=neutral, PublicKeyToken=31bf3856ad364e35, processorArchitecture=MSIL">
+      <HintPath>..\packages\System.Web.Http.Common.4.0.20126.16343\lib\net40\System.Web.Http.Common.dll</HintPath>
+    </Reference>
     <Reference Include="System.Xml.Linq" />
     <Reference Include="System.Web" />
     <Reference Include="System.Web.Extensions" />
@@ -206,6 +209,7 @@
     <Compile Include="DataModels\TeamPermissions.cs" />
     <Compile Include="DataModels\TeamRole.cs" />
     <Compile Include="DataModels\Ticket.cs" />
+    <Compile Include="DataModels\TicketBase.cs" />
     <Compile Include="DataModels\TicketLog.cs" />
     <Compile Include="DataModels\TicketType.cs" />
     <Compile Include="DataModels\User.cs" />
@@ -237,6 +241,10 @@
     <Compile Include="Migrations\201804202114448_userAndPermissionUpdate.Designer.cs">
       <DependentUpon>201804202114448_userAndPermissionUpdate.cs</DependentUpon>
     </Compile>
+    <Compile Include="Migrations\201804211908552_userIdToUserClassChanges.cs" />
+    <Compile Include="Migrations\201804211908552_userIdToUserClassChanges.Designer.cs">
+      <DependentUpon>201804211908552_userIdToUserClassChanges.cs</DependentUpon>
+    </Compile>
     <Compile Include="Migrations\Configuration.cs" />
     <Compile Include="Models\AccountViewModels.cs" />
     <Compile Include="Models\IdentityModels.cs" />
@@ -248,7 +256,8 @@
   <ItemGroup>
     <Content Include="Content\bootstrap.css" />
     <Content Include="Content\bootstrap.min.css" />
-    <Content Include="Content\img_avatar.png" />
+    <Content Include="Content\comments.png" />
+    <Content Include="Content\ticket.png" />
     <Content Include="favicon.ico" />
     <Content Include="fonts\glyphicons-halflings-regular.svg" />
     <Content Include="Global.asax" />
@@ -319,6 +328,7 @@
     <Content Include="Views\Role\EditAppRole.cshtml" />
     <Content Include="Views\Role\EditTeamRole.cshtml" />
     <Content Include="Views\Teams\Tickets.cshtml" />
+    <Content Include="Views\Teams\ShowTicket.cshtml" />
   </ItemGroup>
   <ItemGroup>
     <Folder Include="App_Data\" />
@@ -354,6 +364,9 @@
     </EmbeddedResource>
     <EmbeddedResource Include="Migrations\201804202114448_userAndPermissionUpdate.resx">
       <DependentUpon>201804202114448_userAndPermissionUpdate.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Migrations\201804211908552_userIdToUserClassChanges.resx">
+      <DependentUpon>201804211908552_userIdToUserClassChanges.cs</DependentUpon>
     </EmbeddedResource>
   </ItemGroup>
   <PropertyGroup>

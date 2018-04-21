@@ -13,13 +13,25 @@ namespace HelpDeskTeamProject.DataModels
         Rejected
     }
 
+    public enum StatusColors
+    {
+        orangered,
+        darkorange,
+        limegreen,
+        dimgrey
+    }
+
     public class Ticket
     {
         public int Id { get; set; }
 
-        public int UserId { get; set; }
+        public Team Team { get; set; }
+
+        public User User { get; set; }
 
         public TicketState State { get; set; }
+
+        public string Description { get; set; }
 
         public virtual TicketType Type { get; set; }
 
