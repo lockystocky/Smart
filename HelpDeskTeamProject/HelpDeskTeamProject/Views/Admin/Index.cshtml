@@ -13,6 +13,8 @@
         <th>Name</th>
         <th>Surname</th>
         <th>AppRole</th>
+        <th>Teams</th>
+        <th>TeamRole</th>
     </tr>
     @foreach (User user in Model.Users)
     {
@@ -21,6 +23,19 @@
         <td>@user.Name</td>
         <td>@user.Surname</td>
         <td>@user.AppRole.Name</td>
+        @foreach (var team in user.Teams)
+        {
+        <td>@team.Name</td>
+            if (user.Id == team.OwnerId)
+            {
+                <td>Owner</td>
+            }
+            else
+            {
+                <td>Customer</td>
+            }
+        <td>@team.OwnerId</td>
+        }
     </tr>
     }
 </table>
