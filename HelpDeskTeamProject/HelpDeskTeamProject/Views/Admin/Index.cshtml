@@ -3,74 +3,57 @@
 @{
     ViewBag.Title = "Index";
 }
+
+<link rel="stylesheet" type="text/css" href="https://cdn.datatables.net/1.10.16/css/jquery.dataTables.css">
+
 <h2>@ViewBag.Message</h2>
 
 <p><b>Users List</b></p>
 
-<table>
-    <tr>
-        <th>Id</th>
-        <th>Name</th>
-        <th>Surname</th>
-        <th>AppRole</th>
-        <th>Teams</th>
-        <th>TeamRole</th>
-    </tr>
-    @foreach (User user in Model.Users)
-    {
-    <tr>
-        <td>@user.Id</td>
-        <td>@user.Name</td>
-        <td>@user.Surname</td>
-        <td>@user.AppRole.Name</td>
-        @foreach (var team in user.Teams)
+<table id="userList" class="display">
+    <thead>
+        <tr>
+            <th>Id</th>
+            <th>Name</th>
+            <th>Surname</th>
+            <th>AppRole</th>
+            <th>Teams</th>
+            <th>TeamRole</th>
+        </tr>
+    </thead>
+    <tbody>
+        @foreach (User user in Model.Users)
         {
-        <td>@team.Name</td>
-            if (user.Id == team.OwnerId)
-            {
-                <td>Owner</td>
-            }
-            else
-            {
-                <td>Customer</td>
-            }
-        <td>@team.OwnerId</td>
+            <tr>
+                <td>@user.Id</td>
+                <td>@user.Name</td>
+                <td>@user.Surname</td>
+                <td>@user.AppRole.Name</td>
+                @foreach (var team in user.Teams)
+                {
+                    <td>@team.Name</td>
+                    if (user.Id == team.OwnerId)
+                    {
+                        <td>Owner</td>
+                    }
+                    else
+                    {
+                        <td>Customer</td>
+                    }
+                }
+            </tr>
         }
-    </tr>
-    }
+    </tbody>
 </table>
 
 <hr />
-<p><b>TeamRoles List</b></p>
 
-<table>
-    <tr>
-        <th>Id</th>
-        <th>Name</th>
-    </tr>
-    @foreach (TeamRole teamRole in Model.TeamRoles)
-    {
-        <tr>
-            <td>@teamRole.Id</td>
-            <td>@teamRole.Name</td>
-        </tr>
-    }
-</table>
 
-<hr/>
-
-<p><b>AppRoles List</b></p>
-
-<table>
-    <tr>
-        <th>Id</th>
-        <th>Name</th>
-    </tr>
-    @foreach (ApplicationRole appRole in Model.AppRoles)
-    {
-        <tr>
-            <td>@appRole.Id</td>
-            <td>@appRole.Name</td>
-        </tr>
-    }
-</table>
+@section scripts{
+    <script type="text/javascript" charset="utf8" src="https://cdn.datatables.net/1.10.16/js/jquery.dataTables.js"></script>    
+    <script>
+        $(document).ready(function () {
+            $('#userList').DataTable();
+        });
+    </script>
+}
