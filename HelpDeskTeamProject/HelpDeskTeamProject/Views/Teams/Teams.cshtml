@@ -26,15 +26,31 @@
             var teamListItem = this;
             var team = teamListItem.Team;
             var lastTicket = teamListItem.LastTicket;
-            var menuItem = $('<div class="list-group-item list-group-item-action flex-column align-items-start">');
-            var teamIcon = $('<img style="width: 25px; margin-right: 10px; float: left;">');
+            var menuItem = $('<div class="team-name list-group-item list-group-item-action flex-column align-items-start" style="margin-right:0px">');
+            menuItem.attr('id', team.Id);
+            var teamIcon = $('<img style="width: 12px; margin-right: 10px; vertical-align: baseline;">');
             teamIcon.attr('src', '/Content/Icons/group_icon.png');
-            menuItem.append(teamIcon);
-            var teamName = $('<h5>').text(team.Name);
-            menuItem.append(teamName);
+            var teamHeader = $('<p>');
+            teamHeader.append(teamIcon);
+            if (team.Name.length > 15)
+                team.Name = team.Name.slice(0, 12) + "...";
+            teamHeader.append(team.Name);
+            menuItem.append(teamHeader);
             if (lastTicket) {
-                var ticketTime = $('<p style="color:gray; float:right">').text(lastTicket.TimeCreated);
-                var ticketText = $('<p>').text(lastTicket.Description);
+                var ticketTime = $('<p style="color:gray; text-align:right; font-size:10px">').text(lastTicket.TimeCreated);
+                if (lastTicket.Description.length > 50)
+                    lastTicket.Description = lastTicket.Description.slice(0, 47) + "...";
+                var ticketText = $('<p style="font-size:10px; margin-bottom: 0px;">').text(lastTicket.Description);
+                menuItem.append(ticketTime);
+                menuItem.append(ticketText);
+            }
+            //only to test
+            if (!lastTicket) {
+                var testDescription = 'John Doe: I 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0?';
+                var ticketTime = $('<p style="color:gray; text-align:right; font-size:10px">').text('3 hours ago');
+                if (testDescription.length > 50)
+                    testDescription = testDescription.slice(0, 47) + "...";
+                var ticketText = $('<p style="font-size:10px; margin-bottom: 0px;">').text(testDescription);
                 menuItem.append(ticketTime);
                 menuItem.append(ticketText);
             }
