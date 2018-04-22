@@ -194,7 +194,6 @@
     <Compile Include="Controllers\AdminController.cs" />
     <Compile Include="Controllers\HomeController.cs" />
     <Compile Include="Controllers\ManageController.cs" />
-    <Compile Include="Controllers\TeamController.cs" />
     <Compile Include="Controllers\RoleController.cs" />
     <Compile Include="Controllers\TeamsController.cs" />
     <Compile Include="DataModels\AdminLog.cs" />
@@ -215,47 +214,10 @@
     <Compile Include="Global.asax.cs">
       <DependentUpon>Global.asax</DependentUpon>
     </Compile>
-    <Compile Include="Migrations\201804191642550_initialMigration.cs" />
-    <Compile Include="Migrations\201804191642550_initialMigration.Designer.cs">
-      <DependentUpon>201804191642550_initialMigration.cs</DependentUpon>
-    </Compile>
-    <Compile Include="Migrations\201804192023523_contextChanged.cs" />
-    <Compile Include="Migrations\201804192023523_contextChanged.Designer.cs">
-      <DependentUpon>201804192023523_contextChanged.cs</DependentUpon>
-    </Compile>
-    <Compile Include="Migrations\201804192026194_teamRoleUpdate.cs" />
-    <Compile Include="Migrations\201804192026194_teamRoleUpdate.Designer.cs">
-      <DependentUpon>201804192026194_teamRoleUpdate.cs</DependentUpon>
-    </Compile>
-    <Compile Include="Migrations\201804192055597_userAppIdAdded.cs" />
-    <Compile Include="Migrations\201804192055597_userAppIdAdded.Designer.cs">
-      <DependentUpon>201804192055597_userAppIdAdded.cs</DependentUpon>
-    </Compile>
-
-    <Compile Include="Migrations\201804192316427_InvEmail.cs" />
-    <Compile Include="Migrations\201804192316427_InvEmail.Designer.cs">
-      <DependentUpon>201804192316427_InvEmail.cs</DependentUpon>
-    </Compile>
-    <Compile Include="Migrations\201804202301053_Ticket Description added.cs" />
-    <Compile Include="Migrations\201804202301053_Ticket Description added.Designer.cs">
-      <DependentUpon>201804202301053_Ticket Description added.cs</DependentUpon>
-    </Compile>
-    <Compile Include="Migrations\201804212005055_String length limit set.cs" />
-    <Compile Include="Migrations\201804212005055_String length limit set.Designer.cs">
-      <DependentUpon>201804212005055_String length limit set.cs</DependentUpon>
-    
-    <Compile Include="Migrations\201804202114448_userAndPermissionUpdate.cs" />
-    <Compile Include="Migrations\201804202114448_userAndPermissionUpdate.Designer.cs">
-      <DependentUpon>201804202114448_userAndPermissionUpdate.cs</DependentUpon>
-    </Compile>
-    
-    <Compile Include="Migrations\Configuration.cs" />
     <Compile Include="Models\AccountViewModels.cs" />
     <Compile Include="Models\IdentityModels.cs" />
     <Compile Include="Models\InviteUserToTeamViewModel.cs" />
-
     <Compile Include="Models\ManageTeamViewModel.cs" />
-
     <Compile Include="Models\ManageViewModels.cs" />
     <Compile Include="Models\TeamWithLastChangesViewModel.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
@@ -264,11 +226,8 @@
   <ItemGroup>
     <Content Include="Content\bootstrap.css" />
     <Content Include="Content\bootstrap.min.css" />
-
     <Content Include="Content\Icons\group_icon.png" />
-
     <Content Include="Content\img_avatar.png" />
-
     <Content Include="favicon.ico" />
     <Content Include="fonts\glyphicons-halflings-regular.svg" />
     <Content Include="Global.asax" />
@@ -325,23 +284,19 @@
     <Content Include="Views\Manage\VerifyPhoneNumber.cshtml" />
     <Content Include="Views\Shared\Lockout.cshtml" />
     <Content Include="Views\Shared\_LoginPartial.cshtml" />
-
     <Content Include="Views\Role\CreateTeamRole.cshtml" />
     <Content Include="Views\Role\CreateAppRole.cshtml" />
     <Content Include="Views\Teams\AllTeams.cshtml" />
-
     <Content Include="Views\Teams\Create.cshtml" />
     <Content Include="Views\Teams\Delete.cshtml" />
     <Content Include="Views\Teams\Details.cshtml" />
     <Content Include="Views\Teams\Edit.cshtml" />
     <Content Include="Views\Teams\Index.cshtml" />
-
     <Content Include="Views\Teams\AllTeams.cshtml" />
     <Content Include="Views\Teams\InviteUser.cshtml" />
     <Content Include="Views\Teams\TeamInfo.cshtml" />
     <Content Include="Views\Teams\Teams.cshtml" />
     <Content Include="Views\Teams\ManageTeam.cshtml" />
-
     <Content Include="Views\Role\List.cshtml" />
     <Content Include="Views\Role\EditAppRole.cshtml" />
     <Content Include="Views\Role\EditTeamRole.cshtml" />
@@ -350,7 +305,6 @@
     <Content Include="Views\Admin\GetTeamsAndRoles.cshtml" />
     <Content Include="Views\Admin\Edit.cshtml" />
     <Content Include="Views\Admin\Error.cshtml" />
-
   </ItemGroup>
   <ItemGroup>
     <Folder Include="App_Data\" />
@@ -367,36 +321,6 @@
   <ItemGroup>
     <None Include="packages.config" />
     <Content Include="Scripts\jquery-1.10.2.min.map" />
-  </ItemGroup>
-  <ItemGroup>
-    <EmbeddedResource Include="Migrations\201804191642550_initialMigration.resx">
-      <DependentUpon>201804191642550_initialMigration.cs</DependentUpon>
-    </EmbeddedResource>
-    <EmbeddedResource Include="Migrations\201804192023523_contextChanged.resx">
-      <DependentUpon>201804192023523_contextChanged.cs</DependentUpon>
-    </EmbeddedResource>
-    <EmbeddedResource Include="Migrations\201804192026194_teamRoleUpdate.resx">
-      <DependentUpon>201804192026194_teamRoleUpdate.cs</DependentUpon>
-    </EmbeddedResource>
-    <EmbeddedResource Include="Migrations\201804192055597_userAppIdAdded.resx">
-      <DependentUpon>201804192055597_userAppIdAdded.cs</DependentUpon>
-    </EmbeddedResource>
-
-    <EmbeddedResource Include="Migrations\201804192316427_InvEmail.resx">
-      <DependentUpon>201804192316427_InvEmail.cs</DependentUpon>
-    </EmbeddedResource>
-    <EmbeddedResource Include="Migrations\201804202301053_Ticket Description added.resx">
-      <DependentUpon>201804202301053_Ticket Description added.cs</DependentUpon>
-    </EmbeddedResource>
-    <EmbeddedResource Include="Migrations\201804212005055_String length limit set.resx">
-      <DependentUpon>201804212005055_String length limit set.cs</DependentUpon>
-    </EmbeddedResource>
-
-    
-    <EmbeddedResource Include="Migrations\201804202114448_userAndPermissionUpdate.resx">
-      <DependentUpon>201804202114448_userAndPermissionUpdate.cs</DependentUpon>
-    </EmbeddedResource>
-    
   </ItemGroup>
   <PropertyGroup>
     <VisualStudioVersion Condition="'$(VisualStudioVersion)' == ''">10.0</VisualStudioVersion>

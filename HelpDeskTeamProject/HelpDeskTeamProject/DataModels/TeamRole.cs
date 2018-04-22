@@ -10,9 +10,7 @@ namespace HelpDeskTeamProject.DataModels
     {
         public virtual TeamPermissions Permissions { get; set; }
 
-        [StringLength(40)]
-        public string Name { get; set; }
-
+        
         public TeamRole()
         {
 
