@@ -9,6 +9,7 @@ using System.Linq;
 using System.Net;
 using System.Web;
 using System.Web.Mvc;
+using Microsoft.AspNet.Identity;
 
 namespace HelpDeskTeamProject.Controllers
 {
@@ -19,11 +20,20 @@ namespace HelpDeskTeamProject.Controllers
         // GET: Admin
         public ActionResult Index()
         {
-            dynamic compositeModel = new ExpandoObject();
-            compositeModel.Users = GetUsers();
-            compositeModel.TeamRoles = GetTeamRoles();
-            compositeModel.AppRoles = GetAppRoles();
-            return View(compositeModel);
+            var userName = User.Identity.GetUserName();
+            var currentUser = dbContext.Users.Where(u => u.Email == userName).FirstOrDefault();
+            if (currentUser != null)
+            {
+                if (currentUser.AppRole.Permissions.IsAdmin)
+                {
+                    dynamic compositeModel = new ExpandoObject();
+                    compositeModel.Users = GetUsers();
+                    compositeModel.TeamRoles = GetTeamRoles();
+                    compositeModel.AppRoles = GetAppRoles();
+                    return View(compositeModel);
+                }
+            }            
+            return View("Error");           
         }
 
         public ActionResult GetTeamsAndRoles(int? id)

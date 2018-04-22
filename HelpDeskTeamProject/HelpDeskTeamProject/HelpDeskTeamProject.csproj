@@ -327,6 +327,7 @@
     <Content Include="Views\Admin\Index.cshtml" />
     <Content Include="Views\Admin\GetTeamsAndRoles.cshtml" />
     <Content Include="Views\Admin\Edit.cshtml" />
+    <Content Include="Views\Admin\Error.cshtml" />
   </ItemGroup>
   <ItemGroup>
     <Folder Include="App_Data\" />

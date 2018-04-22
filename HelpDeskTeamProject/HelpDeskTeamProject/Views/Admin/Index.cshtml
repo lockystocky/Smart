@@ -9,40 +9,33 @@
 
 <h2>@ViewBag.Message</h2>
 
-@if (User.Identity.GetUserName() == "adminsmart@gmail.com")
-{
-    <h1>Admin Panel</h1>
+<h1>Admin Panel</h1>
 
-    <h3>List of Users</h3>
+<h3>List of Users</h3>
 
-    <table id="userList" class="display">
-        <thead>
+<table id="userList" class="display">
+    <thead>
+        <tr>
+            <th>Id</th>
+            <th>Name</th>
+            <th>Surname</th>
+            <th>AppRole</th>
+            <th>Teams and Roles</th>
+        </tr>
+    </thead>
+    <tbody>
+        @foreach (User user in Model.Users)
+        {
             <tr>
-                <th>Id</th>
-                <th>Name</th>
-                <th>Surname</th>
-                <th>AppRole</th>
-                <th>Teams and Roles</th>
+                <td>@user.Id</td>
+                <td>@user.Name</td>
+                <td>@user.Surname</td>
+                <td>@user.AppRole.Name  | @Html.ActionLink("Edit", "Edit", new { id = user.Id }) </td>
+                <td><button type="button" class="btn">@Html.ActionLink("Show Teams and Roles", "GetTeamsAndRoles", new { id = user.Id })</button>
             </tr>
-        </thead>
-        <tbody>
-            @foreach (User user in Model.Users)
-            {
-                <tr>
-                    <td>@user.Id</td>
-                    <td>@user.Name</td>
-                    <td>@user.Surname</td>
-                    <td>@user.AppRole.Name  | @Html.ActionLink("Edit", "Edit", new { id = user.Id }) </td>
-                    <td><button type="button" class="btn">@Html.ActionLink("Show Teams and Roles", "GetTeamsAndRoles", new { id = user.Id })</button>
-                </tr>
-            }
-        </tbody>
-    </table>
-}
-else
-{
-    <h1>You are not allowed to visit this page.</h1>
-}
+        }
+    </tbody>
+</table>
 
 
 @section scripts{
