@@ -264,6 +264,7 @@
     <Content Include="Content\bootstrap.css" />
     <Content Include="Content\bootstrap.min.css" />
     <Content Include="Content\comments.png" />
+    <Content Include="Content\MaterialStyles.css" />
     <Content Include="Content\ticket.png" />
     <Content Include="favicon.ico" />
     <Content Include="fonts\glyphicons-halflings-regular.svg" />
