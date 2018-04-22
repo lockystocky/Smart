@@ -50,7 +50,7 @@ namespace HelpDeskTeamProject.Migrations
             var team1 = new Team()
             {
                 TeamGuid = Guid.NewGuid(),
-                OwnerId = 2,
+                OwnerId = 1,
                 Name = "Team 666",
                 Users = new System.Collections.Generic.List<User>(),
                 UserPermissions = new System.Collections.Generic.List<UserPermission>()
