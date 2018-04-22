@@ -17,7 +17,28 @@
     </div>
 
 </div>
+<style>
+    .group-icon {
+        width: 12px;
+        margin-right: 10px;
+        vertical-align: baseline;
+    }
 
+    .ticket-time {
+        color: gray;
+        text-align: right;
+        font-size: 10px
+    }
+
+    .ticket-text {
+        font-size: 10px;
+        margin-bottom: 0px;
+    }
+
+    .shade {
+        background-color: #DCDCDC;
+    }
+</style>
     <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.3.1/jquery.min.js"></script>
 <script>
    
@@ -28,7 +49,7 @@
             var lastTicket = teamListItem.LastTicket;
             var menuItem = $('<div class="team-name list-group-item list-group-item-action flex-column align-items-start" style="margin-right:0px">');
             menuItem.attr('id', team.Id);
-            var teamIcon = $('<img style="width: 12px; margin-right: 10px; vertical-align: baseline;">');
+            var teamIcon = $('<img class="group-icon">');
             teamIcon.attr('src', '/Content/Icons/group_icon.png');
             var teamHeader = $('<p>');
             teamHeader.append(teamIcon);
@@ -37,24 +58,22 @@
             teamHeader.append(team.Name);
             menuItem.append(teamHeader);
             if (lastTicket) {
-                var ticketTime = $('<p style="color:gray; text-align:right; font-size:10px">').text(lastTicket.TimeCreated);
+                var ticketTime = $('<p class="ticket-time">').text(lastTicket.TimeCreated);
                 if (lastTicket.Description.length > 50)
                     lastTicket.Description = lastTicket.Description.slice(0, 47) + "...";
-                var ticketText = $('<p style="font-size:10px; margin-bottom: 0px;">').text(lastTicket.Description);
+                var ticketText = $('<p class="ticket-text">').text(lastTicket.Description);
                 menuItem.append(ticketTime);
                 menuItem.append(ticketText);
             }
-            //only to test
-            if (!lastTicket) {
-                var testDescription = 'John Doe: I 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0?';
-                var ticketTime = $('<p style="color:gray; text-align:right; font-size:10px">').text('3 hours ago');
-                if (testDescription.length > 50)
-                    testDescription = testDescription.slice(0, 47) + "...";
-                var ticketText = $('<p style="font-size:10px; margin-bottom: 0px;">').text(testDescription);
-                menuItem.append(ticketTime);
-                menuItem.append(ticketText);
-            }
+
             $('#teamsmenu').append(menuItem);
+            menuItem.click(function () {
+                var shaded = $('.shade:last').removeClass('shade');
+                $(this).addClass('shade');
+
+                //here must be call of Andrew function to show tickets of team
+
+            });
         });
     };
 
