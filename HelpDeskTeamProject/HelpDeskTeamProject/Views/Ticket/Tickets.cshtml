@@ -1,0 +1,367 @@
+﻿@using HelpDeskTeamProject.DataModels
+@{
+    string[] statusColorsArray = { StatusColors.orangered.ToString(),
+        StatusColors.darkorange.ToString(),
+        StatusColors.limegreen.ToString(),
+        StatusColors.dimgrey.ToString() };
+
+    string[] ticketStateNames = { TicketState.New.ToString(), TicketState.InProgress.ToString(),
+        TicketState.Done.ToString(), TicketState.Rejected.ToString() };
+}
+
+<style>
+    .card {
+        /* Add shadows to create the "card" effect */
+        box-shadow: 2px 2px 4px 2px rgba(0,0,0,0.2);
+            transition: 0.3s;
+        width: 100%;
+        margin-top: 20px;
+        margin-bottom: 20px;
+    }
+
+        /* On mouse-over, add a deeper shadow */
+    .card:hover {
+        box-shadow: 2px 4px 4px 2px rgba(0,0,0,0.2);
+    }
+
+    .headerMargin {
+        padding-top: 2px;
+        padding-left: 15px;
+        display: inline-block;
+    }
+
+    .dateTime {
+        padding-top: 2px;
+        padding-left: 5px;
+        display: inline-block;
+        color: grey;
+    }
+
+    .cardText {
+        padding-left: 15px;
+        padding-right: 15px;
+    }
+
+    .replyRectangle {
+        vertical-align: central;
+        width: 100%;
+        height: 30px;
+        background-color: #f2f2f2;
+    }
+
+    .divideLine {
+        height: 1px;
+        width: 100%;
+        background-color: #dddddd;
+    }
+
+    .replyTextMargin {
+        margin-left: 15px;
+        padding-top: 5px;
+        display: inline-block;
+    }
+
+    .replyTextMargin:hover {
+        color: deepskyblue;
+        cursor: pointer;
+    }
+
+    .statusRect {
+        width: 100%;
+        height: 5px;
+    }
+
+
+
+
+
+    .pageDivideLeft{
+        overflow: auto;
+        width: 50%;
+        float: left;
+        padding-right: 18px;
+        padding-left: 2px;
+    }
+
+    .pageDivideRight {
+        overflow: auto;
+        width: 50%;
+        float: right;
+        padding-right: 18px;
+        padding-left: 2px;
+    }
+
+    .commentText {
+        padding-left: 15px;
+        padding-right: 15px;
+        padding-bottom: 5px;
+    }
+
+    .deleteButton {
+        padding-top: 2px;
+        padding-left: 5px;
+        padding-right: 15px;
+        display: inline-block;
+        float: right;
+    }
+
+    .deleteButton:hover {
+        color: deepskyblue;
+        cursor: pointer;
+    }
+
+    .themeText{
+        color: grey;
+        display: inline-block;
+        padding-bottom: 10px;
+        padding-right: 5px;
+    }
+
+    .themeText:hover{
+        text-decoration: underline;
+        cursor: pointer;
+    }
+
+    .systemMessageText {
+        padding-left: 15px;
+        padding-right: 15px;
+        padding-top: 10px;
+        padding-bottom: 10px;
+        text-align: center;
+    }
+
+    .inputTicketDiv {
+        padding-left: 15px;
+        padding-right: 15px;
+        padding-bottom: 10px;
+        width: 100%;
+    }
+
+    .inputTicketText {
+        min-width: 100%;
+        height: 110px;
+        transition: 0.3s;
+    }
+
+    .selectType{
+        width: 75%;
+        display: inline-block;
+        height: 20px;
+    }
+
+    .addButtonDiv {
+        width: 20%;
+        display: inline-block;
+        background-color: #dddddd;
+        height: 20px;
+        text-align: center;
+        box-shadow: 1px 1px 1px 1px rgba(0,0,0,0.2);
+    }
+
+    .addButtonDiv:hover{
+        background-color: dodgerblue;
+        color: white;
+        cursor: pointer;
+    }
+</style>
+
+<script>
+    function displayNewTicket(tickets) {
+        var statusNames = @Html.Raw(Json.Encode(ticketStateNames));
+        var statusColorsJs = @Html.Raw(Json.Encode(statusColorsArray));
+        var ticketsDisplay = document.getElementById("baseDiv");
+
+        if (tickets.length > 0) {
+            for (var counter = 0; counter < tickets.length; counter++) {
+                var cardDiv = document.createElement("div");
+                cardDiv.className = "card";
+                ticketsDisplay.appendChild(cardDiv);
+
+                var statusRectDiv = document.createElement("div");
+                statusRectDiv.className = "statusRect";
+                statusRectDiv.style.backgroundColor = statusColorsJs[tickets[counter].State];
+                cardDiv.appendChild(statusRectDiv);
+
+                var userNameDisp = document.createElement("h5");
+                userNameDisp.className = "headerMargin";
+                userNameDisp.innerHTML = "<b>" + tickets[counter].User.Name + "</b> <b>" + tickets[counter].User.Surname + "</b>"
+                cardDiv.appendChild(userNameDisp);
+
+                var timeDisp = document.createElement("h5");
+                timeDisp.className = "dateTime";
+                timeDisp.innerText = tickets[counter].TimeCreated;
+                cardDiv.appendChild(timeDisp);
+
+                var statusDisp = document.createElement("h5");
+                statusDisp.className = "dateTime";
+                statusDisp.style.color = statusColorsJs[tickets[counter].State];
+                statusDisp.innerHTML = "<b>" + statusNames[tickets[counter].State] + "</b>"
+                cardDiv.appendChild(statusDisp);
+
+                var deleteButton = document.createElement("h5");
+                deleteButton.className = "deleteButton";
+                deleteButton.innerText = "Delete";
+                cardDiv.appendChild(deleteButton);
+
+                var cardText = document.createElement("div");
+                cardText.className = "cardText";
+                var ticketDescr = document.createElement("p");
+                ticketDescr.innerText = tickets[counter].Description;
+                cardText.appendChild(ticketDescr);
+                var themeText = document.createElement("div");
+                themeText.className = "themeText";
+                themeText.innerText = tickets[counter].Type.Name;
+                cardText.appendChild(themeText);
+                cardDiv.appendChild(cardText);
+
+                var divideLine = document.createElement("div");
+                divideLine.className = "divideLine";
+                cardDiv.appendChild(divideLine);
+
+                var replyRect = document.createElement("div");
+                replyRect.className = "replyRectangle";
+                var showTicketText = document.createElement("div");
+                showTicketText.className = "replyTextMargin";
+                showTicketText.innerText = "Show";
+                replyRect.appendChild(showTicketText);
+                var editTicketText = document.createElement("div");
+                editTicketText.className = "replyTextMargin";
+                editTicketText.innerText = "Edit";
+                replyRect.appendChild(editTicketText);
+                var commentsTicketDisp = document.createElement("div");
+                commentsTicketDisp.className = "replyTextMargin";
+                commentsTicketDisp.innerHTML = "<img src=\"/Content/comments.png\" style=\"padding-bottom:1px;\" /><b> " + tickets[counter].CommentsCount + "</b>"
+                replyRect.appendChild(commentsTicketDisp);
+                var childTicketDisp = document.createElement("div");
+                childTicketDisp.className = "replyTextMargin";
+                childTicketDisp.innerHTML = "<img src=\"/Content/ticket.png\" style=\"padding-bottom:1px;\" /><b> " + tickets[counter].ChildTicketsCount + "</b>"
+                replyRect.appendChild(childTicketDisp);
+                cardDiv.appendChild(replyRect);
+            }
+        }
+        else {
+            var cardDiv = document.createElement("div");
+            cardDiv.className = "card";
+            ticketsDisplay.appendChild(cardDiv);
+
+            var sysMessageDiv = document.createElement("div");
+            sysMessageDiv.className = "systemMessageText";
+            sysMessageDiv.innerText = "This team does not have any child tickets, try adding more by clicking add button.";
+            cardDiv.appendChild(sysMessageDiv);
+        }
+    }
+
+    function showByTeam() {
+        getTickets(1);
+    }
+
+    function getTickets(teamId) {
+        var uploaderUrl = "/Ticket/GetTicketsByTeam?teamId=" + teamId;
+        var xhr = new XMLHttpRequest();
+        xhr.open('GET', uploaderUrl, true);
+        xhr.onloadend = function () {
+            var parsedTickets = JSON.parse(xhr.responseText);
+            if (parsedTickets != null) {
+                displayNewTicket(parsedTickets);
+            }
+        }
+        xhr.send(null);
+    }
+
+    window.onload = showByTeam();
+</script>
+
+<h2>Tickets</h2>
+
+<div id="baseDiv">
+    <div class="card">
+        <h5 class="headerMargin"><b>Add New Ticket</b></h5>
+        <div class="inputTicketDiv">
+            <textarea id="addTicketText" class="inputTicketText" placeholder="Write here your problem or suggestion..."></textarea>
+        </div>
+        <div style="padding-bottom: 15px; padding-right: 15px; padding-left: 15px;">
+            <div class="selectType">
+                <select id="addTicketType" style="width:100%; min-width:100%; height: 20px; transition: 0.3s;">
+                    <option value="0">Select type</option>
+                    @for (int counter = 0; counter < ViewBag.TicketTypes.Count; counter++)
+                    {
+                        <option value="@(counter + 1)">@ViewBag.TicketTypes[counter].Name</option>
+                    }
+                </select>
+            </div>
+            <div class="addButtonDiv" onclick="addTicket();">
+                <p style="padding-top: 1px;">Add</p>
+            </div>
+        </div>
+    </div>
+    @*<div class="card">
+            <div class="statusRect" style="background-color: @statusColorsArray[(int)childTicket.State]"></div>
+            <h5 class="headerMargin"><b>@childTicket.User.Name</b> <b>@childTicket.User.Surname</b></h5>
+            <h5 class="dateTime">@childTicket.TimeCreated.ToString()</h5>
+            <h5 class="dateTime" style="color:@statusColorsArray[(int)childTicket.State];"><b>@childTicket.State.ToString()</b></h5>
+            <h5 class="deleteButton">Delete</h5>
+            <div class="cardText">
+                <p>@childTicket.Description</p>
+                <div class="themeText">@childTicket.Type.Name</div>
+            </div>
+            <div class="divideLine"></div>
+            <div class="replyRectangle">
+                <div class="replyTextMargin">Show</div>
+                <div class="replyTextMargin">Edit</div>
+                <div class="replyTextMargin"><img src="~/Content/comments.png" style="padding-bottom:1px;" /><b> @childTicket.Comments.Count</b></div>
+                <div class="replyTextMargin"><img src="~/Content/ticket.png" style="padding-bottom:1px;" /><b> @childTicket.ChildTickets.Count</b></div>
+            </div>
+        </div>*@
+    <div class="card">
+        <div class="statusRect" style="background-color: limegreen;"></div>
+        <h5 class="headerMargin"><b>Andrew</b> <b>Slobodyanuk</b></h5>
+        <h5 class="dateTime">Yesterday 9:40</h5>
+        <h5 class="dateTime" style="color:limegreen;"><b>Done</b></h5>
+        <div class="cardText">
+            <p>Команды, напоминаю, что просто присылать митинги - недостаточно, необходимо написать в чатах своих команд согласованное между собой время. Время должно быть, желательно в первой половине дня. Если из-за рабочих графиков данное время не подходит - присылайте отчеты 1 человеку, который сможет отчитаться за всех.</p>
+        </div>
+        <div class="divideLine"></div>
+        <div class="replyRectangle">
+            <p class="replyTextMargin">Reply</p>
+        </div>
+    </div>
+    <div class="card">
+        <div class="statusRect" style="background-color: orangered;"></div>
+        <h5 class="headerMargin"><b>Andrew</b> <b>Slobodyanuk</b></h5>
+        <h5 class="dateTime">Yesterday 9:40</h5>
+        <h5 class="dateTime" style="color:orangered;"><b>New</b></h5>
+        <div class="cardText">
+            <p>Команды, напоминаю, что просто присылать митинги - недостаточно, необходимо написать в чатах своих команд согласованное между собой время. Время должно быть, желательно в первой половине дня. Если из-за рабочих графиков данное время не подходит - присылайте отчеты 1 человеку, который сможет отчитаться за всех.</p>
+        </div>
+        <div class="divideLine"></div>
+        <div class="replyRectangle">
+            <p class="replyTextMargin">Reply</p>
+        </div>
+    </div>
+    <div class="card">
+        <div class="statusRect" style="background-color: darkorange;"></div>
+        <h5 class="headerMargin"><b>Andrew</b> <b>Slobodyanuk</b></h5>
+        <h5 class="dateTime">Yesterday 9:40</h5>
+        <h5 class="dateTime" style="color:darkorange;"><b>In Progress</b></h5>
+        <div class="cardText">
+            <p>Команды, напоминаю, что просто присылать митинги - недостаточно, необходимо написать в чатах своих команд согласованное между собой время. Время должно быть, желательно в первой половине дня. Если из-за рабочих графиков данное время не подходит - присылайте отчеты 1 человеку, который сможет отчитаться за всех.</p>
+        </div>
+        <div class="divideLine"></div>
+        <div class="replyRectangle">
+            <p class="replyTextMargin">Reply</p>
+        </div>
+    </div>
+    <div class="card">
+        <div class="statusRect" style="background-color: dimgrey;"></div>
+        <h5 class="headerMargin"><b>Andrew</b> <b>Slobodyanuk</b></h5>
+        <h5 class="dateTime">Yesterday 9:40</h5>
+        <h5 class="dateTime" style="color:dimgrey;"><b>Rejected</b></h5>
+        <div class="cardText">
+            <p>Команды, напоминаю, что просто присылать митинги - недостаточно, необходимо написать в чатах своих команд согласованное между собой время. Время должно быть, желательно в первой половине дня. Если из-за рабочих графиков данное время не подходит - присылайте отчеты 1 человеку, который сможет отчитаться за всех.</p>
+        </div>
+        <div class="divideLine"></div>
+        <div class="replyRectangle">
+            <p class="replyTextMargin">Reply</p>
+        </div>
+    </div>
+</div>

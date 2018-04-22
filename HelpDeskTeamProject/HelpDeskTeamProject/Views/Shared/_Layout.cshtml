@@ -26,10 +26,14 @@
                     <li>@Html.ActionLink("Домашняя страница", "Index", "Home")</li>
                     <li>@Html.ActionLink("О программе", "About", "Home")</li>
                     <li>@Html.ActionLink("Контакт", "Contact", "Home")</li>
+
                     @if (User.Identity.GetUserName() == "adminsmart#gmail.com")
                     {
                         <li><button type="button" class="btn btn-info" onclick="location.href='@Url.Action("Index", "Admin")'">Admin Panel</button></li>
                     }
+
+                    <li><a href="/Ticket/ShowTicket?id=1">ShowTicket</a></li>
+
                 </ul>
                 @Html.Partial("_LoginPartial")
             </div>
@@ -37,10 +41,10 @@
     </div>
     <div class="container body-content">
         @RenderBody()
-        <hr />
-        <footer>
-            <p>&copy; @DateTime.Now.Year – приложение ASP.NET</p>
-        </footer>
+            @*<hr />
+            <footer>
+                <p>&copy; @DateTime.Now.Year – приложение ASP.NET</p>
+            </footer>*@
     </div>
 
     @Scripts.Render("~/bundles/jquery")

@@ -6,11 +6,13 @@ using System.Linq;
 using System.Threading.Tasks;
 using System.Net;
 using System.Web;
+using System.Web.Http;
 using System.Web.Mvc;
 using HelpDeskTeamProject.Context;
 using HelpDeskTeamProject.DataModels;
 using HelpDeskTeamProject.Models;
 using Microsoft.AspNet.Identity;
+using Newtonsoft.Json;
 
 namespace HelpDeskTeamProject.Controllers
 {

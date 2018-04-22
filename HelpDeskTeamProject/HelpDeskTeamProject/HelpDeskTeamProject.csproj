@@ -65,6 +65,9 @@
     <Reference Include="System.ComponentModel.DataAnnotations" />
     <Reference Include="System.Core" />
     <Reference Include="System.Data.DataSetExtensions" />
+    <Reference Include="System.Web.Http.Common, Version=4.0.0.0, Culture=neutral, PublicKeyToken=31bf3856ad364e35, processorArchitecture=MSIL">
+      <HintPath>..\packages\System.Web.Http.Common.4.0.20126.16343\lib\net40\System.Web.Http.Common.dll</HintPath>
+    </Reference>
     <Reference Include="System.Xml.Linq" />
     <Reference Include="System.Web" />
     <Reference Include="System.Web.Extensions" />
@@ -196,10 +199,12 @@
     <Compile Include="Controllers\ManageController.cs" />
     <Compile Include="Controllers\RoleController.cs" />
     <Compile Include="Controllers\TeamsController.cs" />
+    <Compile Include="Controllers\TicketController.cs" />
     <Compile Include="DataModels\AdminLog.cs" />
     <Compile Include="DataModels\ApplicationPermissions.cs" />
     <Compile Include="DataModels\ApplicationRole.cs" />
     <Compile Include="DataModels\Comment.cs" />
+    <Compile Include="DataModels\CommentDTO.cs" />
     <Compile Include="DataModels\InvitationEmail.cs" />
     <Compile Include="DataModels\Log.cs" />
     <Compile Include="DataModels\Role.cs" />
@@ -207,6 +212,8 @@
     <Compile Include="DataModels\TeamPermissions.cs" />
     <Compile Include="DataModels\TeamRole.cs" />
     <Compile Include="DataModels\Ticket.cs" />
+    <Compile Include="DataModels\TicketBase.cs" />
+    <Compile Include="DataModels\TicketDTO.cs" />
     <Compile Include="DataModels\TicketLog.cs" />
     <Compile Include="DataModels\TicketType.cs" />
     <Compile Include="DataModels\User.cs" />
@@ -214,6 +221,7 @@
     <Compile Include="Global.asax.cs">
       <DependentUpon>Global.asax</DependentUpon>
     </Compile>
+
     <Compile Include="Models\AccountViewModels.cs" />
     <Compile Include="Models\IdentityModels.cs" />
     <Compile Include="Models\InviteUserToTeamViewModel.cs" />
@@ -226,8 +234,13 @@
   <ItemGroup>
     <Content Include="Content\bootstrap.css" />
     <Content Include="Content\bootstrap.min.css" />
+
     <Content Include="Content\Icons\group_icon.png" />
     <Content Include="Content\img_avatar.png" />
+
+    <Content Include="Content\comments.png" />
+    <Content Include="Content\ticket.png" />
+
     <Content Include="favicon.ico" />
     <Content Include="fonts\glyphicons-halflings-regular.svg" />
     <Content Include="Global.asax" />
@@ -300,11 +313,16 @@
     <Content Include="Views\Role\List.cshtml" />
     <Content Include="Views\Role\EditAppRole.cshtml" />
     <Content Include="Views\Role\EditTeamRole.cshtml" />
+
     <Content Include="Views\Teams\Tickets.cshtml" />
     <Content Include="Views\Admin\Index.cshtml" />
     <Content Include="Views\Admin\GetTeamsAndRoles.cshtml" />
     <Content Include="Views\Admin\Edit.cshtml" />
     <Content Include="Views\Admin\Error.cshtml" />
+
+    <Content Include="Views\Ticket\Tickets.cshtml" />
+    <Content Include="Views\Ticket\ShowTicket.cshtml" />
+
   </ItemGroup>
   <ItemGroup>
     <Folder Include="App_Data\" />
@@ -322,6 +340,7 @@
     <None Include="packages.config" />
     <Content Include="Scripts\jquery-1.10.2.min.map" />
   </ItemGroup>
+
   <PropertyGroup>
     <VisualStudioVersion Condition="'$(VisualStudioVersion)' == ''">10.0</VisualStudioVersion>
     <VSToolsPath Condition="'$(VSToolsPath)' == ''">$(MSBuildExtensionsPath32)\Microsoft\VisualStudio\v$(VisualStudioVersion)</VSToolsPath>

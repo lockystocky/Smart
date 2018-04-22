@@ -1,28 +1,26 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.ComponentModel.DataAnnotations;
 using System.Linq;
 using System.Web;
 
 namespace HelpDeskTeamProject.DataModels
 {
-    public class Comment
+    public class CommentDTO
     {
         public int Id { get; set; }
 
         public User User { get; set; }
 
-        public DateTime TimeCreated { get; set; }
+        public string TimeCreated { get; set; }
 
-        [StringLength(400)]
         public string Text { get; set; }
 
-        public Comment()
+        public CommentDTO()
         {
 
         }
 
-        public Comment(string text, User user, DateTime time)
+        public CommentDTO(string text, User user, string time)
         {
             Text = text;
             User = user;

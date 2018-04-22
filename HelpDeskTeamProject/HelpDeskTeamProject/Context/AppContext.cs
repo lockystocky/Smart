@@ -30,6 +30,12 @@ namespace HelpDeskTeamProject.Context
 
         public DbSet<AdminLog> AdminLogs { get; set; }
 
+
         public DbSet<UserPermission> Permissions { get; set; }
+
+        public DbSet<Ticket> Tickets { get; set; }
+
+        public DbSet<TicketType> TicketTypes { get; set; }
+
     }
 }
