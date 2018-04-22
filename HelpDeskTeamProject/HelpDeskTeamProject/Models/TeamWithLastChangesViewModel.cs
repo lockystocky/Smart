@@ -10,7 +10,11 @@ namespace HelpDeskTeamProject.Models
     {
         public Team Team { get; set; }
 
-        public Ticket LastTicket { get; set; }
+        public string LastTicketText { get; set; }
+
+        public string LastTicketAuthor { get; set; }
+
+        public string LastTicketTime { get; set; }
 
     }
 }

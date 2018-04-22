@@ -9,17 +9,32 @@
 
     </div>
     <div class="col-md-6">
-        <h2>ManageTeam</h2>
-        <table id="teamRolesList" class="display">
-            <thead>
-                <tr>
-                    <th>User</th>
-                    <th>Role</th>
-                </tr>
-            </thead>
-            <tbody>
-               
-            </tbody>
+        <h4>Manage Team "@Model.Team.Name"</h4>
+        
+        <table id="@Model.Team.Id" class="table team">
+            
+            <tr>
+                <th>First Name</th>
+                <th>Last Name</th>
+                <th>Role</th>
+                <th></th>
+                <th></th>
+            </tr>          
+            
+                @foreach (var item in Model.TeamMembers)
+                {
+            <tr class="userinfo" id="@item.TeamMember.Id">
+                <td>@item.TeamMember.Name</td>
+                <td>@item.TeamMember.Surname</td>
+                <td class="role">
+                    @Html.DropDownList("UserRole", item.AvailableTeamRoles, htmlAttributes: new { @class = "form-control" })
+                </td>
+                <td><button type="button" class="btn btn-primary savebtn">Save</button></td>
+                <td><button type="button" class="btn btn-primary delbtn">Delete</button></td>
+            </tr>
+
+                }
+           
         </table>
     </div>
     <div class="col-md-3">
@@ -29,8 +44,49 @@
 </div>
 
 
-@foreach (var user in Model.TeamUsers)
-{
+<script src="https://ajax.googleapis.com/ajax/libs/jquery/3.3.1/jquery.min.js"></script>
+<script>
+    function changeUserRoleInTeam(userId, teamId, roleId) {
+        $.ajax({
+            type: "POST",
+            url: "/teams/changeUserRoleInTeam/",
+            data: "{'userId':'" + userId + "', teamId:'" + teamId + "', roleId:'" + roleId + "'}",
+            contentType: "application/json; charset=utf-8",
+            dataType: "json"
+        })
+    }
 
-}
+    function deleteUserFromTeam(userId, teamId) {
+        $.ajax({
+            type: "POST",
+            url: "/teams/DeleteUserFromTeam/",
+            data: "{'userId':'" + userId + "', teamId:'" + teamId + "'}",
+            contentType: "application/json; charset=utf-8",
+            dataType: "json"
+        }).done(function () {
+            alert('Ok');
+        });
+    }
+
+    $(function () {
+
+        $('.savebtn').click(function () {            
+            var userId = $(this).parents('.userinfo').attr('id');
+            var teamId = $(this).parents('.team').attr('id');
+            var roleId = $(this).parent().siblings('.role').children('select').find(':selected').val();
+            changeUserRoleInTeam(userId, teamId, roleId);
+        });
+
+        $('.delbtn').click(function () {
+            var userId = $(this).parents('.userinfo').attr('id');
+            var teamId = $(this).parents('.team').attr('id');
+            var isReadyToDeleteUser = confirm("Are you sure want to delete user from team?");
+            if (isReadyToDeleteUser) {
+                deleteUserFromTeam(userId, teamId);
+                $(this).parents('.userinfo').hide();
+            }            
+        });
+
+    });
+</script>
 

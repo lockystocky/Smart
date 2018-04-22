@@ -81,20 +81,19 @@ namespace HelpDeskTeamProject.Controllers
                     .OrderByDescending(ticket => ticket.TimeCreated)
                     .FirstOrDefault();
 
-                if (lastTicketInTeam == null)
-                    lastTicketInTeam = new Ticket()
-                    {
-                        Description = "This is default last ticket text to test",
-                        TimeCreated = DateTime.Now
-                    };
-
-
-                TeamWithLastChangesViewModel teamViewModel = new TeamWithLastChangesViewModel()
+                TeamWithLastChangesViewModel teamViewModel = new TeamWithLastChangesViewModel();
+                if (lastTicketInTeam != null)
                 {
-                    Team = team,
-                    LastTicket = lastTicketInTeam
-                };
-
+                    teamViewModel.Team = team;
+                    teamViewModel.LastTicketText = lastTicketInTeam.Description;
+                    teamViewModel.LastTicketTime = MakeDateTimeMoreUserFriendly(lastTicketInTeam.TimeCreated, DateTime.Now);
+                    teamViewModel.LastTicketAuthor = lastTicketInTeam.User.Name + " " + lastTicketInTeam.User.Surname;
+                }
+                else
+                {
+                    teamViewModel.Team = team;
+                }
+                   
                 data.Add(teamViewModel);
             }
 
@@ -102,7 +101,23 @@ namespace HelpDeskTeamProject.Controllers
         }
 
 
-        
+        private string MakeDateTimeMoreUserFriendly(DateTime date, DateTime nowDate)
+        {
+            string userFriendlyDate = "";
+
+            if (date.Year == nowDate.Year && date.Month == nowDate.Month && date.Day == nowDate.Day)
+            {
+                userFriendlyDate = (nowDate.Hour - date.Hour).ToString() + " hours ago";
+            }
+            else if (date.Year == nowDate.Year && date.Month == nowDate.Month)
+            {
+                userFriendlyDate = (nowDate.Day - date.Day).ToString() + " days ago";
+            }
+            else
+                userFriendlyDate = date.ToString();
+
+            return userFriendlyDate;
+        }
 
         //create new team
         [Authorize]
@@ -187,19 +202,100 @@ namespace HelpDeskTeamProject.Controllers
             if (team == null)
                 return HttpNotFound();
 
-            //team.
-
+        
             if (currentUser.Id != team.OwnerId)
                 return HttpNotFound();
 
-            ManageTeamViewModel viewModel = new ManageTeamViewModel()
+            var teamMembers = team.Users;
+
+            var viewModel = new ManageTeamViewModel()
             {
-                TeamId = team.Id,
-                TeamUsers = team.Users,
-                UserPermissions = team.UserPermissions
+                Team = team,
+                TeamMembers = new List<TeamMemberInfo>()
             };
+            
+
+            foreach (var teamMember in teamMembers)
+            {
+                
+                var teamRole = team.UserPermissions
+                    .Where(permission => permission.User == teamMember && permission.TeamId == team.Id)
+                    .FirstOrDefault().TeamRole;
+
+                var memberInfo = new TeamMemberInfo();
+                memberInfo.TeamMember = teamMember;
+                memberInfo.TeamRole = teamRole;
+                var availableTeamRoles = db.TeamRoles.ToList();
+                var selectList = new SelectList(availableTeamRoles, "Id", "Name", teamRole.Id); 
+                memberInfo.AvailableTeamRoles = selectList;
+
+                viewModel.TeamMembers.Add(memberInfo);
+            }
+
 
             return View(viewModel);
+        }
+
+        [HttpPost]
+        public ActionResult ChangeUserRoleInTeam(int userId, int teamId, int roleId)
+        {
+            var team = db.Teams.Find(teamId);
+
+            var user = db.Users.Find(userId);
+
+            var role = db.TeamRoles.Find(roleId);
+
+            if (team == null || user == null || role == null)
+                return HttpNotFound();
+
+            var userPermission = team.UserPermissions
+                .Where(up => up.User == user && up.TeamId == team.Id)
+                .FirstOrDefault();
+
+            if (userPermission == null)
+                return HttpNotFound();
+
+            if (userPermission.TeamRole != role)
+                userPermission.TeamRole = role;
+
+            db.SaveChanges();
+
+            return new HttpStatusCodeResult(HttpStatusCode.OK);
+        }
+
+        
+        [HttpPost]
+        public ActionResult DeleteUserFromTeam(int userId, int teamId)
+        {
+            var team = db.Teams.Find(teamId);
+
+            var user = db.Users.Find(userId);
+
+            if (team == null || user == null)
+                return HttpNotFound();
+
+            var userPermission = team.UserPermissions
+                .Where(up => up.User == user && up.TeamId == team.Id)
+                .FirstOrDefault();
+
+            if (team == null || user == null)
+                return HttpNotFound();
+
+            team.UserPermissions.Remove(userPermission);
+            user.Teams.Remove(team);
+            team.Users.Remove(user);
+            var userTickets = team.Tickets.Where(t => t.User == user).ToList();
+            team.Tickets.RemoveAll(ticket => userTickets.Contains(ticket));
+            var teamTickets = team.Tickets.ToList();
+            foreach(var ticket in teamTickets)
+            {
+                var userComments = ticket.Comments.Where(comment => comment.User == user);
+                ticket.Comments.RemoveAll(t => userComments.Contains(t));
+            }
+            db.Permissions.Remove(userPermission);
+            db.SaveChanges();
+
+            return new HttpStatusCodeResult(HttpStatusCode.OK);
         }
 
         /*

@@ -3,15 +3,24 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Web;
+using System.Web.Mvc;
 
 namespace HelpDeskTeamProject.Models
 {
     public class ManageTeamViewModel
     {
-        public int TeamId { get; set; }
+        public Team Team { get; set; }
 
-        public List<User> TeamUsers { get; set; }
+        public List<TeamMemberInfo> TeamMembers { get; set; }
 
-        public List<UserPermission> UserPermissions { get; set; }
+    }
+
+    public class TeamMemberInfo
+    {
+        public User TeamMember { get; set; }
+
+        public TeamRole TeamRole { get; set; }
+
+        public SelectList AvailableTeamRoles { get; set; }
     }
 }
