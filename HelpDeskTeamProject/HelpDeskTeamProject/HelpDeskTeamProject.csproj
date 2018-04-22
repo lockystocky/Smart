@@ -221,15 +221,6 @@
     <Compile Include="Global.asax.cs">
       <DependentUpon>Global.asax</DependentUpon>
     </Compile>
-    <Compile Include="Migrations\201804221239527_InitialCreate.cs" />
-    <Compile Include="Migrations\201804221239527_InitialCreate.Designer.cs">
-      <DependentUpon>201804221239527_InitialCreate.cs</DependentUpon>
-    </Compile>
-    <Compile Include="Migrations\201804221308496_m.cs" />
-    <Compile Include="Migrations\201804221308496_m.Designer.cs">
-      <DependentUpon>201804221308496_m.cs</DependentUpon>
-    </Compile>
-    <Compile Include="Migrations\Configuration.cs" />
     <Compile Include="Models\AccountViewModels.cs" />
     <Compile Include="Models\IdentityModels.cs" />
     <Compile Include="Models\InviteUserToTeamViewModel.cs" />
@@ -243,7 +234,6 @@
     <Content Include="Content\bootstrap.css" />
     <Content Include="Content\bootstrap.min.css" />
     <Content Include="Content\Icons\group_icon.png" />
-    <Content Include="Content\img_avatar.png" />
     <Content Include="Content\comments.png" />
     <Content Include="Content\MaterialStyles.css" />
     <Content Include="Content\ticket.png" />
@@ -329,6 +319,7 @@
   </ItemGroup>
   <ItemGroup>
     <Folder Include="App_Data\" />
+    <Folder Include="Migrations\" />
   </ItemGroup>
   <ItemGroup>
     <Content Include="fonts\glyphicons-halflings-regular.woff" />
@@ -342,14 +333,6 @@
   <ItemGroup>
     <None Include="packages.config" />
     <Content Include="Scripts\jquery-1.10.2.min.map" />
-  </ItemGroup>
-  <ItemGroup>
-    <EmbeddedResource Include="Migrations\201804221239527_InitialCreate.resx">
-      <DependentUpon>201804221239527_InitialCreate.cs</DependentUpon>
-    </EmbeddedResource>
-    <EmbeddedResource Include="Migrations\201804221308496_m.resx">
-      <DependentUpon>201804221308496_m.cs</DependentUpon>
-    </EmbeddedResource>
   </ItemGroup>
   <PropertyGroup>
     <VisualStudioVersion Condition="'$(VisualStudioVersion)' == ''">10.0</VisualStudioVersion>

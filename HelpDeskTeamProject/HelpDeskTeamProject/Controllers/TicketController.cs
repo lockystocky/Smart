@@ -23,11 +23,8 @@ namespace HelpDeskTeamProject.Controllers
             if (teamId != null)
             {
                 Team curTeam = await db.Teams.Include(x => x.Tickets).SingleOrDefaultAsync(y => y.Id == teamId);
-<<<<<<< HEAD
+
                 List<Ticket> curTickets = await db.Tickets.Include(x => x.ChildTickets).Include(y => y.Comments).Include(z => z.User).Where(s => s.ParentTicket == null).ToListAsync();
-=======
-                List<Ticket> curTickets = await db.Tickets.Include(x => x.ChildTickets).Include(y => y.Comments).Include(z => z.User).ToListAsync();
->>>>>>> origin/ManageTeamRoles
                 List<TicketDTO> curTicketsDto = new List<TicketDTO>();
                 foreach (Ticket value in curTickets)
                 {
