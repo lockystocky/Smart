@@ -7,13 +7,13 @@ namespace HelpDeskTeamProject.Migrations
     using System.Resources;
     
     [GeneratedCode("EntityFramework.Migrations", "6.2.0-61023")]
-    public sealed partial class userIdToUserClassChanges : IMigrationMetadata
+    public sealed partial class m : IMigrationMetadata
     {
-        private readonly ResourceManager Resources = new ResourceManager(typeof(userIdToUserClassChanges));
+        private readonly ResourceManager Resources = new ResourceManager(typeof(m));
         
         string IMigrationMetadata.Id
         {
-            get { return "201804211908552_userIdToUserClassChanges"; }
+            get { return "201804221308496_m"; }
         }
         
         string IMigrationMetadata.Source

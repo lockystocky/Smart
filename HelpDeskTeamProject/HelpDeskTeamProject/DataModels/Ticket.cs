@@ -35,8 +35,6 @@ namespace HelpDeskTeamProject.DataModels
 
         public TicketState State { get; set; }
 
-        public string Description { get; set; }
-
         public virtual TicketType Type { get; set; }
 
         public DateTime TimeCreated { get; set; }
