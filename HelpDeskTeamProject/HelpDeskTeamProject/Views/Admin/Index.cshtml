@@ -20,6 +20,7 @@
             <th>Name</th>
             <th>Surname</th>
             <th>AppRole</th>
+            <th>Edit AppRole</th>
             <th>Teams and Roles</th>
         </tr>
     </thead>
@@ -30,7 +31,15 @@
                 <td>@user.Id</td>
                 <td>@user.Name</td>
                 <td>@user.Surname</td>
-                <td>@user.AppRole.Name  | @Html.ActionLink("Edit", "Edit", new { id = user.Id }) </td>
+                @if (user.AppRole.Permissions.IsAdmin)
+                {
+                    <td>Admin</td>
+                }
+                else
+                {
+                    <td>@user.AppRole.Name</td>
+                }
+                <td><button type="button" class="btn btn-default">@Html.ActionLink("Edit", "Edit", new { id = user.Id })</button></td>
                 <td><button type="button" class="btn">@Html.ActionLink("Show Teams and Roles", "GetTeamsAndRoles", new { id = user.Id })</button>
             </tr>
         }
