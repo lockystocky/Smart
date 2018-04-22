@@ -22,5 +22,7 @@ namespace HelpDeskTeamProject.DataModels
         public bool CanDeleteComments { get; set; }
 
         public bool CanEditComments { get; set; }
+
+        public bool CanChangeTicketState { get; set; }
     }
 }

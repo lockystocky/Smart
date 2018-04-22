@@ -1,0 +1,58 @@
+﻿@model IEnumerable<HelpDeskTeamProject.DataModels.Role>
+@using HelpDeskTeamProject.DataModels;
+@{
+    ViewBag.Title = "List";
+}
+
+<h2>List</h2>
+
+<table class="table">
+    <tr>
+        <th>
+            @Html.DisplayNameFor(model => model.Id)
+        </th>
+        <th>
+            @Html.DisplayNameFor(model => model.Name)
+        </th>
+        <th>
+            RoleType
+        </th>
+        <th></th>
+    </tr>
+
+    @foreach (var item in Model)
+    {
+        var currentRole = new Role();
+        if (item is ApplicationRole)
+        {
+            currentRole = item as ApplicationRole;
+        }
+        else
+        {
+            currentRole = item as TeamRole;
+        }
+        <tr>
+            <td>
+                @Html.DisplayFor(modelItem => item.Id)
+            </td>
+            <td>
+                @Html.DisplayFor(modelItem => item.Name)
+            </td>
+            <td>
+                @Html.DisplayFor(modelItem => item.GetType().Name)
+            </td>
+            <td>
+                @if (currentRole is ApplicationRole)
+                {
+                    @Html.ActionLink("Edit", "EditAppRole", new { roleId = item.Id })
+                }
+                else if (currentRole is TeamRole)
+                {
+                    @Html.ActionLink("Edit", "EditTeamRole", new { roleId = item.Id })
+                }
+            </td>
+        </tr>
+    }
+
+</table>
+

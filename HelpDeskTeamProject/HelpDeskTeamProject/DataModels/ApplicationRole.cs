@@ -6,7 +6,7 @@ using System.Web;
 
 namespace HelpDeskTeamProject.DataModels
 {
-    public class ApplicationRole
+    public class ApplicationRole : Role
     {
         public int Id { get; set; }
 
