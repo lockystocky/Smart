@@ -1,0 +1,45 @@
+﻿@model HelpDeskTeamProject.DataModels.User
+@{
+    ViewBag.Title = "GetUsers";
+}
+
+<h2>Roles in teams for User @Model.Id (@Model.Name @Model.Surname) </h2>
+
+<link rel="stylesheet" type="text/css" href="https://cdn.datatables.net/1.10.16/css/jquery.dataTables.css">
+
+<table id="teamRolesList" class="display">
+    <thead>
+        <tr>
+            <th>Team</th>
+            <th>Role</th>
+        </tr>
+    </thead>
+    <tbody>
+        @foreach (var team in Model.Teams)
+        {
+            <tr>
+                <td>@team.Name</td>
+                @if (Model.Id == team.OwnerId)
+                {
+                    <td>@team.UserPermissions.Where(p => p.TeamRole.Name == "Owner").FirstOrDefault().TeamRole.Name</td>
+                }
+                else
+                {
+                    <td>@team.UserPermissions.Where(p => p.TeamRole.Name == "Customer").FirstOrDefault().TeamRole.Name</td>
+                }
+            </tr>
+        }
+    </tbody>
+</table>
+
+@section scripts{
+    <script type="text/javascript" charset="utf8" src="https://cdn.datatables.net/1.10.16/js/jquery.dataTables.js"></script>
+    <script>
+        $(document).ready(function () {
+            $('#teamRolesList').DataTable();
+        });
+    </script>
+}
+
+
+

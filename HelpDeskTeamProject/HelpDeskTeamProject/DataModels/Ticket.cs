@@ -6,6 +6,14 @@ using System.Web;
 
 namespace HelpDeskTeamProject.DataModels
 {
+    public enum TicketState
+    {
+        New,
+        InProgress,
+        Done,
+        Rejected
+    }
+
     public class Ticket
     {
         public int Id { get; set; }
@@ -14,6 +22,8 @@ namespace HelpDeskTeamProject.DataModels
 
         [StringLength(400)]
         public string Description { get; set; }
+
+        public TicketState State { get; set; }
 
         public virtual TicketType Type { get; set; }
 
