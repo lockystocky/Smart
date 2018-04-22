@@ -238,6 +238,10 @@
     <Compile Include="Migrations\201804202114448_userAndPermissionUpdate.Designer.cs">
       <DependentUpon>201804202114448_userAndPermissionUpdate.cs</DependentUpon>
     </Compile>
+    <Compile Include="Migrations\201804211618296_Ticket Description added.cs" />
+    <Compile Include="Migrations\201804211618296_Ticket Description added.Designer.cs">
+      <DependentUpon>201804211618296_Ticket Description added.cs</DependentUpon>
+    </Compile>
     <Compile Include="Migrations\Configuration.cs" />
     <Compile Include="Models\AccountViewModels.cs" />
     <Compile Include="Models\IdentityModels.cs" />
@@ -322,6 +326,7 @@
     <Content Include="Views\Teams\Tickets.cshtml" />
     <Content Include="Views\Admin\Index.cshtml" />
     <Content Include="Views\Admin\GetTeamsAndRoles.cshtml" />
+    <Content Include="Views\Admin\Edit.cshtml" />
   </ItemGroup>
   <ItemGroup>
     <Folder Include="App_Data\" />
@@ -357,6 +362,9 @@
     </EmbeddedResource>
     <EmbeddedResource Include="Migrations\201804202114448_userAndPermissionUpdate.resx">
       <DependentUpon>201804202114448_userAndPermissionUpdate.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Migrations\201804211618296_Ticket Description added.resx">
+      <DependentUpon>201804211618296_Ticket Description added.cs</DependentUpon>
     </EmbeddedResource>
   </ItemGroup>
   <PropertyGroup>

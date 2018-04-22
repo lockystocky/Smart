@@ -18,5 +18,7 @@ namespace HelpDeskTeamProject.Context
         public DbSet<ApplicationRole> AppRoles { get; set; }
 
         public DbSet<AdminLog> AdminLogs { get; set; }
+
+        public DbSet<UserPermission> Permissions { get; set; }
     }
 }

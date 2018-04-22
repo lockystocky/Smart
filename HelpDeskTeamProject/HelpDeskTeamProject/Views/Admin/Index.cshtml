@@ -32,7 +32,7 @@
                     <td>@user.Id</td>
                     <td>@user.Name</td>
                     <td>@user.Surname</td>
-                    <td>@user.AppRole.Name</td>
+                    <td>@user.AppRole.Name  | @Html.ActionLink("Edit", "Edit", new { id = user.Id }) </td>
                     <td><button type="button" class="btn">@Html.ActionLink("Show Teams and Roles", "GetTeamsAndRoles", new { id = user.Id })</button>
                 </tr>
             }

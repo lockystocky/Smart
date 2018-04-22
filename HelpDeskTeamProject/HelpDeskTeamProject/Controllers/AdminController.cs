@@ -2,6 +2,8 @@
 using HelpDeskTeamProject.DataModels;
 using System;
 using System.Collections.Generic;
+using System.Data.Entity;
+using System.Data.Entity.Infrastructure;
 using System.Dynamic;
 using System.Linq;
 using System.Net;
@@ -35,6 +37,47 @@ namespace HelpDeskTeamProject.Controllers
             {
                 return HttpNotFound();
             }            
+            return View(user);
+        }
+
+        public ActionResult Edit(int? id = 0)
+        {
+            if (id == null)
+            {
+                return new HttpStatusCodeResult(HttpStatusCode.BadRequest);
+            }
+            var user = dbContext.Users.Find(id);
+            if (user == null)
+            {
+                return HttpNotFound();
+            }
+            return View(user);
+        }
+
+        [HttpPost]
+        [ValidateAntiForgeryToken]
+        public ActionResult Edit(User user)
+        {
+            if (ModelState.IsValid)
+            {
+                dbContext.AppRoles.Attach(user.AppRole);
+                if (user.Id == 0)
+                {
+                    dbContext.Users.Add(user);
+                }
+                else
+                {
+                    var userInDb = dbContext.Users.Include(u => u.AppRole)
+                        .SingleOrDefault(u => u.Id == user.Id);
+                    if (userInDb != null)
+                    {
+                        dbContext.Entry(userInDb).CurrentValues.SetValues(user);
+                        userInDb.AppRole.Permissions = user.AppRole.Permissions;
+                    }
+                }
+                dbContext.SaveChanges();
+                return RedirectToAction("Index");
+            }
             return View(user);
         }
 

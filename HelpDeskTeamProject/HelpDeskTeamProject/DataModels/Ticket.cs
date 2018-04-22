@@ -19,6 +19,8 @@ namespace HelpDeskTeamProject.DataModels
 
         public int UserId { get; set; }
 
+        public string Description { get; set; }
+
         public TicketState State { get; set; }
 
         public virtual TicketType Type { get; set; }
