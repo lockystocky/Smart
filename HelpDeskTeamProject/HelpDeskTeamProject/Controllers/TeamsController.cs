@@ -157,6 +157,8 @@ namespace HelpDeskTeamProject.Controllers
         {
             Guid teamGuid = Guid.NewGuid();
 
+            var owner = db.Users.Find(ownerId);
+
             Team team = new Team()
             {
                 Name = teamName,
@@ -169,9 +171,48 @@ namespace HelpDeskTeamProject.Controllers
                 Users = new List<User>()
             };
 
+            var ownerRole = db.TeamRoles
+               .Where(tr => tr.Name == "Team Owner")
+               .FirstOrDefault();
+
+
+            if (ownerRole == null)
+                ownerRole = CreateTeamOwnerRole();
+            
+
+            var ownerPermission = new UserPermission()
+            {
+                TeamRole = ownerRole,
+                User = owner,
+                TeamId = team.Id
+            };
+
+            team.UserPermissions.Add(ownerPermission);
+
+
             return team;
         }
-        
+
+        private TeamRole CreateTeamOwnerRole()
+        {
+            return new TeamRole()
+            {
+                Name = "Team Owner",
+                Permissions = new TeamPermissions()
+                {
+                    CanInviteToTeam = true,
+                    CanChangeTicketState = true,
+                    CanCommentTicket = true,
+                    CanCreateTicket = true,
+                    CanDeleteComments = true,
+                    CanDeleteTickets = true,
+                    CanEditComments = true,
+                    CanEditTickets = true,
+                    CanSetUserRoles = true
+                }
+            };
+        }
+
         public ActionResult TeamInfo(int? teamId)
         {
             var team = db.Teams
@@ -183,9 +224,8 @@ namespace HelpDeskTeamProject.Controllers
             return View(team);
         }
 
-        //Team Administrator must be able to manage Team  members and their roles
 
-        public ActionResult ManageTeam(int? teamId)
+        private User GetCurrentUser()
         {
             var context = new ApplicationDbContext();
             var currentUserId = User.Identity.GetUserId();
@@ -193,15 +233,22 @@ namespace HelpDeskTeamProject.Controllers
             var currentUser = db.Users
                 .Where(user => user.AppId == currentUserId)
                 .FirstOrDefault();
-            
+            return currentUser;
+        }
 
-            var team = db.Teams
-                .Where(t => t.Id == teamId)
-                .FirstOrDefault();
+
+        
+        //Team Administrator must be able to manage Team  members and their roles
+
+
+        public ActionResult ManageTeam(int? teamId)
+        {
+            var currentUser = GetCurrentUser();
+
+            var team = db.Teams.Find(teamId);
 
             if (team == null)
                 return HttpNotFound();
-
         
             if (currentUser.Id != team.OwnerId)
                 return HttpNotFound();
@@ -217,21 +264,25 @@ namespace HelpDeskTeamProject.Controllers
 
             foreach (var teamMember in teamMembers)
             {
-                
+                if (teamMember.Id == team.OwnerId)
+                    continue;
+
                 var teamRole = team.UserPermissions
                     .Where(permission => permission.User == teamMember && permission.TeamId == team.Id)
                     .FirstOrDefault().TeamRole;
-
-                var memberInfo = new TeamMemberInfo();
-                memberInfo.TeamMember = teamMember;
-                memberInfo.TeamRole = teamRole;
+               
                 var availableTeamRoles = db.TeamRoles.ToList();
-                var selectList = new SelectList(availableTeamRoles, "Id", "Name", teamRole.Id); 
-                memberInfo.AvailableTeamRoles = selectList;
+                var selectListForAvailableTeamRoles = new SelectList(availableTeamRoles, "Id", "Name", teamRole.Id); 
+
+                var memberInfo = new TeamMemberInfo()
+                {
+                    TeamMember = teamMember,
+                    TeamRole = teamRole,
+                    AvailableTeamRoles = selectListForAvailableTeamRoles
+                };
 
                 viewModel.TeamMembers.Add(memberInfo);
             }
-
 
             return View(viewModel);
         }
@@ -296,6 +347,25 @@ namespace HelpDeskTeamProject.Controllers
             db.SaveChanges();
 
             return new HttpStatusCodeResult(HttpStatusCode.OK);
+        }
+
+        public string GetTeamManagementLink(int teamId)
+        {
+            var team = db.Teams.Find(teamId);
+            if (team == null)
+                return "";
+
+            var context = new ApplicationDbContext();
+            var currentUserId = User.Identity.GetUserId();
+
+            var currentUser = db.Users
+                .Where(user => user.AppId == currentUserId)
+                .FirstOrDefault();
+
+            if(team.OwnerId != currentUser.Id)
+                return "";
+
+            return $"/teams/manageteam?teamId={teamId}";
         }
 
         /*

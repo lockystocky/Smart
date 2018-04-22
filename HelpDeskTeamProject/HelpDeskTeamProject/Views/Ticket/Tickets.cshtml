@@ -265,10 +265,10 @@
                 var shaded = $('.shade:last').removeClass('shade');
                 $(this).addClass('shade');
                 var team_id = $(this).attr('id');
-
+                
                  //here must be call of Andrew function to show tickets of team
                 showByTeam(team_id);
-
+                getManageTeamLink(team_id);
                
 
             });
@@ -281,6 +281,29 @@
                 createTeamsMenu(teamsList);
             });
     };
+
+    function getManageTeamLink(teamId) {
+        /*$.ajax({
+            type: "GET",
+            url: "/teams/GetTeamManagementLink?teamId=" + teamId,
+            contentType: "application/json; charset=utf-8",
+            dataType: "json"
+        }).done(function (data) {
+            alert(data);
+        });*/
+        $.get("/teams/GetTeamManagementLink?teamId=" + teamId, function (data) {
+            if (data) {
+                $('#managelink').text('Manage team');
+                $('#managelink').attr('href', data);
+            }
+            else {
+                $('#managelink').text('');
+                $('#managelink').attr('href', '');
+            }
+           
+        });
+
+    }
 
     $(function () {
         getTeamsListAndCreateTeamsMenu();
@@ -297,6 +320,7 @@
 
     </div>
     <div class="col-md-6">
+        <a id="managelink"></a>
         <div id="baseDiv">
             <div class="card">
                 <h5 class="headerMargin"><b>Add New Ticket</b></h5>

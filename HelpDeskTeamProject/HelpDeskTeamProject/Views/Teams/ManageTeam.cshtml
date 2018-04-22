@@ -10,7 +10,14 @@
     </div>
     <div class="col-md-6">
         <h4>Manage Team "@Model.Team.Name"</h4>
-        
+
+        @if (Model.TeamMembers.Count < 1)
+        {
+            <p>No members in this team.</p>
+        }
+        else
+        {
+
         <table id="@Model.Team.Id" class="table team">
             
             <tr>
@@ -36,6 +43,7 @@
                 }
            
         </table>
+        }
     </div>
     <div class="col-md-3">
 
