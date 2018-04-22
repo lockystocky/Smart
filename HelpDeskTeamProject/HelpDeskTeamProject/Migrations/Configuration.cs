@@ -16,10 +16,15 @@ namespace HelpDeskTeamProject.Migrations
 
         protected override void Seed(HelpDeskTeamProject.Context.AppContext context)
         {
+            //User usr = context.Users.SingleOrDefault(x => x.Email.ToLower().Equals("k2@gmail.com"));
+            //usr.Name = "Petro";
+            //usr.Surname = "Vasylenko";
+            //User usr = context.Users.SingleOrDefault(x => x.Id == 1);
+            //usr.Email = "K1@gmail.com";
             //Ticket t = context.Tickets.SingleOrDefault(x => x.Id == 1);
             //Team team = new Team("someteam", Guid.NewGuid(), 111);
             //t.Team = team;
-            
+
             //TicketType t1 = new TicketType();
             //t1.Name = "Database problems";
             //TicketType t2 = new TicketType();

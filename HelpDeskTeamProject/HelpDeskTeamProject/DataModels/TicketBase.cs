@@ -13,6 +13,6 @@ namespace HelpDeskTeamProject.DataModels
 
         public int? BaseTicketId { get; set; }
 
-        public int? BaseTeamId { get; set; }
+        public int BaseTeamId { get; set; }
     }
 }

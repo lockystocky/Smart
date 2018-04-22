@@ -20,30 +20,6 @@ namespace HelpDeskTeamProject.Controllers
     {
         private AppContext db = new AppContext();
 
-        public ActionResult Tickets()
-        {
-            return View();
-        }
-
-        public ActionResult ShowTicket(int? id)
-        {
-            id = 1;
-            if (id != null)
-            {
-                Ticket ticket = db.Tickets.Include(y => y.User).Include(z => z.Team).SingleOrDefault(x => x.Id == id);
-                List<TicketType> ticketTypes = db.TicketTypes.ToList();
-                ViewBag.TicketTypes = ticketTypes;
-                return View(ticket);
-            }
-            return View();
-        }
-
-        [HttpPost]
-        public async Task<JsonResult> AddTicket(TicketBase newTicket)
-        {
-            return Json(true);
-        }
-
         //view list of all existing teams
         public ActionResult AllTeams()
         {

@@ -198,10 +198,12 @@
     <Compile Include="Controllers\ManageController.cs" />
     <Compile Include="Controllers\RoleController.cs" />
     <Compile Include="Controllers\TeamsController.cs" />
+    <Compile Include="Controllers\TicketController.cs" />
     <Compile Include="DataModels\AdminLog.cs" />
     <Compile Include="DataModels\ApplicationPermissions.cs" />
     <Compile Include="DataModels\ApplicationRole.cs" />
     <Compile Include="DataModels\Comment.cs" />
+    <Compile Include="DataModels\CommentDTO.cs" />
     <Compile Include="DataModels\InvitationEmail.cs" />
     <Compile Include="DataModels\Log.cs" />
     <Compile Include="DataModels\Role.cs" />
@@ -210,6 +212,7 @@
     <Compile Include="DataModels\TeamRole.cs" />
     <Compile Include="DataModels\Ticket.cs" />
     <Compile Include="DataModels\TicketBase.cs" />
+    <Compile Include="DataModels\TicketDTO.cs" />
     <Compile Include="DataModels\TicketLog.cs" />
     <Compile Include="DataModels\TicketType.cs" />
     <Compile Include="DataModels\User.cs" />
@@ -244,6 +247,10 @@
     <Compile Include="Migrations\201804211908552_userIdToUserClassChanges.cs" />
     <Compile Include="Migrations\201804211908552_userIdToUserClassChanges.Designer.cs">
       <DependentUpon>201804211908552_userIdToUserClassChanges.cs</DependentUpon>
+    </Compile>
+    <Compile Include="Migrations\201804221008348_teamIdInTicket.cs" />
+    <Compile Include="Migrations\201804221008348_teamIdInTicket.Designer.cs">
+      <DependentUpon>201804221008348_teamIdInTicket.cs</DependentUpon>
     </Compile>
     <Compile Include="Migrations\Configuration.cs" />
     <Compile Include="Models\AccountViewModels.cs" />
@@ -327,8 +334,8 @@
     <Content Include="Views\Role\List.cshtml" />
     <Content Include="Views\Role\EditAppRole.cshtml" />
     <Content Include="Views\Role\EditTeamRole.cshtml" />
-    <Content Include="Views\Teams\Tickets.cshtml" />
-    <Content Include="Views\Teams\ShowTicket.cshtml" />
+    <Content Include="Views\Ticket\Tickets.cshtml" />
+    <Content Include="Views\Ticket\ShowTicket.cshtml" />
   </ItemGroup>
   <ItemGroup>
     <Folder Include="App_Data\" />
@@ -367,6 +374,9 @@
     </EmbeddedResource>
     <EmbeddedResource Include="Migrations\201804211908552_userIdToUserClassChanges.resx">
       <DependentUpon>201804211908552_userIdToUserClassChanges.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Migrations\201804221008348_teamIdInTicket.resx">
+      <DependentUpon>201804221008348_teamIdInTicket.cs</DependentUpon>
     </EmbeddedResource>
   </ItemGroup>
   <PropertyGroup>
