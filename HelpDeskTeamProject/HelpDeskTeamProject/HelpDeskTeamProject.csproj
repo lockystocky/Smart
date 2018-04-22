@@ -194,6 +194,7 @@
     <Compile Include="App_Start\Startup.Auth.cs" />
     <Compile Include="Context\AppContext.cs" />
     <Compile Include="Controllers\AccountController.cs" />
+    <Compile Include="Controllers\AdminController.cs" />
     <Compile Include="Controllers\HomeController.cs" />
     <Compile Include="Controllers\ManageController.cs" />
     <Compile Include="Controllers\RoleController.cs" />
@@ -220,49 +221,29 @@
     <Compile Include="Global.asax.cs">
       <DependentUpon>Global.asax</DependentUpon>
     </Compile>
-    <Compile Include="Migrations\201804191642550_initialMigration.cs" />
-    <Compile Include="Migrations\201804191642550_initialMigration.Designer.cs">
-      <DependentUpon>201804191642550_initialMigration.cs</DependentUpon>
+    <Compile Include="Migrations\201804221239527_InitialCreate.cs" />
+    <Compile Include="Migrations\201804221239527_InitialCreate.Designer.cs">
+      <DependentUpon>201804221239527_InitialCreate.cs</DependentUpon>
     </Compile>
-    <Compile Include="Migrations\201804192023523_contextChanged.cs" />
-    <Compile Include="Migrations\201804192023523_contextChanged.Designer.cs">
-      <DependentUpon>201804192023523_contextChanged.cs</DependentUpon>
-    </Compile>
-    <Compile Include="Migrations\201804192026194_teamRoleUpdate.cs" />
-    <Compile Include="Migrations\201804192026194_teamRoleUpdate.Designer.cs">
-      <DependentUpon>201804192026194_teamRoleUpdate.cs</DependentUpon>
-    </Compile>
-    <Compile Include="Migrations\201804192055597_userAppIdAdded.cs" />
-    <Compile Include="Migrations\201804192055597_userAppIdAdded.Designer.cs">
-      <DependentUpon>201804192055597_userAppIdAdded.cs</DependentUpon>
-    </Compile>
-    <Compile Include="Migrations\201804200809356_invEmailClass.cs" />
-    <Compile Include="Migrations\201804200809356_invEmailClass.Designer.cs">
-      <DependentUpon>201804200809356_invEmailClass.cs</DependentUpon>
-    </Compile>
-    <Compile Include="Migrations\201804202114448_userAndPermissionUpdate.cs" />
-    <Compile Include="Migrations\201804202114448_userAndPermissionUpdate.Designer.cs">
-      <DependentUpon>201804202114448_userAndPermissionUpdate.cs</DependentUpon>
-    </Compile>
-    <Compile Include="Migrations\201804211908552_userIdToUserClassChanges.cs" />
-    <Compile Include="Migrations\201804211908552_userIdToUserClassChanges.Designer.cs">
-      <DependentUpon>201804211908552_userIdToUserClassChanges.cs</DependentUpon>
-    </Compile>
-    <Compile Include="Migrations\201804221008348_teamIdInTicket.cs" />
-    <Compile Include="Migrations\201804221008348_teamIdInTicket.Designer.cs">
-      <DependentUpon>201804221008348_teamIdInTicket.cs</DependentUpon>
+    <Compile Include="Migrations\201804221308496_m.cs" />
+    <Compile Include="Migrations\201804221308496_m.Designer.cs">
+      <DependentUpon>201804221308496_m.cs</DependentUpon>
     </Compile>
     <Compile Include="Migrations\Configuration.cs" />
     <Compile Include="Models\AccountViewModels.cs" />
     <Compile Include="Models\IdentityModels.cs" />
     <Compile Include="Models\InviteUserToTeamViewModel.cs" />
+    <Compile Include="Models\ManageTeamViewModel.cs" />
     <Compile Include="Models\ManageViewModels.cs" />
+    <Compile Include="Models\TeamWithLastChangesViewModel.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="Startup.cs" />
   </ItemGroup>
   <ItemGroup>
     <Content Include="Content\bootstrap.css" />
     <Content Include="Content\bootstrap.min.css" />
+    <Content Include="Content\Icons\group_icon.png" />
+    <Content Include="Content\img_avatar.png" />
     <Content Include="Content\comments.png" />
     <Content Include="Content\MaterialStyles.css" />
     <Content Include="Content\ticket.png" />
@@ -330,11 +311,19 @@
     <Content Include="Views\Teams\Details.cshtml" />
     <Content Include="Views\Teams\Edit.cshtml" />
     <Content Include="Views\Teams\Index.cshtml" />
+    <Content Include="Views\Teams\AllTeams.cshtml" />
     <Content Include="Views\Teams\InviteUser.cshtml" />
     <Content Include="Views\Teams\TeamInfo.cshtml" />
+    <Content Include="Views\Teams\Teams.cshtml" />
+    <Content Include="Views\Teams\ManageTeam.cshtml" />
     <Content Include="Views\Role\List.cshtml" />
     <Content Include="Views\Role\EditAppRole.cshtml" />
     <Content Include="Views\Role\EditTeamRole.cshtml" />
+    <Content Include="Views\Teams\Tickets.cshtml" />
+    <Content Include="Views\Admin\Index.cshtml" />
+    <Content Include="Views\Admin\GetTeamsAndRoles.cshtml" />
+    <Content Include="Views\Admin\Edit.cshtml" />
+    <Content Include="Views\Admin\Error.cshtml" />
     <Content Include="Views\Ticket\Tickets.cshtml" />
     <Content Include="Views\Ticket\ShowTicket.cshtml" />
   </ItemGroup>
@@ -355,29 +344,11 @@
     <Content Include="Scripts\jquery-1.10.2.min.map" />
   </ItemGroup>
   <ItemGroup>
-    <EmbeddedResource Include="Migrations\201804191642550_initialMigration.resx">
-      <DependentUpon>201804191642550_initialMigration.cs</DependentUpon>
+    <EmbeddedResource Include="Migrations\201804221239527_InitialCreate.resx">
+      <DependentUpon>201804221239527_InitialCreate.cs</DependentUpon>
     </EmbeddedResource>
-    <EmbeddedResource Include="Migrations\201804192023523_contextChanged.resx">
-      <DependentUpon>201804192023523_contextChanged.cs</DependentUpon>
-    </EmbeddedResource>
-    <EmbeddedResource Include="Migrations\201804192026194_teamRoleUpdate.resx">
-      <DependentUpon>201804192026194_teamRoleUpdate.cs</DependentUpon>
-    </EmbeddedResource>
-    <EmbeddedResource Include="Migrations\201804192055597_userAppIdAdded.resx">
-      <DependentUpon>201804192055597_userAppIdAdded.cs</DependentUpon>
-    </EmbeddedResource>
-    <EmbeddedResource Include="Migrations\201804200809356_invEmailClass.resx">
-      <DependentUpon>201804200809356_invEmailClass.cs</DependentUpon>
-    </EmbeddedResource>
-    <EmbeddedResource Include="Migrations\201804202114448_userAndPermissionUpdate.resx">
-      <DependentUpon>201804202114448_userAndPermissionUpdate.cs</DependentUpon>
-    </EmbeddedResource>
-    <EmbeddedResource Include="Migrations\201804211908552_userIdToUserClassChanges.resx">
-      <DependentUpon>201804211908552_userIdToUserClassChanges.cs</DependentUpon>
-    </EmbeddedResource>
-    <EmbeddedResource Include="Migrations\201804221008348_teamIdInTicket.resx">
-      <DependentUpon>201804221008348_teamIdInTicket.cs</DependentUpon>
+    <EmbeddedResource Include="Migrations\201804221308496_m.resx">
+      <DependentUpon>201804221308496_m.cs</DependentUpon>
     </EmbeddedResource>
   </ItemGroup>
   <PropertyGroup>
@@ -398,7 +369,7 @@
           <AutoAssignPort>True</AutoAssignPort>
           <DevelopmentServerPort>50102</DevelopmentServerPort>
           <DevelopmentServerVPath>/</DevelopmentServerVPath>
-          <IISUrl>http://localhost:50102/</IISUrl>
+          <IISUrl>http://localhost:50244/</IISUrl>
           <NTLMAuthentication>False</NTLMAuthentication>
           <UseCustomServer>False</UseCustomServer>
           <CustomServerUrl>

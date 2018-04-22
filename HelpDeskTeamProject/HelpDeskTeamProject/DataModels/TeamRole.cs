@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.ComponentModel.DataAnnotations;
 using System.Linq;
 using System.Web;
 
@@ -9,6 +10,7 @@ namespace HelpDeskTeamProject.DataModels
     {
         public virtual TeamPermissions Permissions { get; set; }
 
+        
         public TeamRole()
         {
 

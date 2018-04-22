@@ -1,0 +1,36 @@
+﻿@model HelpDeskTeamProject.Models.ManageTeamViewModel
+
+@{
+    ViewBag.Title = "ManageTeam";
+}
+
+<div class="row">
+    <div class="col-md-3">
+
+    </div>
+    <div class="col-md-6">
+        <h2>ManageTeam</h2>
+        <table id="teamRolesList" class="display">
+            <thead>
+                <tr>
+                    <th>User</th>
+                    <th>Role</th>
+                </tr>
+            </thead>
+            <tbody>
+               
+            </tbody>
+        </table>
+    </div>
+    <div class="col-md-3">
+
+    </div>
+
+</div>
+
+
+@foreach (var user in Model.TeamUsers)
+{
+
+}
+

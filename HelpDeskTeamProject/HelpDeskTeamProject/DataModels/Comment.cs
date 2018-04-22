@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.ComponentModel.DataAnnotations;
 using System.Linq;
 using System.Web;
 
@@ -13,6 +14,7 @@ namespace HelpDeskTeamProject.DataModels
 
         public DateTime TimeCreated { get; set; }
 
+        [StringLength(400)]
         public string Text { get; set; }
 
         public Comment()
