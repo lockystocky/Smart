@@ -18,6 +18,7 @@ namespace HelpDeskTeamProject.Controllers
     public class TeamsController : Controller
     {
         private AppContext db = new AppContext();
+        private const string TEAM_OWNER_ROLE_NAME = "Team Owner";
 
         //view list of all existing teams
         public ActionResult AllTeams()
@@ -59,15 +60,10 @@ namespace HelpDeskTeamProject.Controllers
         //used in view to create teams menu for curent user 
         [Authorize]
         public ActionResult GetCurrentUserTeamsList()
-        {
-            var context = new ApplicationDbContext();
-            var currentUserId = User.Identity.GetUserId();
-
+        {            
             db.Configuration.ProxyCreationEnabled = false;
 
-            var currentUser = db.Users
-                .Where(user => user.AppId == currentUserId)
-                .FirstOrDefault();
+            var currentUser = GetCurrentUser();
 
             var currentUserTeamsList = db.Teams
                 .Include(t => t.Tickets)
@@ -77,29 +73,35 @@ namespace HelpDeskTeamProject.Controllers
             List<TeamWithLastChangesViewModel> data = new List<TeamWithLastChangesViewModel>();
             foreach (var team in currentUserTeamsList)
             {
-                Ticket lastTicketInTeam = team.Tickets
-                    .OrderByDescending(ticket => ticket.TimeCreated)
-                    .FirstOrDefault();
-
-                TeamWithLastChangesViewModel teamViewModel = new TeamWithLastChangesViewModel();
-                if (lastTicketInTeam != null)
-                {
-                    teamViewModel.Team = team;
-                    teamViewModel.LastTicketText = lastTicketInTeam.Description;
-                    teamViewModel.LastTicketTime = MakeDateTimeMoreUserFriendly(lastTicketInTeam.TimeCreated, DateTime.Now);
-                    teamViewModel.LastTicketAuthor = lastTicketInTeam.User.Name + " " + lastTicketInTeam.User.Surname;
-                }
-                else
-                {
-                    teamViewModel.Team = team;
-                }
-                   
+                var teamViewModel = CreateTeamWithLastChangesViewModel(team);
                 data.Add(teamViewModel);
             }
 
             return Json(data, JsonRequestBehavior.AllowGet);
         }
 
+
+        private TeamWithLastChangesViewModel CreateTeamWithLastChangesViewModel(Team team)
+        {
+            Ticket lastTicketInTeam = team.Tickets
+                    .OrderByDescending(ticket => ticket.TimeCreated)
+                    .FirstOrDefault();
+
+            TeamWithLastChangesViewModel teamViewModel = new TeamWithLastChangesViewModel();
+            if (lastTicketInTeam != null)
+            {
+                teamViewModel.Team = team;
+                teamViewModel.LastTicketText = lastTicketInTeam.Description;
+                teamViewModel.LastTicketTime = MakeDateTimeMoreUserFriendly(lastTicketInTeam.TimeCreated, DateTime.Now);
+                teamViewModel.LastTicketAuthor = lastTicketInTeam.User.Name + " " + lastTicketInTeam.User.Surname;
+            }
+            else
+            {
+                teamViewModel.Team = team;
+            }
+
+            return teamViewModel;
+        }
 
         private string MakeDateTimeMoreUserFriendly(DateTime date, DateTime nowDate)
         {
@@ -134,13 +136,8 @@ namespace HelpDeskTeamProject.Controllers
         public ActionResult Create([Bind(Include = "Name")] Team team)
         {
             if (ModelState.IsValid)
-            {
-                var context = new ApplicationDbContext();
-                var currentUserId = User.Identity.GetUserId();
-
-                var helpDeskUser = db.Users
-                    .Where(user => user.AppId == currentUserId)
-                    .FirstOrDefault();
+            {               
+                var helpDeskUser = GetCurrentUser();
 
                 Team createdTeam = CreateTeam(team.Name, helpDeskUser.Id);
                 createdTeam.Users.Add(helpDeskUser);
@@ -172,7 +169,7 @@ namespace HelpDeskTeamProject.Controllers
             };
 
             var ownerRole = db.TeamRoles
-               .Where(tr => tr.Name == "Team Owner")
+               .Where(tr => tr.Name == TEAM_OWNER_ROLE_NAME)
                .FirstOrDefault();
 
 
@@ -197,7 +194,7 @@ namespace HelpDeskTeamProject.Controllers
         {
             return new TeamRole()
             {
-                Name = "Team Owner",
+                Name = TEAM_OWNER_ROLE_NAME,
                 Permissions = new TeamPermissions()
                 {
                     CanInviteToTeam = true,
@@ -271,8 +268,12 @@ namespace HelpDeskTeamProject.Controllers
                     .Where(permission => permission.User == teamMember && permission.TeamId == team.Id)
                     .FirstOrDefault().TeamRole;
                
-                var availableTeamRoles = db.TeamRoles.ToList();
-                var selectListForAvailableTeamRoles = new SelectList(availableTeamRoles, "Id", "Name", teamRole.Id); 
+                var availableTeamRoles = db.TeamRoles
+                    .Where(role => role.Name != TEAM_OWNER_ROLE_NAME).
+                    ToList();
+
+                var selectListForAvailableTeamRoles 
+                    = new SelectList(availableTeamRoles, "Id", "Name", teamRole.Id); 
 
                 var memberInfo = new TeamMemberInfo()
                 {
@@ -328,10 +329,7 @@ namespace HelpDeskTeamProject.Controllers
             var userPermission = team.UserPermissions
                 .Where(up => up.User == user && up.TeamId == team.Id)
                 .FirstOrDefault();
-
-            if (team == null || user == null)
-                return HttpNotFound();
-
+                       
             team.UserPermissions.Remove(userPermission);
             user.Teams.Remove(team);
             team.Users.Remove(user);
@@ -354,13 +352,8 @@ namespace HelpDeskTeamProject.Controllers
             var team = db.Teams.Find(teamId);
             if (team == null)
                 return "";
-
-            var context = new ApplicationDbContext();
-            var currentUserId = User.Identity.GetUserId();
-
-            var currentUser = db.Users
-                .Where(user => user.AppId == currentUserId)
-                .FirstOrDefault();
+           
+            var currentUser = GetCurrentUser();
 
             if(team.OwnerId != currentUser.Id)
                 return "";
