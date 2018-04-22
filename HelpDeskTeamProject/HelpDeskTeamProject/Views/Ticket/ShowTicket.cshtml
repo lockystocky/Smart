@@ -10,161 +10,7 @@
         TicketState.Done.ToString(), TicketState.Rejected.ToString() };
 }
 
-<style>
-    .card {
-        /* Add shadows to create the "card" effect */
-        box-shadow: 2px 2px 4px 2px rgba(0,0,0,0.2);
-            transition: 0.3s;
-        width: 100%;
-        margin-top: 20px;
-        margin-bottom: 20px;
-    }
-
-        /* On mouse-over, add a deeper shadow */
-    .card:hover {
-        box-shadow: 2px 4px 4px 2px rgba(0,0,0,0.2);
-    }
-
-    .headerMargin {
-        padding-top: 2px;
-        padding-left: 15px;
-        display: inline-block;
-    }
-
-    .dateTime {
-        padding-top: 2px;
-        padding-left: 5px;
-        display: inline-block;
-        color: grey;
-    }
-
-    .cardText {
-        padding-left: 15px;
-        padding-right: 15px;
-    }
-
-    .replyRectangle {
-        vertical-align: central;
-        width: 100%;
-        height: 30px;
-        background-color: #f2f2f2;
-    }
-
-    .divideLine {
-        height: 1px;
-        width: 100%;
-        background-color: #dddddd;
-    }
-
-    .replyTextMargin {
-        margin-left: 15px;
-        padding-top: 5px;
-        display: inline-block;
-    }
-
-    .replyTextMargin:hover {
-        color: deepskyblue;
-        cursor: pointer;
-    }
-
-    .statusRect {
-        width: 100%;
-        height: 5px;
-    }
-
-
-
-
-
-    .pageDivideLeft{
-        overflow: auto;
-        width: 50%;
-        float: left;
-        padding-right: 18px;
-        padding-left: 2px;
-    }
-
-    .pageDivideRight {
-        overflow: auto;
-        width: 50%;
-        float: right;
-        padding-right: 18px;
-        padding-left: 2px;
-    }
-
-    .commentText {
-        padding-left: 15px;
-        padding-right: 15px;
-        padding-bottom: 5px;
-    }
-
-    .deleteButton {
-        padding-top: 2px;
-        padding-left: 5px;
-        padding-right: 15px;
-        display: inline-block;
-        float: right;
-    }
-
-    .deleteButton:hover {
-        color: deepskyblue;
-        cursor: pointer;
-    }
-
-    .themeText{
-        color: grey;
-        display: inline-block;
-        padding-bottom: 10px;
-        padding-right: 5px;
-    }
-
-    .themeText:hover{
-        text-decoration: underline;
-        cursor: pointer;
-    }
-
-    .systemMessageText {
-        padding-left: 15px;
-        padding-right: 15px;
-        padding-top: 10px;
-        padding-bottom: 10px;
-        text-align: center;
-    }
-
-    .inputTicketDiv {
-        padding-left: 15px;
-        padding-right: 15px;
-        padding-bottom: 10px;
-        width: 100%;
-    }
-
-    .inputTicketText {
-        min-width: 100%;
-        height: 110px;
-        transition: 0.3s;
-    }
-
-    .selectType{
-        width: 75%;
-        display: inline-block;
-        height: 20px;
-    }
-
-    .addButtonDiv {
-        width: 20%;
-        display: inline-block;
-        background-color: #dddddd;
-        height: 20px;
-        text-align: center;
-        box-shadow: 1px 1px 1px 1px rgba(0,0,0,0.2);
-    }
-
-    .addButtonDiv:hover{
-        background-color: dodgerblue;
-        color: white;
-        cursor: pointer;
-    }
-</style>
+<link rel="stylesheet" href="~/Content/MaterialStyles.css" type="text/css">
 
 <script>
     function addTicket() {
@@ -227,7 +73,7 @@
 
         var userNameDisp = document.createElement("h5");
         userNameDisp.className = "headerMargin";
-        userNameDisp.innerHTML = "<b>" + ticket.User.Name + "</b> <b>" + ticket.User.Surname + "</b>"
+        userNameDisp.innerHTML = "<b>" + ticket.UserName + "</b> <b>" + ticket.UserSurname + "</b>"
         cardDiv.appendChild(userNameDisp);
 
         var timeDisp = document.createElement("h5");
@@ -324,7 +170,7 @@
 
         var userNameDisp = document.createElement("h5");
         userNameDisp.className = "headerMargin";
-        userNameDisp.innerHTML = "<b>" + comment.User.Name + "</b> <b>" + comment.User.Surname + "</b>"
+        userNameDisp.innerHTML = "<b>" + comment.UserName + "</b> <b>" + comment.UserSurname + "</b>"
         cardDiv.appendChild(userNameDisp);
 
         var timeDisp = document.createElement("h5");

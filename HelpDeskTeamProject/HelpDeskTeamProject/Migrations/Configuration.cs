@@ -5,6 +5,7 @@ namespace HelpDeskTeamProject.Migrations
     using System.Data.Entity;
     using System.Data.Entity.Migrations;
     using System.Linq;
+    using HelpDeskTeamProject.DataModels;
 
     internal sealed class Configuration : DbMigrationsConfiguration<HelpDeskTeamProject.Context.AppContext>
     {
@@ -16,6 +17,7 @@ namespace HelpDeskTeamProject.Migrations
 
         protected override void Seed(HelpDeskTeamProject.Context.AppContext context)
         {
+
             //  This method will be called after migrating to the latest version.
 
             //  You can use the DbSet<T>.AddOrUpdate() helper extension method 

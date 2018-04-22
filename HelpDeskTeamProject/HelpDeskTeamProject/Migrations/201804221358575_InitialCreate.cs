@@ -96,35 +96,55 @@ namespace HelpDeskTeamProject.Migrations
                 c => new
                     {
                         Id = c.Int(nullable: false, identity: true),
-                        UserId = c.Int(nullable: false),
+                        TeamId = c.Int(nullable: false),
                         Description = c.String(maxLength: 400),
                         State = c.Int(nullable: false),
                         TimeCreated = c.DateTime(nullable: false),
                         ParentTicket_Id = c.Int(),
                         Type_Id = c.Int(),
-                        Team_Id = c.Int(),
+                        User_Id = c.Int(),
                     })
                 .PrimaryKey(t => t.Id)
                 .ForeignKey("dbo.Tickets", t => t.ParentTicket_Id)
                 .ForeignKey("dbo.TicketTypes", t => t.Type_Id)
-                .ForeignKey("dbo.Teams", t => t.Team_Id)
+                .ForeignKey("dbo.Users", t => t.User_Id)
+                .ForeignKey("dbo.Teams", t => t.TeamId, cascadeDelete: true)
+                .Index(t => t.TeamId)
                 .Index(t => t.ParentTicket_Id)
                 .Index(t => t.Type_Id)
-                .Index(t => t.Team_Id);
+                .Index(t => t.User_Id);
             
             CreateTable(
                 "dbo.Comments",
                 c => new
                     {
                         Id = c.Int(nullable: false, identity: true),
-                        UserId = c.Int(nullable: false),
                         TimeCreated = c.DateTime(nullable: false),
                         Text = c.String(maxLength: 400),
+                        User_Id = c.Int(),
                         Ticket_Id = c.Int(),
                     })
                 .PrimaryKey(t => t.Id)
+                .ForeignKey("dbo.Users", t => t.User_Id)
                 .ForeignKey("dbo.Tickets", t => t.Ticket_Id)
+                .Index(t => t.User_Id)
                 .Index(t => t.Ticket_Id);
+            
+            CreateTable(
+                "dbo.Users",
+                c => new
+                    {
+                        Id = c.Int(nullable: false, identity: true),
+                        Name = c.String(),
+                        Surname = c.String(),
+                        Email = c.String(),
+                        AppId = c.String(),
+                        IsBanned = c.Boolean(nullable: false),
+                        AppRole_Id = c.Int(),
+                    })
+                .PrimaryKey(t => t.Id)
+                .ForeignKey("dbo.ApplicationRoles", t => t.AppRole_Id)
+                .Index(t => t.AppRole_Id);
             
             CreateTable(
                 "dbo.TicketLogs",
@@ -151,22 +171,6 @@ namespace HelpDeskTeamProject.Migrations
                 .PrimaryKey(t => t.Id);
             
             CreateTable(
-                "dbo.Users",
-                c => new
-                    {
-                        Id = c.Int(nullable: false, identity: true),
-                        Name = c.String(),
-                        Surname = c.String(),
-                        Email = c.String(),
-                        AppId = c.String(),
-                        IsBanned = c.Boolean(nullable: false),
-                        AppRole_Id = c.Int(),
-                    })
-                .PrimaryKey(t => t.Id)
-                .ForeignKey("dbo.ApplicationRoles", t => t.AppRole_Id)
-                .Index(t => t.AppRole_Id);
-            
-            CreateTable(
                 "dbo.UserTeams",
                 c => new
                     {
@@ -183,32 +187,36 @@ namespace HelpDeskTeamProject.Migrations
         
         public override void Down()
         {
-            DropForeignKey("dbo.UserTeams", "Team_Id", "dbo.Teams");
-            DropForeignKey("dbo.UserTeams", "User_Id", "dbo.Users");
-            DropForeignKey("dbo.Users", "AppRole_Id", "dbo.ApplicationRoles");
             DropForeignKey("dbo.UserPermissions", "TeamId", "dbo.Teams");
-            DropForeignKey("dbo.Tickets", "Team_Id", "dbo.Teams");
+            DropForeignKey("dbo.Tickets", "TeamId", "dbo.Teams");
+            DropForeignKey("dbo.Tickets", "User_Id", "dbo.Users");
             DropForeignKey("dbo.Tickets", "Type_Id", "dbo.TicketTypes");
             DropForeignKey("dbo.TicketLogs", "TicketId", "dbo.Tickets");
             DropForeignKey("dbo.Comments", "Ticket_Id", "dbo.Tickets");
+            DropForeignKey("dbo.Comments", "User_Id", "dbo.Users");
+            DropForeignKey("dbo.UserTeams", "Team_Id", "dbo.Teams");
+            DropForeignKey("dbo.UserTeams", "User_Id", "dbo.Users");
+            DropForeignKey("dbo.Users", "AppRole_Id", "dbo.ApplicationRoles");
             DropForeignKey("dbo.Tickets", "ParentTicket_Id", "dbo.Tickets");
             DropForeignKey("dbo.InvitationEmails", "Team_Id", "dbo.Teams");
             DropForeignKey("dbo.UserPermissions", "TeamRole_Id", "dbo.TeamRoles");
             DropIndex("dbo.UserTeams", new[] { "Team_Id" });
             DropIndex("dbo.UserTeams", new[] { "User_Id" });
-            DropIndex("dbo.Users", new[] { "AppRole_Id" });
             DropIndex("dbo.TicketLogs", new[] { "TicketId" });
+            DropIndex("dbo.Users", new[] { "AppRole_Id" });
             DropIndex("dbo.Comments", new[] { "Ticket_Id" });
-            DropIndex("dbo.Tickets", new[] { "Team_Id" });
+            DropIndex("dbo.Comments", new[] { "User_Id" });
+            DropIndex("dbo.Tickets", new[] { "User_Id" });
             DropIndex("dbo.Tickets", new[] { "Type_Id" });
             DropIndex("dbo.Tickets", new[] { "ParentTicket_Id" });
+            DropIndex("dbo.Tickets", new[] { "TeamId" });
             DropIndex("dbo.InvitationEmails", new[] { "Team_Id" });
             DropIndex("dbo.UserPermissions", new[] { "TeamRole_Id" });
             DropIndex("dbo.UserPermissions", new[] { "TeamId" });
             DropTable("dbo.UserTeams");
-            DropTable("dbo.Users");
             DropTable("dbo.TicketTypes");
             DropTable("dbo.TicketLogs");
+            DropTable("dbo.Users");
             DropTable("dbo.Comments");
             DropTable("dbo.Tickets");
             DropTable("dbo.InvitationEmails");
