@@ -30,7 +30,7 @@
 
                 var userNameDisp = document.createElement("h5");
                 userNameDisp.className = "headerMargin";
-                userNameDisp.innerHTML = "<b>" + tickets[counter].User.Name + "</b> <b>" + tickets[counter].User.Surname + "</b>"
+                userNameDisp.innerHTML = "<b>" + tickets[counter].UserName + "</b> <b>" + tickets[counter].UserSurname + "</b>"
                 cardDiv.appendChild(userNameDisp);
 
                 var timeDisp = document.createElement("h5");
@@ -113,7 +113,7 @@
 
         var userNameDisp = document.createElement("h5");
         userNameDisp.className = "headerMargin";
-        userNameDisp.innerHTML = "<b>" + ticket.User.Name + "</b> <b>" + ticket.User.Surname + "</b>"
+        userNameDisp.innerHTML = "<b>" + ticket.UserName + "</b> <b>" + ticket.UserSurname + "</b>"
         cardDiv.appendChild(userNameDisp);
 
         var timeDisp = document.createElement("h5");

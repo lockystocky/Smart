@@ -11,7 +11,9 @@ namespace HelpDeskTeamProject.DataModels
 
         public int TeamId { get; set; }
 
-        public User User { get; set; }
+        public string UserName { get; set; }
+
+        public string UserSurname { get; set; }
 
         public TicketState State { get; set; }
 
@@ -34,7 +36,8 @@ namespace HelpDeskTeamProject.DataModels
         {
             Id = id;
             TeamId = teamId;
-            User = user;
+            UserName = user.Name;
+            UserSurname = user.Surname;
             Description = description;
             Type = type;
             TimeCreated = timeCreated;
@@ -47,7 +50,8 @@ namespace HelpDeskTeamProject.DataModels
         {
             Id = ticket.Id;
             TeamId = ticket.TeamId;
-            User = ticket.User;
+            UserName = ticket.User.Name;
+            UserSurname = ticket.User.Surname;
             Description = ticket.Description;
             Type = ticket.Type;
             TimeCreated = ticket.TimeCreated.ToString();

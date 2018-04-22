@@ -9,7 +9,9 @@ namespace HelpDeskTeamProject.DataModels
     {
         public int Id { get; set; }
 
-        public User User { get; set; }
+        public string UserName { get; set; }
+
+        public string UserSurname { get; set; }
 
         public string TimeCreated { get; set; }
 
@@ -23,7 +25,8 @@ namespace HelpDeskTeamProject.DataModels
         public CommentDTO(string text, User user, string time)
         {
             Text = text;
-            User = user;
+            UserName = user.Name;
+            UserSurname = user.Surname;
             TimeCreated = time;
         }
     }
