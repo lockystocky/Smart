@@ -244,6 +244,7 @@
     <Compile Include="Models\AccountViewModels.cs" />
     <Compile Include="Models\IdentityModels.cs" />
     <Compile Include="Models\InviteUserToTeamViewModel.cs" />
+    <Compile Include="Models\ManageTeamViewModel.cs" />
     <Compile Include="Models\ManageViewModels.cs" />
     <Compile Include="Models\TeamWithLastChangesViewModel.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
@@ -320,6 +321,7 @@
     <Content Include="Views\Teams\InviteUser.cshtml" />
     <Content Include="Views\Teams\TeamInfo.cshtml" />
     <Content Include="Views\Teams\Teams.cshtml" />
+    <Content Include="Views\Teams\ManageTeam.cshtml" />
   </ItemGroup>
   <ItemGroup>
     <Folder Include="App_Data\" />

@@ -80,6 +80,14 @@ namespace HelpDeskTeamProject.Controllers
                     .OrderByDescending(ticket => ticket.TimeCreated)
                     .FirstOrDefault();
 
+                if (lastTicketInTeam == null)
+                    lastTicketInTeam = new Ticket()
+                    {
+                        Description = "This is default last ticket text to test",
+                        TimeCreated = DateTime.Now
+                    };
+
+
                 TeamWithLastChangesViewModel teamViewModel = new TeamWithLastChangesViewModel()
                 {
                     Team = team,
@@ -159,8 +167,39 @@ namespace HelpDeskTeamProject.Controllers
             return View(team);
         }
 
+        //Team Administrator must be able to manage Team  members and their roles
 
+        public ActionResult ManageTeam(int? teamId)
+        {
+            var context = new ApplicationDbContext();
+            var currentUserId = User.Identity.GetUserId();
 
+            var currentUser = db.Users
+                .Where(user => user.AppId == currentUserId)
+                .FirstOrDefault();
+            
+
+            var team = db.Teams
+                .Where(t => t.Id == teamId)
+                .FirstOrDefault();
+
+            if (team == null)
+                return HttpNotFound();
+
+            //team.
+
+            if (currentUser.Id != team.OwnerId)
+                return HttpNotFound();
+
+            ManageTeamViewModel viewModel = new ManageTeamViewModel()
+            {
+                TeamId = team.Id,
+                TeamUsers = team.Users,
+                UserPermissions = team.UserPermissions
+            };
+
+            return View(viewModel);
+        }
 
         /*
 
