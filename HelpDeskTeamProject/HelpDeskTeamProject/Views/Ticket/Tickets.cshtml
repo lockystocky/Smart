@@ -43,8 +43,13 @@
 
 <script>
     var teamId;
+    var emptyTeamTickets = false;
 
     function displayNewTicket(tickets) {
+        if (emptyTeamTickets == true) {
+            clearTicketsDiv();
+            emptyTeamTickets = false;
+        }
         var statusNames = @Html.Raw(Json.Encode(ticketStateNames));
         var statusColorsJs = @Html.Raw(Json.Encode(statusColorsArray));
         var ticketsDisplay = document.getElementById("ticketsDiv");
@@ -118,6 +123,7 @@
             }
         }
         else {
+            emptyTeamTickets = true;
             var cardDiv = document.createElement("div");
             cardDiv.className = "card";
             ticketsDisplay.appendChild(cardDiv);
@@ -130,6 +136,10 @@
     }
 
     function displayOneTicket(ticket) {
+        if (emptyTeamTickets == true) {
+            clearTicketsDiv();
+            emptyTeamTickets = false;
+        }
         var statusNames = @Html.Raw(Json.Encode(ticketStateNames));
         var statusColorsJs = @Html.Raw(Json.Encode(statusColorsArray));
         var ticketsDisplay = document.getElementById("ticketsDiv");

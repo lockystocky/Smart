@@ -24,13 +24,16 @@ namespace HelpDeskTeamProject.Controllers
             {
                 Team curTeam = await db.Teams.Include(x => x.Tickets).SingleOrDefaultAsync(y => y.Id == teamId);
 
-                List<Ticket> curTickets = await db.Tickets.Include(x => x.ChildTickets).Include(y => y.Comments).Include(z => z.User).Where(s => s.ParentTicket == null).ToListAsync();
-                List<TicketDTO> curTicketsDto = new List<TicketDTO>();
-                foreach (Ticket value in curTickets)
+                if (curTeam != null)
                 {
-                    curTicketsDto.Add(new TicketDTO(value));
+                    List<Ticket> curTickets = await db.Tickets.Include(x => x.ChildTickets).Include(y => y.Comments).Include(z => z.User).Where(s => s.ParentTicket == null).ToListAsync();
+                    List<TicketDTO> curTicketsDto = new List<TicketDTO>();
+                    foreach (Ticket value in curTickets)
+                    {
+                        curTicketsDto.Add(new TicketDTO(value));
+                    }
+                    return Json(curTicketsDto, JsonRequestBehavior.AllowGet);
                 }
-                return Json(curTicketsDto, JsonRequestBehavior.AllowGet);
             }
             return Json(null);
         }
