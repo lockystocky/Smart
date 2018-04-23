@@ -221,6 +221,7 @@
     <Compile Include="Global.asax.cs">
       <DependentUpon>Global.asax</DependentUpon>
     </Compile>
+    <Compile Include="Loggers\AdminLogger.cs" />
     <Compile Include="Migrations\201804221358575_InitialCreate.cs" />
     <Compile Include="Migrations\201804221358575_InitialCreate.Designer.cs">
       <DependentUpon>201804221358575_InitialCreate.cs</DependentUpon>
@@ -321,6 +322,7 @@
     <Content Include="Views\Admin\Error.cshtml" />
     <Content Include="Views\Ticket\Tickets.cshtml" />
     <Content Include="Views\Ticket\ShowTicket.cshtml" />
+    <Content Include="Views\Admin\ShowAdminLogs.cshtml" />
   </ItemGroup>
   <ItemGroup>
     <Folder Include="App_Data\" />
@@ -357,7 +359,7 @@
     <VisualStudio>
       <FlavorProperties GUID="{349c5851-65df-11da-9384-00065b846f21}">
         <WebProjectProperties>
-          <UseIIS>True</UseIIS>
+          <UseIIS>False</UseIIS>
           <AutoAssignPort>True</AutoAssignPort>
           <DevelopmentServerPort>50102</DevelopmentServerPort>
           <DevelopmentServerVPath>/</DevelopmentServerVPath>

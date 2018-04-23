@@ -10,7 +10,8 @@ namespace HelpDeskTeamProject.DataModels
         Login,
         BlockUser,
         ChangeUserRole,
-        EditTicket
+        EditTicket,
+        ChangedUserData
     }
 
     public class AdminLog : Log

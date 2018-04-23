@@ -10,6 +10,8 @@ using System.Net;
 using System.Web;
 using System.Web.Mvc;
 using Microsoft.AspNet.Identity;
+using HelpDeskTeamProject.Loggers;
+using System.Reflection;
 
 namespace HelpDeskTeamProject.Controllers
 {
@@ -79,6 +81,11 @@ namespace HelpDeskTeamProject.Controllers
                 {
                     var userInDb = dbContext.Users.Include(u => u.AppRole)
                         .SingleOrDefault(u => u.Id == user.Id);
+                    bool wasChangedUserInDb = userInDb!= user;
+                    if (wasChangedUserInDb)
+                    {                        
+                        AdminLogger.PostLogToDb(dbContext, userInDb, AdminLogger.CheckAction(userInDb, user));
+                    }
                     if (userInDb != null)
                     {
                         dbContext.Entry(userInDb).CurrentValues.SetValues(user);
@@ -89,6 +96,11 @@ namespace HelpDeskTeamProject.Controllers
                 return RedirectToAction("Index");
             }
             return View(user);
+        }
+
+        public ActionResult ShowAdminLogs()
+        {
+            return View(dbContext.AdminLogs.ToList());
         }
 
         private List<User> GetUsers()
