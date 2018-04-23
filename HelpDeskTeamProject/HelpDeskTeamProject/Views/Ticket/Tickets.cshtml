@@ -58,6 +58,7 @@
             for (var counter = 0; counter < tickets.length; counter++) {
                 var cardDiv = document.createElement("div");
                 cardDiv.className = "card";
+                cardDiv.id = "ticket_" + tickets[counter].Id;
                 ticketsDisplay.appendChild(cardDiv);
 
                 var statusRectDiv = document.createElement("div");
@@ -84,6 +85,8 @@
                 var deleteButton = document.createElement("h5");
                 deleteButton.className = "deleteButton";
                 deleteButton.innerText = "Delete";
+                var tempId = tickets[counter].Id;
+                deleteButton.addEventListener("click", function () { deleteAndHide(tempId) });
                 cardDiv.appendChild(deleteButton);
 
                 var cardText = document.createElement("div");
@@ -146,6 +149,7 @@
 
         var cardDiv = document.createElement("div");
         cardDiv.className = "card";
+        cardDiv.id = "ticket_" + ticket.Id;
         ticketsDisplay.appendChild(cardDiv);
 
         var statusRectDiv = document.createElement("div");
@@ -172,6 +176,8 @@
         var deleteButton = document.createElement("h5");
         deleteButton.className = "deleteButton";
         deleteButton.innerText = "Delete";
+        var tempId = ticket.Id;
+        deleteButton.addEventListener("click", function () { deleteAndHide(tempId) });
         cardDiv.appendChild(deleteButton);
 
         var cardText = document.createElement("div");
@@ -263,6 +269,26 @@
             }
         }
         xhr.send(formData);
+    }
+
+    function deleteAndHide(delId) {
+        deleteTicket(delId);
+        var delTicket = document.getElementById("ticket_" + delId);
+        delTicket.style.display = "none";
+    }
+
+    function deleteTicket(id) {
+        var uploaderUrl = "/Ticket/DeleteTicket?id=" + id;
+        var xhr = new XMLHttpRequest();
+        xhr.open('GET', uploaderUrl, true);
+        xhr.onloadend = function () {
+            console.log(xhr.responseText);
+            var parsedResp = JSON.parse(xhr.responseText);
+            if (parsedResp != null) {
+                console.log("Ticket deletion result - " + parsedResp);
+            }
+        }
+        xhr.send(null);
     }
 
     function showInputTicket() {

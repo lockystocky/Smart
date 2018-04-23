@@ -22,8 +22,9 @@ namespace HelpDeskTeamProject.DataModels
 
         }
 
-        public CommentDTO(string text, User user, string time)
+        public CommentDTO(int id, string text, User user, string time)
         {
+            Id = id;
             Text = text;
             UserName = user.Name;
             UserSurname = user.Surname;

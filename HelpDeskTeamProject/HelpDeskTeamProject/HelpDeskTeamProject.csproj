@@ -321,6 +321,8 @@
     <Content Include="Views\Admin\Error.cshtml" />
     <Content Include="Views\Ticket\Tickets.cshtml" />
     <Content Include="Views\Ticket\ShowTicket.cshtml" />
+    <Content Include="Views\Ticket\NewType.cshtml" />
+    <Content Include="Views\Ticket\TypeList.cshtml" />
   </ItemGroup>
   <ItemGroup>
     <Folder Include="App_Data\" />
