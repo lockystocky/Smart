@@ -218,6 +218,7 @@
     <Compile Include="DataModels\TicketType.cs" />
     <Compile Include="DataModels\User.cs" />
     <Compile Include="DataModels\UserPermission.cs" />
+    <Compile Include="Repositories\IRepository.cs" />
     <Compile Include="Global.asax.cs">
       <DependentUpon>Global.asax</DependentUpon>
     </Compile>
