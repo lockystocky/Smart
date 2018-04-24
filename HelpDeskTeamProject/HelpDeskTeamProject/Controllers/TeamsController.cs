@@ -327,7 +327,7 @@ namespace HelpDeskTeamProject.Controllers
             return new HttpStatusCodeResult(HttpStatusCode.OK);
         }
 
-        public string GetTeamManagementLink(int _teamId)
+        public string GetTeamManagementLink(int? _teamId)
         {
             var team = db.Teams.Find(_teamId);
             if (team == null)

@@ -14,9 +14,11 @@
 
 <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.3.1/jquery.min.js"></script>
 
-
+<br/>
+<br />
 <div class="row">
     <div class="col-md-3">
+        <br />
         <div class="list-group" id="teamsmenu">
 
         </div>
@@ -365,7 +367,6 @@
                  //here must be call of Andrew function to show tickets of team
                 showByTeam(team_id);
                 getManageTeamLink(team_id);
-               
 
             });
         });
@@ -379,7 +380,7 @@
     };
 
     function getManageTeamLink(teamId) {        
-        $.get("/teams/GetTeamManagementLink?teamId=" + teamId, function (data) {
+        $.get("/teams/GetTeamManagementLink?_teamId=" + teamId, function (data) {
             if (data) {
                 $('#managelink').text('Manage team');
                 $('#managelink').attr('href', data);
