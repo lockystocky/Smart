@@ -14,7 +14,7 @@
 <h2>Tickets</h2>
 
 <div id="baseDiv">
-    <div id="newTicketInput" style="visibility: hidden;">
+    <div id="newTicketInput" style="display: none;">
         <div class="card">
             <h5 class="headerMargin"><b>Add New Ticket</b></h5>
             <div class="inputTicketDiv">
@@ -44,6 +44,8 @@
 <script>
     var teamId;
     var emptyTeamTickets = false;
+    //var appPermissions = null;
+    var teamPermissions = null;
 
     function displayNewTicket(tickets) {
         if (emptyTeamTickets == true) {
@@ -107,12 +109,14 @@
         statusDisp.innerHTML = "<b>" + statusNames[ticket.State] + "</b>"
         cardDiv.appendChild(statusDisp);
 
-        var deleteButton = document.createElement("h5");
-        deleteButton.className = "deleteButton";
-        deleteButton.innerText = "Delete";
-        var tempId = ticket.Id;
-        deleteButton.addEventListener("click", function () { deleteAndHide(tempId) });
-        cardDiv.appendChild(deleteButton);
+        if (ticket.CanDelete == true) {
+            var deleteButton = document.createElement("h5");
+            deleteButton.className = "deleteButton";
+            deleteButton.innerText = "Delete";
+            var tempId = ticket.Id;
+            deleteButton.addEventListener("click", function () { deleteAndHide(tempId) });
+            cardDiv.appendChild(deleteButton);
+        }
 
         var cardText = document.createElement("div");
         cardText.className = "cardText";
@@ -136,11 +140,13 @@
         showTicketText.innerText = "Show";
         showTicketText.addEventListener("click", function () { showButtonClick(tempId) });
         replyRect.appendChild(showTicketText);
-        var editTicketText = document.createElement("div");
-        editTicketText.className = "replyTextMargin";
-        editTicketText.innerText = "Edit";
-        editTicketText.addEventListener("click", function () { editButtonClick(tempId) });
-        replyRect.appendChild(editTicketText);
+        if (ticket.CanEdit == true) {
+            var editTicketText = document.createElement("div");
+            editTicketText.className = "replyTextMargin";
+            editTicketText.innerText = "Edit";
+            editTicketText.addEventListener("click", function () { editButtonClick(tempId) });
+            replyRect.appendChild(editTicketText);
+        }
         var commentsTicketDisp = document.createElement("div");
         commentsTicketDisp.className = "replyTextMargin";
         commentsTicketDisp.innerHTML = "<img src=\"/Content/comments.png\" style=\"padding-bottom:1px;\" /><b> " + ticket.CommentsCount +"</b>"
@@ -239,7 +245,7 @@
 
     function showInputTicket() {
         var ticketInput = document.getElementById("newTicketInput");
-        ticketInput.style.visibility = "visible";
+        ticketInput.style.display = "";
     }
 
     function clearTicketsDiv() {
@@ -247,11 +253,44 @@
         ticketsDiv.innerHTML = "";
     }
 
+    //function getAppPermissions() {
+    //    if (appPermissions == null) {
+    //        var uploaderUrl = "/Role/GetUserAppPermissions";
+    //        var xhr = new XMLHttpRequest();
+    //        xhr.open('GET', uploaderUrl, true);
+    //        xhr.onloadend = function () {
+    //            var parsedResp = JSON.parse(xhr.responseText);
+    //            if (parsedResp != null) {
+    //                appPermissions = parsedResp;
+    //            }
+    //        }
+    //        xhr.send(null);
+    //    }
+    //}
+
+    function getTeamPermissions(id) {
+        var uploaderUrl = "/Role/GetUserTeamPermissions?teamId=" + id;
+        var xhr = new XMLHttpRequest();
+        xhr.open('GET', uploaderUrl, true);
+        xhr.onloadend = function () {
+            var parsedResp = JSON.parse(xhr.responseText);
+            if (parsedResp != null) {
+                teamPermissions = parsedResp;
+                if (teamPermissions.CanCreateTicket == true) {
+                    showInputTicket();
+                }
+            }
+        }
+        xhr.send(null);
+    }
+
     function showByTeam(id) {
         teamId = id;
-        showInputTicket();
+        //showInputTicket();
         clearTicketsDiv();
-        getTickets(id);
+        getTickets(teamId);
+        getTeamPermissions(teamId);
     }
+
     window.onloadend = showByTeam(1);
 </script>

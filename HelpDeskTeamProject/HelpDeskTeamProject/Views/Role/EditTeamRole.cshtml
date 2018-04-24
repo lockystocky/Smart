@@ -16,7 +16,6 @@
 @using (Html.BeginForm("EditTeamRole", "Role", FormMethod.Post, new { @class = "form-horizontal", role = "form" }))
 {
     @Html.AntiForgeryToken()
-    <h4>Создайте новую учетную запись.</h4>
     <hr />
     @Html.ValidationSummary("", new { @class = "text-danger" })
     <div class="form-group">

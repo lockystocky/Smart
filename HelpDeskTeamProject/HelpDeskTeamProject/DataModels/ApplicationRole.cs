@@ -8,7 +8,6 @@ namespace HelpDeskTeamProject.DataModels
 {
     public class ApplicationRole : Role
     {
-        
         public virtual ApplicationPermissions Permissions { get; set; }
 
         public ApplicationRole()

@@ -108,16 +108,48 @@ namespace HelpDeskTeamProject.Controllers
             if (teamId != null)
             {
                 Team curTeam = await db.Teams.Include(x => x.Tickets).SingleOrDefaultAsync(y => y.Id == teamId);
-
                 if (curTeam != null)
                 {
-                    List<Ticket> curTickets = await db.Tickets.Include(x => x.ChildTickets).Include(y => y.Comments).Include(z => z.User).Where(s => s.ParentTicket == null).ToListAsync();
-                    List<TicketDTO> curTicketsDto = new List<TicketDTO>();
-                    foreach (Ticket value in curTickets)
+                    ApplicationUser user = System.Web.HttpContext.Current.GetOwinContext()
+                            .GetUserManager<ApplicationUserManager>()
+                            .FindById(System.Web.HttpContext.Current.User.Identity.GetUserId());
+                    User appUser = await db.Users.Include(z => z.Teams).SingleOrDefaultAsync(x => x.Email.ToLower().Equals(user.Email.ToLower()));
+                    TeamRole curTeamUserRole = curTeam.UserPermissions.SingleOrDefault(x => x.UserId == appUser.Id).TeamRole;
+                    if (appUser != null && curTeamUserRole != null)
                     {
-                        curTicketsDto.Add(new TicketDTO(value));
+                        List<Ticket> curTickets = await db.Tickets.Include(x => x.ChildTickets).Include(y => y.Comments).Include(z => z.User).Where(s => s.ParentTicket == null).ToListAsync();
+                        List<TicketDTO> curTicketsDto = new List<TicketDTO>();
+                        foreach (Ticket value in curTickets)
+                        {
+                            TicketDTO tempDto = new TicketDTO(value);
+                            if (appUser.Id == value.User.Id || appUser.AppRole.Permissions.IsAdmin == true)
+                            {
+                                tempDto.CanDelete = true;
+                                tempDto.CanEdit = true;
+                            }
+                            else
+                            {
+                                if (curTeamUserRole.Permissions.CanEditComments == true)
+                                {
+                                    tempDto.CanEdit = true;
+                                }
+                                else
+                                {
+                                    tempDto.CanEdit = false;
+                                }
+                                if (curTeamUserRole.Permissions.CanDeleteComments == true)
+                                {
+                                    tempDto.CanDelete = true;
+                                }
+                                else
+                                {
+                                    tempDto.CanDelete = false;
+                                }
+                            }
+                            curTicketsDto.Add(tempDto);
+                        }
+                        return Json(curTicketsDto, JsonRequestBehavior.AllowGet);
                     }
-                    return Json(curTicketsDto, JsonRequestBehavior.AllowGet);
                 }
             }
             return Json(null);

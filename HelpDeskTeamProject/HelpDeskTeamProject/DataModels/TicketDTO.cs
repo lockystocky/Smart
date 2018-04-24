@@ -11,6 +11,10 @@ namespace HelpDeskTeamProject.DataModels
 
         public int TeamId { get; set; }
 
+        public bool CanDelete { get; set; }
+
+        public bool CanEdit { get; set; }
+
         public string UserName { get; set; }
 
         public string UserSurname { get; set; }
