@@ -160,7 +160,7 @@ namespace HelpDeskTeamProject.Controllers
                 if (result.Succeeded)
                 {
                     ApplicationRole defaultRole = new ApplicationRole("Default User", new ApplicationPermissions(false, false, false, false, false, false, true));
-                    dbContext.Users.Add(new User(user.Email, user.Id, defaultRole));
+                    dbContext.Users.Add(new User(model.Name, model.Surname, user.Email, user.Id, defaultRole));
                     await dbContext.SaveChangesAsync();
                     await SignInManager.SignInAsync(user, isPersistent:false, rememberBrowser:false);
                     

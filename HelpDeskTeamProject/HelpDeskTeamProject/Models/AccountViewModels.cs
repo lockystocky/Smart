@@ -65,6 +65,16 @@ namespace HelpDeskTeamProject.Models
     public class RegisterViewModel
     {
         [Required]
+        [Display(Name = "Ваше имя")]
+        [StringLength(200, ErrorMessage = "Значение имени должно содержать не более 200 символов.")]
+        public string Name { get; set; }
+
+        [Required]
+        [Display(Name = "Ваша фамилия")]
+        [StringLength(200, ErrorMessage = "Значение фамилии должно содержать не более 200 символов.")]
+        public string Surname { get; set; }
+
+        [Required]
         [EmailAddress]
         [Display(Name = "Адрес электронной почты")]
         public string Email { get; set; }

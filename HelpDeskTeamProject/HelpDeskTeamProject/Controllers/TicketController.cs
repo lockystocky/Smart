@@ -18,19 +18,58 @@ namespace HelpDeskTeamProject.Controllers
     {
         AppContext db = new AppContext();
 
+        public async Task<JsonResult> DeleteTicket(int? id)
+        {
+            if (id != null)
+            {
+                Ticket ticket = await db.Tickets.SingleOrDefaultAsync(x => x.Id == id);
+                db.Tickets.Remove(ticket);
+                await db.SaveChangesAsync();
+                return Json(true, JsonRequestBehavior.AllowGet);
+            }
+            return Json(false, JsonRequestBehavior.AllowGet);
+        }
+
+        public async Task<ActionResult> NewType()
+        {
+            return View();
+        }
+
+        [ValidateAntiForgeryToken]
+        [HttpPost]
+        public async Task<ActionResult> NewType(TicketType newType)
+        {
+            if (ModelState.IsValid)
+            {
+                db.TicketTypes.Add(newType);
+                await db.SaveChangesAsync();
+                return RedirectToAction("TypeList", "Ticket");
+            }
+            return View(newType);
+        }
+
+        public async Task<ActionResult> TypeList()
+        {
+            List<TicketType> ticketTypes = await db.TicketTypes.ToListAsync();
+            return View(ticketTypes);
+        }
+
         public async Task<JsonResult> GetTicketsByTeam(int? teamId)
         {
             if (teamId != null)
             {
                 Team curTeam = await db.Teams.Include(x => x.Tickets).SingleOrDefaultAsync(y => y.Id == teamId);
 
-                List<Ticket> curTickets = await db.Tickets.Include(x => x.ChildTickets).Include(y => y.Comments).Include(z => z.User).Where(s => s.ParentTicket == null).ToListAsync();
-                List<TicketDTO> curTicketsDto = new List<TicketDTO>();
-                foreach (Ticket value in curTickets)
+                if (curTeam != null)
                 {
-                    curTicketsDto.Add(new TicketDTO(value));
+                    List<Ticket> curTickets = await db.Tickets.Include(x => x.ChildTickets).Include(y => y.Comments).Include(z => z.User).Where(s => s.ParentTicket == null).ToListAsync();
+                    List<TicketDTO> curTicketsDto = new List<TicketDTO>();
+                    foreach (Ticket value in curTickets)
+                    {
+                        curTicketsDto.Add(new TicketDTO(value));
+                    }
+                    return Json(curTicketsDto, JsonRequestBehavior.AllowGet);
                 }
-                return Json(curTicketsDto, JsonRequestBehavior.AllowGet);
             }
             return Json(null);
         }
@@ -82,10 +121,10 @@ namespace HelpDeskTeamProject.Controllers
                 {
                     Ticket ticket = new Ticket(newTicket.BaseTeamId, curUser, newTicket.Description, ticketType, DateTime.Now, TicketState.New, baseTicket);
                     Ticket ticketFromDb = db.Tickets.Add(ticket);
+                    await db.SaveChangesAsync();
                     TicketDTO ticketDto = new TicketDTO(ticketFromDb.Id, ticketFromDb.TeamId, ticketFromDb.User, 
                         ticketFromDb.Description, ticketFromDb.Type, ticketFromDb.TimeCreated.ToString(), ticketFromDb.State, 
                         ticketFromDb.ChildTickets.Count, ticketFromDb.Comments.Count);
-                    await db.SaveChangesAsync();
                     return Json(ticketDto);
                 }
             }
@@ -100,10 +139,10 @@ namespace HelpDeskTeamProject.Controllers
                 {
                     Ticket ticket = new Ticket(newTicket.BaseTeamId, curUser, newTicket.Description, ticketType, DateTime.Now, TicketState.New);
                     Ticket ticketFromDb = db.Tickets.Add(ticket);
+                    await db.SaveChangesAsync();
                     TicketDTO ticketDto = new TicketDTO(ticketFromDb.Id, ticketFromDb.TeamId, ticketFromDb.User,
                         ticketFromDb.Description, ticketFromDb.Type, ticketFromDb.TimeCreated.ToString(), ticketFromDb.State,
                         ticketFromDb.ChildTickets.Count, ticketFromDb.Comments.Count);
-                    await db.SaveChangesAsync();
                     return Json(ticketDto);
                 }
             }
@@ -122,8 +161,8 @@ namespace HelpDeskTeamProject.Controllers
                 Ticket curTicket = await db.Tickets.Include(y => y.Comments).SingleOrDefaultAsync(x => x.Id == ticketId);
                 Comment newComment = new Comment(text, curUser, DateTime.Now);
                 curTicket.Comments.Add(newComment);
-                CommentDTO commentToJs = new CommentDTO(newComment.Text, newComment.User, newComment.TimeCreated.ToString());
                 await db.SaveChangesAsync();
+                CommentDTO commentToJs = new CommentDTO(newComment.Id, newComment.Text, newComment.User, newComment.TimeCreated.ToString());
                 return Json(commentToJs);
             }
             else

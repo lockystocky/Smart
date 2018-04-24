@@ -44,5 +44,16 @@ namespace HelpDeskTeamProject.DataModels
             AppRole = appRole;
             IsBanned = false;
         }
+
+        public User(string name, string surname, string email, string appId, ApplicationRole appRole)
+        {
+            Name = name;
+            Surname = surname;
+            Teams = new List<Team>();
+            AppId = appId;
+            Email = email;
+            AppRole = appRole;
+            IsBanned = false;
+        }
     }
 }

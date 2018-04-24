@@ -11,17 +11,68 @@
 
 <link rel="stylesheet" href="~/Content/MaterialStyles.css" type="text/css">
 
+
 <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.3.1/jquery.min.js"></script>
+
+
+<div class="row">
+    <div class="col-md-3">
+        <div class="list-group" id="teamsmenu">
+
+        </div>
+
+    </div>
+    <div class="col-md-9">
+        <a id="managelink"></a>
+        <div id="baseDiv">
+       <div id="newTicketInput" style="visibility: hidden;">
+        <div class="card">
+            <h5 class="headerMargin"><b>Add New Ticket</b></h5>
+            <div class="inputTicketDiv">
+                <textarea id="addTicketText" class="inputTicketText" placeholder="Write here your problem or suggestion..."></textarea>
+            </div>
+            <div style="padding-bottom: 15px; padding-right: 15px; padding-left: 15px;">
+                <div class="selectType">
+                    <select id="addTicketType" style="width:100%; min-width:100%; height: 20px; transition: 0.3s;">
+                        <option value="0">Select type</option>
+                        @for (int counter = 0; counter < ViewBag.TicketTypes.Count; counter++)
+                        {
+                            <option value="@(counter + 1)">@ViewBag.TicketTypes[counter].Name</option>
+                        }
+                    </select>
+                </div>
+                <div class="addButtonDiv" onclick="addTicket();">
+                    <p style="padding-top: 1px;">Add</p>
+                </div>
+            </div>
+        </div>
+    </div>
+    <div id="ticketsDiv">
+
+    </div>
+</div>
+</div>
+</div>
+
+
 <script>
+    var teamId;
+    var emptyTeamTickets = false;
+
     function displayNewTicket(tickets) {
+        if (emptyTeamTickets == true) {
+            clearTicketsDiv();
+            emptyTeamTickets = false;
+        }
         var statusNames = @Html.Raw(Json.Encode(ticketStateNames));
         var statusColorsJs = @Html.Raw(Json.Encode(statusColorsArray));
-        var ticketsDisplay = document.getElementById("baseDiv");
+        var ticketsDisplay = document.getElementById("ticketsDiv");
 
         if (tickets.length > 0) {
             for (var counter = 0; counter < tickets.length; counter++) {
                 var cardDiv = document.createElement("div");
                 cardDiv.className = "card";
+                cardDiv.id = "ticket_" + tickets[counter].Id;
                 ticketsDisplay.appendChild(cardDiv);
 
                 var statusRectDiv = document.createElement("div");
@@ -48,6 +99,8 @@
                 var deleteButton = document.createElement("h5");
                 deleteButton.className = "deleteButton";
                 deleteButton.innerText = "Delete";
+                var tempId = tickets[counter].Id;
+                deleteButton.addEventListener("click", function () { deleteAndHide(tempId) });
                 cardDiv.appendChild(deleteButton);
 
                 var cardText = document.createElement("div");
@@ -87,6 +140,7 @@
             }
         }
         else {
+            emptyTeamTickets = true;
             var cardDiv = document.createElement("div");
             cardDiv.className = "card";
             ticketsDisplay.appendChild(cardDiv);
@@ -99,12 +153,17 @@
     }
 
     function displayOneTicket(ticket) {
+        if (emptyTeamTickets == true) {
+            clearTicketsDiv();
+            emptyTeamTickets = false;
+        }
         var statusNames = @Html.Raw(Json.Encode(ticketStateNames));
         var statusColorsJs = @Html.Raw(Json.Encode(statusColorsArray));
-        var ticketsDisplay = document.getElementById("baseDiv");
+        var ticketsDisplay = document.getElementById("ticketsDiv");
 
         var cardDiv = document.createElement("div");
         cardDiv.className = "card";
+        cardDiv.id = "ticket_" + ticket.Id;
         ticketsDisplay.appendChild(cardDiv);
 
         var statusRectDiv = document.createElement("div");
@@ -131,6 +190,8 @@
         var deleteButton = document.createElement("h5");
         deleteButton.className = "deleteButton";
         deleteButton.innerText = "Delete";
+        var tempId = ticket.Id;
+        deleteButton.addEventListener("click", function () { deleteAndHide(tempId) });
         cardDiv.appendChild(deleteButton);
 
         var cardText = document.createElement("div");
@@ -224,11 +285,46 @@
         xhr.send(formData);
     }
 
+    function deleteAndHide(delId) {
+        deleteTicket(delId);
+        var delTicket = document.getElementById("ticket_" + delId);
+        delTicket.style.display = "none";
+    }
+
+    function deleteTicket(id) {
+        var uploaderUrl = "/Ticket/DeleteTicket?id=" + id;
+        var xhr = new XMLHttpRequest();
+        xhr.open('GET', uploaderUrl, true);
+        xhr.onloadend = function () {
+            console.log(xhr.responseText);
+            var parsedResp = JSON.parse(xhr.responseText);
+            if (parsedResp != null) {
+                console.log("Ticket deletion result - " + parsedResp);
+            }
+        }
+        xhr.send(null);
+    }
+
+    function showInputTicket() {
+        var ticketInput = document.getElementById("newTicketInput");
+        ticketInput.style.visibility = "visible";
+    }
+
+    function clearTicketsDiv() {
+        var ticketsDiv = document.getElementById("ticketsDiv");
+        ticketsDiv.innerHTML = "";
+    }
+
     function showByTeam(id) {
         teamId = id;
+        showInputTicket();
+        clearTicketsDiv();
         getTickets(id);
     }
+
     window.onload = showByTeam(1);
+
+
 
 
 
@@ -282,15 +378,7 @@
             });
     };
 
-    function getManageTeamLink(teamId) {
-        /*$.ajax({
-            type: "GET",
-            url: "/teams/GetTeamManagementLink?teamId=" + teamId,
-            contentType: "application/json; charset=utf-8",
-            dataType: "json"
-        }).done(function (data) {
-            alert(data);
-        });*/
+    function getManageTeamLink(teamId) {        
         $.get("/teams/GetTeamManagementLink?teamId=" + teamId, function (data) {
             if (data) {
                 $('#managelink').text('Manage team');
@@ -311,39 +399,7 @@
 
 </script>
 
-<h2>Tickets</h2>
-<div class="row">
-    <div class="col-md-3">
-        <div class="list-group" id="teamsmenu">
 
-        </div>
 
-    </div>
-    <div class="col-md-6">
-        <a id="managelink"></a>
-        <div id="baseDiv">
-            <div class="card">
-                <h5 class="headerMargin"><b>Add New Ticket</b></h5>
-                <div class="inputTicketDiv">
-                    <textarea id="addTicketText" class="inputTicketText" placeholder="Write here your problem or suggestion..."></textarea>
-                </div>
-                <div style="padding-bottom: 15px; padding-right: 15px; padding-left: 15px;">
-                    <div class="selectType">
-                        <select id="addTicketType" style="width:100%; min-width:100%; height: 20px; transition: 0.3s;">
-                            <option value="0">Select type</option>
-                            @for (int counter = 0; counter < ViewBag.TicketTypes.Count; counter++)
-                        {
-                            <option value="@(counter + 1)">@ViewBag.TicketTypes[counter].Name</option>
-                    }
-                        </select>
-                    </div>
-                    <div class="addButtonDiv" onclick="addTicket();">
-                        <p style="padding-top: 1px;">Add</p>
-                    </div>
-                </div>
-            </div>
-        </div>
 
-    </div>
 
-</div>
