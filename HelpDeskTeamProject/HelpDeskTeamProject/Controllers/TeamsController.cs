@@ -12,6 +12,7 @@ using HelpDeskTeamProject.DataModels;
 using HelpDeskTeamProject.Models;
 using Microsoft.AspNet.Identity;
 using Newtonsoft.Json;
+using System.Text;
 
 namespace HelpDeskTeamProject.Controllers
 {
@@ -19,6 +20,8 @@ namespace HelpDeskTeamProject.Controllers
     {
         private AppContext db = new AppContext();
         private const string TEAM_OWNER_ROLE_NAME = "Team Owner";
+        private const string DEFAULT_TEAM_ROLE_NAME = "Default Team Role";
+        private const string SITE_LINK = "http://localhost:50244/";
 
         //view list of all existing teams
         public ActionResult AllTeams()
@@ -27,7 +30,7 @@ namespace HelpDeskTeamProject.Controllers
         }
 
         //invite user to team
-        [Authorize]
+        /*[Authorize]
         public ActionResult InviteUser(int? teamId)
         {
             var teamToInvite = db.Teams.Find(teamId);
@@ -37,9 +40,9 @@ namespace HelpDeskTeamProject.Controllers
                 TeamToInvite = teamToInvite
             };
             return View(viewModel);
-        }
+        }*/
 
-        [HttpPost]
+        /*[HttpPost]
         [Authorize]
         public ActionResult InviteUser(int _teamId, string userEmail)
         {
@@ -49,7 +52,7 @@ namespace HelpDeskTeamProject.Controllers
             db.SaveChanges();
 
             return RedirectToAction("TeamInfo", new { teamId = _teamId });
-        }
+        }*/
 
         [Authorize]
         public ActionResult Teams()
@@ -161,8 +164,8 @@ namespace HelpDeskTeamProject.Controllers
                 Name = teamName,
                 OwnerId = ownerId,
                 TeamGuid = teamGuid,
-                InvitationLink = "/team/" + teamGuid,
-                InvitedEmails = new List<InvitationEmail>(),
+                InvitationLink = SITE_LINK +  "/teams/jointeam/" + teamGuid.ToString() + "/",
+                InvitedUsers = new List<InvitedUser>(),
                 UserPermissions = new List<UserPermission>(),
                 Tickets = new List<Ticket>(),
                 Users = new List<User>()
@@ -359,6 +362,203 @@ namespace HelpDeskTeamProject.Controllers
                 return "";
 
             return $"/teams/manageteam?teamId={teamId}";
+        }
+
+        //Team Administrator must be able to invite users into the team by adding user using email address 
+        //and sending automatic invitation with link to registration
+
+        [Authorize]
+        public ActionResult InviteUser(int? teamId)
+        {
+            var currentUser = GetCurrentUser();
+
+            var team = db.Teams.Find(teamId);
+
+            if (team == null || team.OwnerId != currentUser.Id)
+                return HttpNotFound();
+
+            var viewModel = new InviteUserToTeamViewModel()
+            {
+                TeamToInvite = team
+            };
+            return View(viewModel);
+        }
+
+        [HttpPost]
+        [Authorize]
+        public ActionResult InviteUser(InviteUserToTeamViewModel viewModel)
+        {
+            if (ModelState.IsValid)
+            {
+                var team = db.Teams.Find(viewModel.TeamToInvite.Id);
+                var email = viewModel.EmailOfInvitedUser;
+
+                bool isUserAlreadyInvited = team.InvitedUsers.Where(user => user.Email == email).Count() > 0;
+                bool isUserAlreadyTeamMember = team.Users.Where(user => user.Email == email).Count() > 0;
+
+                if(!isUserAlreadyInvited || !isUserAlreadyTeamMember)
+                {
+                    var userCode = GenerateInvitationCode();
+
+                    var invitedUser = new InvitedUser()
+                    {
+                        Email = email,
+                        Code = userCode
+                    };
+
+                    team.InvitedUsers.Add(invitedUser);
+                    db.SaveChanges();
+
+                    string invitationLink = team.InvitationLink + invitedUser.Id.ToString();
+                    string emailMessage = CreateInvitationEmailMessage(team.Name, invitationLink, userCode);
+
+                    SendInvitationEmail(email, emailMessage);
+                }
+
+                return RedirectToAction("ManageTeam", new { teamId = team.Id});
+            }
+            
+            return View(viewModel);
+        }
+
+        private void SendInvitationEmail(string emailTo, string emailText)
+        {
+            var client = new System.Net.Mail.SmtpClient("smtp.gmail.com", 587)
+            {
+                Credentials = new NetworkCredential("helpdeskmiiva@gmail.com", "helpdesk666%"),
+                EnableSsl = true
+            };
+
+            client.Send("helpdeskmiiva@gmail.com", emailTo, "Help Desk Invitation To The Team", emailText);
+        }
+
+        private string CreateInvitationEmailMessage(string teamName, string invitationLink, int code)
+        {
+            StringBuilder message = new StringBuilder();
+            message.AppendLine("Dear Sir/Madam,");
+            message.AppendLine();
+            message.AppendLine($"You were invited to the team \"{teamName}\".");
+            message.AppendLine($"To join the team follow the link: {invitationLink}");
+            message.AppendLine($"Your code: {code}");
+            message.AppendLine("If you are not interested in our service, delete this mail.");
+            message.AppendLine();
+            message.AppendLine("Yours faithfully,");
+            message.AppendLine("Help Desk Service");
+            return message.ToString();
+        }
+
+        private int GenerateInvitationCode()
+        {
+            Random random = new Random();
+            return random.Next(100000, 999999);
+        }
+
+        [Authorize]
+        [Route("teams/jointeam/{teamGuid}/{invitedUserId}")]
+        public ActionResult JoinTeam(Guid teamGuid, int invitedUserId)
+        {
+            var team = db.Teams
+                .Where(t => t.TeamGuid == teamGuid)
+                .FirstOrDefault();
+
+            if(team == null)
+                return HttpNotFound();
+            
+            var invitedUser = team.InvitedUsers.Find(iu => iu.Id == invitedUserId);
+
+            if (invitedUser == null)
+                return HttpNotFound();
+
+            invitedUser.Code = 0;
+            
+            var viewModel = new JoinTeamViewModel()
+            {
+                InvitedUser = invitedUser,
+                TeamId = team.Id,
+                TeamName = team.Name
+            };
+
+            return View(viewModel);
+        }
+
+        [Authorize]
+        [HttpPost]
+        [Route("teams/jointeam/{teamGuid}/{invitedUserId}")]
+        public ActionResult JoinTeam(JoinTeamViewModel viewModel)
+        {
+            if (ModelState.IsValid)
+            {
+                var team = db.Teams.Find(viewModel.TeamId);
+
+                if (team == null)
+                    return HttpNotFound();
+
+                var invitedUser = team.InvitedUsers
+                    .Find(iu => iu.Id == viewModel.InvitedUser.Id);
+
+                if (invitedUser == null)
+                    return HttpNotFound();
+
+                var currentUser = GetCurrentUser();
+
+                if (invitedUser.Code == viewModel.InvitedUser.Code 
+                    && currentUser.Email == invitedUser.Email
+                    && !currentUser.Teams.Contains(team) && !team.Users.Contains(currentUser))
+                {
+                    team.Users.Add(currentUser);
+                    team.InvitedUsers.Remove(invitedUser);
+
+                    var defaultTeamRole = GetDefaultTeamRole();
+
+                    var defaultUserPermission = new UserPermission()
+                    {
+                        TeamId = team.Id,
+                        User = currentUser,
+                        TeamRole = defaultTeamRole
+                    };
+
+                    team.UserPermissions.Add(defaultUserPermission);
+                    currentUser.Teams.Add(team);
+
+                    db.SaveChanges();
+
+                    return Redirect("/ticket/tickets");
+                }
+                if (invitedUser.Code != viewModel.InvitedUser.Code)
+                    ViewBag.InvalidCodeErrorMessage = "Code does not match.";
+
+                if(currentUser.Email != invitedUser.Email)
+                    ViewBag.InvalidCodeErrorMessage = "Your current email does not match email which refer to this invitation.";
+
+                if (currentUser.Teams.Contains(team) || team.Users.Contains(currentUser))
+                    ViewBag.InvalidCodeErrorMessage = "You are already in team.";
+
+                return View(viewModel);
+            }       
+
+            return View(viewModel);
+        }
+
+        private TeamRole GetDefaultTeamRole()
+        {
+            var defaultTeamRole = db.TeamRoles
+                        .Where(role => role.Name == DEFAULT_TEAM_ROLE_NAME)
+                        .FirstOrDefault();
+
+            if (defaultTeamRole == null)
+                defaultTeamRole = CreateDefaultTeamRole();
+
+            return defaultTeamRole;
+        }
+
+        private TeamRole CreateDefaultTeamRole()
+        {
+            return new TeamRole()
+            {
+                Name = DEFAULT_TEAM_ROLE_NAME,
+                Permissions = new TeamPermissions()
+                { CanCommentTicket = true, CanCreateTicket = true }
+            };
         }
 
         /*

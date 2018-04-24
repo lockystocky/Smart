@@ -205,7 +205,7 @@
     <Compile Include="DataModels\ApplicationRole.cs" />
     <Compile Include="DataModels\Comment.cs" />
     <Compile Include="DataModels\CommentDTO.cs" />
-    <Compile Include="DataModels\InvitationEmail.cs" />
+    <Compile Include="DataModels\InvitedUser.cs" />
     <Compile Include="DataModels\Log.cs" />
     <Compile Include="DataModels\Role.cs" />
     <Compile Include="DataModels\Team.cs" />
@@ -229,10 +229,19 @@
     <Compile Include="Migrations\201804221501277_UserId changed for User.Designer.cs">
       <DependentUpon>201804221501277_UserId changed for User.cs</DependentUpon>
     </Compile>
+    <Compile Include="Migrations\201804241048120_Invitation model changed.cs" />
+    <Compile Include="Migrations\201804241048120_Invitation model changed.Designer.cs">
+      <DependentUpon>201804241048120_Invitation model changed.cs</DependentUpon>
+    </Compile>
+    <Compile Include="Migrations\201804241356433_Invitation model email changed .cs" />
+    <Compile Include="Migrations\201804241356433_Invitation model email changed .Designer.cs">
+      <DependentUpon>201804241356433_Invitation model email changed .cs</DependentUpon>
+    </Compile>
     <Compile Include="Migrations\Configuration.cs" />
     <Compile Include="Models\AccountViewModels.cs" />
     <Compile Include="Models\IdentityModels.cs" />
     <Compile Include="Models\InviteUserToTeamViewModel.cs" />
+    <Compile Include="Models\JoinTeamViewModel.cs" />
     <Compile Include="Models\ManageTeamViewModel.cs" />
     <Compile Include="Models\ManageViewModels.cs" />
     <Compile Include="Models\TeamWithLastChangesViewModel.cs" />
@@ -325,6 +334,7 @@
     <Content Include="Views\Admin\Error.cshtml" />
     <Content Include="Views\Ticket\Tickets.cshtml" />
     <Content Include="Views\Ticket\ShowTicket.cshtml" />
+    <Content Include="Views\Teams\JoinTeam.cshtml" />
   </ItemGroup>
   <ItemGroup>
     <Folder Include="App_Data\" />
@@ -348,6 +358,12 @@
     </EmbeddedResource>
     <EmbeddedResource Include="Migrations\201804221501277_UserId changed for User.resx">
       <DependentUpon>201804221501277_UserId changed for User.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Migrations\201804241048120_Invitation model changed.resx">
+      <DependentUpon>201804241048120_Invitation model changed.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Migrations\201804241356433_Invitation model email changed .resx">
+      <DependentUpon>201804241356433_Invitation model email changed .cs</DependentUpon>
     </EmbeddedResource>
   </ItemGroup>
   <PropertyGroup>

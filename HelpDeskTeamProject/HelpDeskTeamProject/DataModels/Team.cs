@@ -21,7 +21,7 @@ namespace HelpDeskTeamProject.DataModels
 
         public virtual List<UserPermission> UserPermissions { get; set; }
 
-        public virtual List<InvitationEmail> InvitedEmails { get; set; }
+        public virtual List<InvitedUser> InvitedUsers { get; set; }
 
         public string InvitationLink { get; set; }
 
