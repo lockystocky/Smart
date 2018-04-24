@@ -18,6 +18,55 @@ namespace HelpDeskTeamProject.Controllers
     {
         AppContext db = new AppContext();
 
+        public async Task<ActionResult> Edit(int? id)
+        {
+            if (id != null)
+            {
+                List<TicketType> ticketTypes = await db.TicketTypes.ToListAsync();
+                ViewBag.TicketTypes = ticketTypes;
+                Ticket ticket = await db.Tickets.Include(z => z.User).Include(x => x.ChildTickets).Include(y => y.Comments)
+                    .SingleOrDefaultAsync(x => x.Id == id);
+                if (ticket != null)
+                {
+                    return View(ticket);
+                }
+            }
+            return RedirectToAction("Tickets", "Ticket");
+        }
+
+        [HttpPost]
+        public async Task<JsonResult> EditSave(int? id, string description, int? type)
+        {
+            if (id != null && description != null && type != null && description != "")
+            {
+                Ticket ticket = await db.Tickets.SingleOrDefaultAsync(x => x.Id == id);
+                TicketType newType = await db.TicketTypes.SingleOrDefaultAsync(x => x.Id == type);
+                if (ticket != null && newType != null)
+                {
+                    ticket.Description = description;
+                    ticket.Type = newType;
+                    await db.SaveChangesAsync();
+                    return Json(true, JsonRequestBehavior.AllowGet);
+                }
+            }
+            return Json(false, JsonRequestBehavior.AllowGet);
+        }
+
+        public async Task<JsonResult> DeleteComment(int? id)
+        {
+            if (id != null)
+            {
+                Comment comment = await db.Comments.SingleOrDefaultAsync(x => x.Id == id);
+                if (comment != null)
+                {
+                    db.Comments.Remove(comment);
+                    await db.SaveChangesAsync();
+                    return Json(true, JsonRequestBehavior.AllowGet);
+                }
+            }
+            return Json(false, JsonRequestBehavior.AllowGet);
+        }
+
         public async Task<JsonResult> DeleteTicket(int? id)
         {
             if (id != null)
@@ -92,7 +141,6 @@ namespace HelpDeskTeamProject.Controllers
 
         public async Task<ActionResult> ShowTicket(int? id)
         {
-            id = 1;
             if (id != null)
             {
                 Ticket ticket = await db.Tickets.Include(y => y.User).Include(s => s.ChildTickets)
@@ -103,7 +151,7 @@ namespace HelpDeskTeamProject.Controllers
                 ViewBag.TicketTypes = ticketTypes;
                 return View(ticket);
             }
-            return View();
+            return RedirectToAction("Tickets", "Ticket");
         }
 
         [HttpPost]

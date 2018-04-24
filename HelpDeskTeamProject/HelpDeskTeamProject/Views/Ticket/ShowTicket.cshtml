@@ -13,6 +13,9 @@
 <link rel="stylesheet" href="~/Content/MaterialStyles.css" type="text/css">
 
 <script>
+    var emptyTickets = false;
+    var emptyComments = false;
+
     function addTicket() {
         var textBox = document.getElementById("addTicketText");
         var typeChoser = document.getElementById("addTicketType");
@@ -34,6 +37,8 @@
             typeChoser.style.borderColor = "";
             typeChoser.style.borderWidth = "";
             uploadTicket(textBox.value, typeChoser.value);
+            textBox.value = "";
+            typeChoser.value = "0";
         }
     }
 
@@ -55,7 +60,29 @@
         xhr.send(formData);
     }
 
+    function editButtonClick(id) {
+        window.location.href = "/Ticket/Edit?id=" + id;
+    }
+
+    function showButtonClick(id) {
+        window.location.href = "/Ticket/ShowTicket?id=" + id;
+    }
+
+    function clearTicketsDiv() {
+        var ticketsDiv = document.getElementById("ticketsDisplay");
+        ticketsDiv.innerHTML = "";
+    }
+
+    function clearCommentsDiv() {
+        var commentsDiv = document.getElementById("mainDisplay");
+        commentsDiv.innerHTML = "";
+    }
+
     function displayNewTicket(ticket) {
+        if (emptyTickets == true) {
+            clearTicketsDiv();
+            emptyTickets = false;
+        }
         var statusNames = @Html.Raw(Json.Encode(ticketStateNames));
         var statusColorsJs = @Html.Raw(Json.Encode(statusColorsArray));
         var ticketsDisplay = document.getElementById("ticketsDisplay");
@@ -64,6 +91,7 @@
 
         var cardDiv = document.createElement("div");
         cardDiv.className = "card";
+        cardDiv.id = "ticket_" + ticket.Id;
         ticketsDisplay.appendChild(cardDiv);
 
         var statusRectDiv = document.createElement("div");
@@ -90,6 +118,8 @@
         var deleteButton = document.createElement("h5");
         deleteButton.className = "deleteButton";
         deleteButton.innerText = "Delete";
+        var tempId = ticket.Id;
+        deleteButton.addEventListener("click", function () { deleteAndHide(tempId) });
         cardDiv.appendChild(deleteButton);
 
         var cardText = document.createElement("div");
@@ -140,7 +170,53 @@
             commentBox.style.borderColor = "";
             commentBox.style.borderWidth = "";
             uploadComment(commentBox.value);
+            commentBox.value = "";
         }
+    }
+
+    function deleteThisTicket() {
+        deleteTicket(@Model.Id);
+        window.location.href = "/Ticket/Tickets";
+    }
+
+    function deleteAndHide(delId) {
+        deleteTicket(delId);
+        var delTicket = document.getElementById("ticket_" + delId);
+        delTicket.style.display = "none";
+    }
+
+    function deleteTicket(id) {
+        var uploaderUrl = "/Ticket/DeleteTicket?id=" + id;
+        var xhr = new XMLHttpRequest();
+        xhr.open('GET', uploaderUrl, true);
+        xhr.onloadend = function () {
+            console.log(xhr.responseText);
+            var parsedResp = JSON.parse(xhr.responseText);
+            if (parsedResp != null) {
+                console.log("Ticket deletion result - " + parsedResp);
+            }
+        }
+        xhr.send(null);
+    }
+
+    function deleteComAndHide(delId) {
+        deleteComment(delId);
+        var delCom = document.getElementById("comment_" + delId);
+        delCom.style.display = "none";
+    }
+
+    function deleteComment(id) {
+        var uploaderUrl = "/Ticket/DeleteComment?id=" + id;
+        var xhr = new XMLHttpRequest();
+        xhr.open('GET', uploaderUrl, true);
+        xhr.onloadend = function () {
+            console.log(xhr.responseText);
+            var parsedResp = JSON.parse(xhr.responseText);
+            if (parsedResp != null) {
+                console.log("Comment deletion result - " + parsedResp);
+            }
+        }
+        xhr.send(null);
     }
 
     function uploadComment(text) {
@@ -160,12 +236,17 @@
     }
 
     function displayNewComment(comment) {
+        if (emptyComments == true) {
+            clearCommentsDiv();
+            emptyComments = false;
+        }
         var mainDisp = document.getElementById("mainDisplay");
         var curTicketCommentsCount = document.getElementById("ticketCommentsCount");
         curTicketCommentsCount.innerText = " " + (parseInt(curTicketCommentsCount.innerText) + 1);
 
         var cardDiv = document.createElement("div");
         cardDiv.className = "card";
+        cardDiv.id = "comment_" + comment.Id;
         mainDisp.appendChild(cardDiv);
 
         var userNameDisp = document.createElement("h5");
@@ -181,6 +262,7 @@
         var deleteButton = document.createElement("h5");
         deleteButton.className = "deleteButton";
         deleteButton.innerText = "Delete";
+        deleteButton.addEventListener("click", function () { deleteComAndHide(comment.Id) });
         cardDiv.appendChild(deleteButton);
 
         var comText = document.createElement("div");
@@ -195,13 +277,13 @@
 <h2>Show Ticket</h2>
 
 <div>
-    <div class="pageDivideLeft" id="mainDisplay">
+    <div class="pageDivideLeft">
         <div class="card">
             <div class="statusRect" style="background-color: @statusColorsArray[(int)Model.State];"></div>
             <h5 class="headerMargin"><b>@Model.User.Name</b> <b>@Model.User.Surname</b></h5>
             <h5 class="dateTime">@Model.TimeCreated.ToString()</h5>
             <h5 class="dateTime" style="color:@statusColorsArray[(int)Model.State];"><b>@Model.State.ToString()</b></h5>
-            <h5 class="deleteButton">Delete</h5>
+            <h5 class="deleteButton" onclick="deleteThisTicket()">Delete</h5>
             <div class="cardText">
                 <p>@Model.Description</p>
                 <div class="themeText">@Model.Type.Name</div>
@@ -209,7 +291,7 @@
             <div class="divideLine"></div>
             <div class="replyRectangle">
                 <div class="replyTextMargin">Reply</div>
-                <div class="replyTextMargin">Edit</div>
+                <div class="replyTextMargin" onclick="editButtonClick(@Model.Id)">Edit</div>
                 <div class="replyTextMargin"><img src="~/Content/comments.png" style="padding-bottom:1px;" /><b id="ticketCommentsCount"> @Model.Comments.Count</b></div>
                 <div class="replyTextMargin"><img src="~/Content/ticket.png" style="padding-bottom:1px;" /><b id="ticketChildsCount"> @Model.ChildTickets.Count</b></div>
             </div>
@@ -225,31 +307,33 @@
                 </div>
             </div>
         </div>
-        @if (Model.Comments.Count > 0)
-        {
-            foreach (var comment in Model.Comments)
+        <div id="mainDisplay">
+            @if (Model.Comments.Count > 0)
             {
+                foreach (var comment in Model.Comments)
+                {
+                    <div class="card" id="@String.Concat("comment_" + comment.Id)">
+                    <h5 class="headerMargin"><b>@comment.User.Name</b> <b>@comment.User.Surname</b></h5>
+                    <h5 class="dateTime">@comment.TimeCreated.ToString()</h5>
+                    <h5 class="deleteButton" onclick="deleteComAndHide(@comment.Id)">Delete</h5>
+                        <div class="commentText">
+                            <p>@comment.Text</p>
+                        </div>
+                    </div>
+                }
+            }
+            else
+            {
+                <script>emptyComments = true;</script>
                 <div class="card">
-                <h5 class="headerMargin"><b>@comment.User.Name</b> <b>@comment.User.Surname</b></h5>
-                <h5 class="dateTime">@comment.TimeCreated.ToString()</h5>
-                <h5 class="deleteButton">Delete</h5>
-                    <div class="commentText">
-                        <p>@comment.Text</p>
+                    <div class="systemMessageText">
+                        This ticket does not have any comments, try adding more by clicking reply button.
                     </div>
                 </div>
             }
-        }
-        else
-        {
-            <div class="card">
-                <div class="systemMessageText">
-                    This ticket does not have any comments, try adding more by clicking reply button.
-                </div>
-            </div>
-        }
-
+        </div>
     </div>
-    <div class="pageDivideRight" id="ticketsDisplay">
+    <div class="pageDivideRight">
         <div class="card">
             <h5 class="headerMargin"><b>Add New Ticket</b></h5>
             <div class="inputTicketDiv">
@@ -270,38 +354,41 @@
                 </div>
             </div>
         </div>
-        @if (Model.ChildTickets.Count > 0)
-        {
-            foreach (var childTicket in Model.ChildTickets)
+        <div id="ticketsDisplay">
+            @if (Model.ChildTickets.Count > 0)
             {
+                foreach (var childTicket in Model.ChildTickets)
+                {
+                    <div class="card" id="@String.Concat("ticket_" + childTicket.Id)">
+                        <div class="statusRect" style="background-color: @statusColorsArray[(int)childTicket.State]"></div>
+                        <h5 class="headerMargin"><b>@childTicket.User.Name</b> <b>@childTicket.User.Surname</b></h5>
+                        <h5 class="dateTime">@childTicket.TimeCreated.ToString()</h5>
+                        <h5 class="dateTime" style="color:@statusColorsArray[(int)childTicket.State];"><b>@childTicket.State.ToString()</b></h5>
+                        <h5 class="deleteButton" onclick="deleteAndHide(@childTicket.Id)">Delete</h5>
+                        <div class="cardText">
+                            <p>@childTicket.Description</p>
+                            <div class="themeText">@childTicket.Type.Name</div>
+                        </div>
+                        <div class="divideLine"></div>
+                        <div class="replyRectangle">
+                            <div class="replyTextMargin" onclick="showButtonClick(@childTicket.Id)">Show</div>
+                            <div class="replyTextMargin" onclick="editButtonClick(@childTicket.Id)">Edit</div>
+                            <div class="replyTextMargin"><img src="~/Content/comments.png" style="padding-bottom:1px;" /><b> @childTicket.Comments.Count</b></div>
+                            <div class="replyTextMargin"><img src="~/Content/ticket.png" style="padding-bottom:1px;" /><b> @childTicket.ChildTickets.Count</b></div>
+                        </div>
+                    </div>
+                }
+            }
+            else
+            {
+                <script>emptyTickets = true;</script>
                 <div class="card">
-                    <div class="statusRect" style="background-color: @statusColorsArray[(int)childTicket.State]"></div>
-                    <h5 class="headerMargin"><b>@childTicket.User.Name</b> <b>@childTicket.User.Surname</b></h5>
-                    <h5 class="dateTime">@childTicket.TimeCreated.ToString()</h5>
-                    <h5 class="dateTime" style="color:@statusColorsArray[(int)childTicket.State];"><b>@childTicket.State.ToString()</b></h5>
-                    <h5 class="deleteButton">Delete</h5>
-                    <div class="cardText">
-                        <p>@childTicket.Description</p>
-                        <div class="themeText">@childTicket.Type.Name</div>
-                    </div>
-                    <div class="divideLine"></div>
-                    <div class="replyRectangle">
-                        <div class="replyTextMargin">Show</div>
-                        <div class="replyTextMargin">Edit</div>
-                        <div class="replyTextMargin"><img src="~/Content/comments.png" style="padding-bottom:1px;" /><b> @childTicket.Comments.Count</b></div>
-                        <div class="replyTextMargin"><img src="~/Content/ticket.png" style="padding-bottom:1px;" /><b> @childTicket.ChildTickets.Count</b></div>
-                    </div>
+                        <div class="systemMessageText">
+                            This ticket does not have any child tickets, try adding more by clicking add button.
+                        </div>
                 </div>
             }
-        }
-        else
-        {
-            <div class="card">
-                    <div class="systemMessageText">
-                        This ticket does not have any child tickets, try adding more by clicking add button.
-                    </div>
-            </div>
-        }
+        </div>
     </div>
 </div>
 

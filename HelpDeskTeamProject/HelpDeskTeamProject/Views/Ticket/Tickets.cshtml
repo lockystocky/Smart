@@ -56,73 +56,7 @@
 
         if (tickets.length > 0) {
             for (var counter = 0; counter < tickets.length; counter++) {
-                var cardDiv = document.createElement("div");
-                cardDiv.className = "card";
-                cardDiv.id = "ticket_" + tickets[counter].Id;
-                ticketsDisplay.appendChild(cardDiv);
-
-                var statusRectDiv = document.createElement("div");
-                statusRectDiv.className = "statusRect";
-                statusRectDiv.style.backgroundColor = statusColorsJs[tickets[counter].State];
-                cardDiv.appendChild(statusRectDiv);
-
-                var userNameDisp = document.createElement("h5");
-                userNameDisp.className = "headerMargin";
-                userNameDisp.innerHTML = "<b>" + tickets[counter].UserName + "</b> <b>" + tickets[counter].UserSurname + "</b>"
-                cardDiv.appendChild(userNameDisp);
-
-                var timeDisp = document.createElement("h5");
-                timeDisp.className = "dateTime";
-                timeDisp.innerText = tickets[counter].TimeCreated;
-                cardDiv.appendChild(timeDisp);
-
-                var statusDisp = document.createElement("h5");
-                statusDisp.className = "dateTime";
-                statusDisp.style.color = statusColorsJs[tickets[counter].State];
-                statusDisp.innerHTML = "<b>" + statusNames[tickets[counter].State] + "</b>"
-                cardDiv.appendChild(statusDisp);
-
-                var deleteButton = document.createElement("h5");
-                deleteButton.className = "deleteButton";
-                deleteButton.innerText = "Delete";
-                var tempId = tickets[counter].Id;
-                deleteButton.addEventListener("click", function () { deleteAndHide(tempId) });
-                cardDiv.appendChild(deleteButton);
-
-                var cardText = document.createElement("div");
-                cardText.className = "cardText";
-                var ticketDescr = document.createElement("p");
-                ticketDescr.innerText = tickets[counter].Description;
-                cardText.appendChild(ticketDescr);
-                var themeText = document.createElement("div");
-                themeText.className = "themeText";
-                themeText.innerText = tickets[counter].Type.Name;
-                cardText.appendChild(themeText);
-                cardDiv.appendChild(cardText);
-
-                var divideLine = document.createElement("div");
-                divideLine.className = "divideLine";
-                cardDiv.appendChild(divideLine);
-
-                var replyRect = document.createElement("div");
-                replyRect.className = "replyRectangle";
-                var showTicketText = document.createElement("div");
-                showTicketText.className = "replyTextMargin";
-                showTicketText.innerText = "Show";
-                replyRect.appendChild(showTicketText);
-                var editTicketText = document.createElement("div");
-                editTicketText.className = "replyTextMargin";
-                editTicketText.innerText = "Edit";
-                replyRect.appendChild(editTicketText);
-                var commentsTicketDisp = document.createElement("div");
-                commentsTicketDisp.className = "replyTextMargin";
-                commentsTicketDisp.innerHTML = "<img src=\"/Content/comments.png\" style=\"padding-bottom:1px;\" /><b> " + tickets[counter].CommentsCount + "</b>"
-                replyRect.appendChild(commentsTicketDisp);
-                var childTicketDisp = document.createElement("div");
-                childTicketDisp.className = "replyTextMargin";
-                childTicketDisp.innerHTML = "<img src=\"/Content/ticket.png\" style=\"padding-bottom:1px;\" /><b> " + tickets[counter].ChildTicketsCount + "</b>"
-                replyRect.appendChild(childTicketDisp);
-                cardDiv.appendChild(replyRect);
+                displayOneTicket(tickets[counter]);
             }
         }
         else {
@@ -200,10 +134,12 @@
         var showTicketText = document.createElement("div");
         showTicketText.className = "replyTextMargin";
         showTicketText.innerText = "Show";
+        showTicketText.addEventListener("click", function () { showButtonClick(tempId) });
         replyRect.appendChild(showTicketText);
         var editTicketText = document.createElement("div");
         editTicketText.className = "replyTextMargin";
         editTicketText.innerText = "Edit";
+        editTicketText.addEventListener("click", function () { editButtonClick(tempId) });
         replyRect.appendChild(editTicketText);
         var commentsTicketDisp = document.createElement("div");
         commentsTicketDisp.className = "replyTextMargin";
@@ -214,6 +150,14 @@
         childTicketDisp.innerHTML = "<img src=\"/Content/ticket.png\" style=\"padding-bottom:1px;\" /><b> " + ticket.ChildTicketsCount + "</b>"
         replyRect.appendChild(childTicketDisp);
         cardDiv.appendChild(replyRect);
+    }
+
+    function editButtonClick(id) {
+        window.location.href = "/Ticket/Edit?id=" + id;
+    }
+
+    function showButtonClick(id) {
+        window.location.href = "/Ticket/ShowTicket?id=" + id;
     }
 
     function getTickets(teamId) {
@@ -250,6 +194,8 @@
             typeChoser.style.borderColor = "";
             typeChoser.style.borderWidth = "";
             uploadTicket(textBox.value, typeChoser.value, teamId);
+            textBox.value = "";
+            typeChoser.value = "0";
         }
     }
 
