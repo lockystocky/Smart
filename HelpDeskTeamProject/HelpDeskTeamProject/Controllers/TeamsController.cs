@@ -13,14 +13,15 @@ using HelpDeskTeamProject.Models;
 using Microsoft.AspNet.Identity;
 using Newtonsoft.Json;
 using System.Text;
+using System.Web.Configuration;
 
 namespace HelpDeskTeamProject.Controllers
 {
     public class TeamsController : Controller
     {
         private AppContext db = new AppContext();
-        private const string TEAM_OWNER_ROLE_NAME = "Team Owner";
-        private const string DEFAULT_TEAM_ROLE_NAME = "Default Team Role";
+        private string TEAM_OWNER_ROLE_NAME = WebConfigurationManager.AppSettings["TeamOwnerRoleName"];
+        private string DEFAULT_TEAM_ROLE_NAME = WebConfigurationManager.AppSettings["DefaultTeamRoleName"];
         private const string SITE_LINK = "http://localhost:50244/";
 
         //view list of all existing teams
@@ -28,32 +29,7 @@ namespace HelpDeskTeamProject.Controllers
         {
             return View(db.Teams.ToList());
         }
-
-        //invite user to team
-        /*[Authorize]
-        public ActionResult InviteUser(int? teamId)
-        {
-            var teamToInvite = db.Teams.Find(teamId);
-
-            InviteUserToTeamViewModel viewModel = new InviteUserToTeamViewModel()
-            {
-                TeamToInvite = teamToInvite
-            };
-            return View(viewModel);
-        }*/
-
-        /*[HttpPost]
-        [Authorize]
-        public ActionResult InviteUser(int _teamId, string userEmail)
-        {
-            var teamToInvite = db.Teams.Find(_teamId);
-            var newInvitedEmail = new InvitationEmail() { Email = userEmail };
-            teamToInvite.InvitedEmails.Add(newInvitedEmail);
-            db.SaveChanges();
-
-            return RedirectToAction("TeamInfo", new { teamId = _teamId });
-        }*/
-
+        
         [Authorize]
         public ActionResult Teams()
         {
@@ -233,6 +209,7 @@ namespace HelpDeskTeamProject.Controllers
             var currentUser = db.Users
                 .Where(user => user.AppId == currentUserId)
                 .FirstOrDefault();
+
             return currentUser;
         }
 
@@ -350,9 +327,9 @@ namespace HelpDeskTeamProject.Controllers
             return new HttpStatusCodeResult(HttpStatusCode.OK);
         }
 
-        public string GetTeamManagementLink(int teamId)
+        public string GetTeamManagementLink(int _teamId)
         {
-            var team = db.Teams.Find(teamId);
+            var team = db.Teams.Find(_teamId);
             if (team == null)
                 return "";
            
@@ -360,8 +337,8 @@ namespace HelpDeskTeamProject.Controllers
 
             if(team.OwnerId != currentUser.Id)
                 return "";
-
-            return $"/teams/manageteam?teamId={teamId}";
+                        
+            return Url.Action("ManageTeam", new { teamId = _teamId }); 
         }
 
         //Team Administrator must be able to invite users into the team by adding user using email address 
@@ -396,7 +373,7 @@ namespace HelpDeskTeamProject.Controllers
                 bool isUserAlreadyInvited = team.InvitedUsers.Where(user => user.Email == email).Count() > 0;
                 bool isUserAlreadyTeamMember = team.Users.Where(user => user.Email == email).Count() > 0;
 
-                if(!isUserAlreadyInvited || !isUserAlreadyTeamMember)
+                if(!isUserAlreadyInvited && !isUserAlreadyTeamMember)
                 {
                     var userCode = GenerateInvitationCode();
 
@@ -423,13 +400,16 @@ namespace HelpDeskTeamProject.Controllers
 
         private void SendInvitationEmail(string emailTo, string emailText)
         {
+            string emailServiceLogin = WebConfigurationManager.AppSettings["EmailServiceLogin"];
+            string emailServicePassword = WebConfigurationManager.AppSettings["EmailServicePassword"];
+
             var client = new System.Net.Mail.SmtpClient("smtp.gmail.com", 587)
             {
-                Credentials = new NetworkCredential("helpdeskmiiva@gmail.com", "helpdesk666%"),
+                Credentials = new NetworkCredential(emailServiceLogin, emailServicePassword),
                 EnableSsl = true
             };
 
-            client.Send("helpdeskmiiva@gmail.com", emailTo, "Help Desk Invitation To The Team", emailText);
+            client.Send(emailServiceLogin, emailTo, "Help Desk Invitation To The Team", emailText);
         }
 
         private string CreateInvitationEmailMessage(string teamName, string invitationLink, int code)
