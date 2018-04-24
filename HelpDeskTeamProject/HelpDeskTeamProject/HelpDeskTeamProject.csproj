@@ -200,6 +200,7 @@
     <Compile Include="Controllers\RoleController.cs" />
     <Compile Include="Controllers\TeamsController.cs" />
     <Compile Include="Controllers\TicketController.cs" />
+    <Compile Include="Controllers\ValidationController.cs" />
     <Compile Include="DataModels\AdminLog.cs" />
     <Compile Include="DataModels\ApplicationPermissions.cs" />
     <Compile Include="DataModels\ApplicationRole.cs" />
@@ -236,6 +237,10 @@
     <Compile Include="Migrations\201804241356433_Invitation model email changed .cs" />
     <Compile Include="Migrations\201804241356433_Invitation model email changed .Designer.cs">
       <DependentUpon>201804241356433_Invitation model email changed .cs</DependentUpon>
+    </Compile>
+    <Compile Include="Migrations\201804242223444_Model validation added.cs" />
+    <Compile Include="Migrations\201804242223444_Model validation added.Designer.cs">
+      <DependentUpon>201804242223444_Model validation added.cs</DependentUpon>
     </Compile>
     <Compile Include="Migrations\Configuration.cs" />
     <Compile Include="Models\AccountViewModels.cs" />
@@ -338,6 +343,7 @@
   </ItemGroup>
   <ItemGroup>
     <Folder Include="App_Data\" />
+    <Folder Include="Views\Validation\" />
   </ItemGroup>
   <ItemGroup>
     <Content Include="fonts\glyphicons-halflings-regular.woff" />
@@ -364,6 +370,9 @@
     </EmbeddedResource>
     <EmbeddedResource Include="Migrations\201804241356433_Invitation model email changed .resx">
       <DependentUpon>201804241356433_Invitation model email changed .cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Migrations\201804242223444_Model validation added.resx">
+      <DependentUpon>201804242223444_Model validation added.cs</DependentUpon>
     </EmbeddedResource>
   </ItemGroup>
   <PropertyGroup>

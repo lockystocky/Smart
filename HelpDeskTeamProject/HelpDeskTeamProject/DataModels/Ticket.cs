@@ -30,6 +30,7 @@ namespace HelpDeskTeamProject.DataModels
 
         public User User { get; set; }
 
+        [Required]
         [StringLength(400)]
         public string Description { get; set; }
 

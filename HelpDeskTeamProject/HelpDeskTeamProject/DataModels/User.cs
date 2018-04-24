@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Web;
 using System.Data.Entity.Core.Metadata;
+using System.ComponentModel.DataAnnotations;
 
 namespace HelpDeskTeamProject.DataModels
 {
@@ -10,10 +11,16 @@ namespace HelpDeskTeamProject.DataModels
     {
         public int Id { get; set; }
 
+        [Required]
+        [StringLength(20)]
         public string Name { get; set; }
 
+        [Required]
+        [StringLength(20)]
         public string Surname { get; set; }
 
+        [Required]
+        [EmailAddress]
         public string Email { get; set; }
 
         public string AppId { get; set; }
