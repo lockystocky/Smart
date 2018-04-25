@@ -18,6 +18,11 @@ namespace HelpDeskTeamProject.Controllers
     {
         AppContext db = new AppContext();
 
+        public ActionResult NoPermissionError()
+        {
+            return View();
+        }
+
         public async Task<ActionResult> Edit(int? id)
         {
             if (id != null)
@@ -26,9 +31,18 @@ namespace HelpDeskTeamProject.Controllers
                 ViewBag.TicketTypes = ticketTypes;
                 Ticket ticket = await db.Tickets.Include(z => z.User).Include(x => x.ChildTickets).Include(y => y.Comments)
                     .SingleOrDefaultAsync(x => x.Id == id);
-                if (ticket != null)
+                User curUser = await GetCurrentUser();
+                TeamPermissions teamPerms = await GetCurrentTeamPermissions(ticket.TeamId, curUser.Id);
+                if (ticket != null && curUser != null && teamPerms != null)
                 {
-                    return View(ticket);
+                    if (ticket.User.Id == curUser.Id || teamPerms.CanEditTickets || curUser.AppRole.Permissions.IsAdmin)
+                    {
+                        return View(ticket);
+                    }
+                    else
+                    {
+                        return NoPermissionError();
+                    }
                 }
             }
             return RedirectToAction("Tickets", "Ticket");
@@ -40,13 +54,18 @@ namespace HelpDeskTeamProject.Controllers
             if (id != null && description != null && type != null && description != "")
             {
                 Ticket ticket = await db.Tickets.SingleOrDefaultAsync(x => x.Id == id);
-                TicketType newType = await db.TicketTypes.SingleOrDefaultAsync(x => x.Id == type);
-                if (ticket != null && newType != null)
+                User curUser = await GetCurrentUser();
+                TeamPermissions teamPerms = await GetCurrentTeamPermissions(ticket.TeamId, curUser.Id);
+                if (ticket.User.Id == curUser.Id || teamPerms.CanEditTickets || curUser.AppRole.Permissions.IsAdmin)
                 {
-                    ticket.Description = description;
-                    ticket.Type = newType;
-                    await db.SaveChangesAsync();
-                    return Json(true, JsonRequestBehavior.AllowGet);
+                    TicketType newType = await db.TicketTypes.SingleOrDefaultAsync(x => x.Id == type);
+                    if (ticket != null && newType != null)
+                    {
+                        ticket.Description = description;
+                        ticket.Type = newType;
+                        await db.SaveChangesAsync();
+                        return Json(true, JsonRequestBehavior.AllowGet);
+                    }
                 }
             }
             return Json(false, JsonRequestBehavior.AllowGet);
@@ -57,6 +76,8 @@ namespace HelpDeskTeamProject.Controllers
             if (id != null)
             {
                 Comment comment = await db.Comments.SingleOrDefaultAsync(x => x.Id == id);
+                User curUser = await GetCurrentUser();
+                //TeamPermissions teamPerms = await GetCurrentTeamPermissions(comment, curUser.Id);
                 if (comment != null)
                 {
                     db.Comments.Remove(comment);
@@ -110,19 +131,16 @@ namespace HelpDeskTeamProject.Controllers
                 Team curTeam = await db.Teams.Include(x => x.Tickets).SingleOrDefaultAsync(y => y.Id == teamId);
                 if (curTeam != null)
                 {
-                    ApplicationUser user = System.Web.HttpContext.Current.GetOwinContext()
-                            .GetUserManager<ApplicationUserManager>()
-                            .FindById(System.Web.HttpContext.Current.User.Identity.GetUserId());
-                    User appUser = await db.Users.Include(z => z.Teams).SingleOrDefaultAsync(x => x.Email.ToLower().Equals(user.Email.ToLower()));
-                    TeamRole curTeamUserRole = curTeam.UserPermissions.SingleOrDefault(x => x.UserId == appUser.Id).TeamRole;
-                    if (appUser != null && curTeamUserRole != null)
+                    User curUser = await GetCurrentUser();
+                    TeamRole curTeamUserRole = curTeam.UserPermissions.SingleOrDefault(x => x.UserId == curUser.Id).TeamRole;
+                    if (curUser != null && curTeamUserRole != null)
                     {
                         List<Ticket> curTickets = await db.Tickets.Include(x => x.ChildTickets).Include(y => y.Comments).Include(z => z.User).Where(s => s.ParentTicket == null).ToListAsync();
                         List<TicketDTO> curTicketsDto = new List<TicketDTO>();
                         foreach (Ticket value in curTickets)
                         {
                             TicketDTO tempDto = new TicketDTO(value);
-                            if (appUser.Id == value.User.Id || appUser.AppRole.Permissions.IsAdmin == true)
+                            if (curUser.Id == value.User.Id || curUser.AppRole.Permissions.IsAdmin == true)
                             {
                                 tempDto.CanDelete = true;
                                 tempDto.CanEdit = true;
@@ -161,8 +179,7 @@ namespace HelpDeskTeamProject.Controllers
         {
             if (id != null)
             {
-                string userAppId = System.Web.HttpContext.Current.User.Identity.GetUserId();
-                User curUser = await db.Users.SingleOrDefaultAsync(x => x.AppId.Equals(userAppId));
+                User curUser = await GetCurrentUser();
                 Ticket ticket = await db.Tickets.Include(y => y.User).Include(s => s.ChildTickets)
                     .SingleOrDefaultAsync(x => x.Id == id);
                 ticket.ChildTickets = await db.Tickets.Include(z => z.User).Include(y => y.ChildTickets).Include(w => w.Comments)
@@ -217,10 +234,7 @@ namespace HelpDeskTeamProject.Controllers
         {
             if (newTicket.BaseTicketId != null && newTicket.Description != null && newTicket.BaseTicketId > 0 && newTicket.BaseTeamId > 0)
             {
-                ApplicationUser user = System.Web.HttpContext.Current.GetOwinContext()
-                            .GetUserManager<ApplicationUserManager>()
-                            .FindById(System.Web.HttpContext.Current.User.Identity.GetUserId());
-                User curUser = await db.Users.SingleOrDefaultAsync(x => x.Email.ToLower().Equals(user.Email.ToLower()));
+                User curUser = await GetCurrentUser();
                 TicketType ticketType = await db.TicketTypes.SingleOrDefaultAsync(x => x.Id == newTicket.TypeId);
                 Ticket baseTicket = await db.Tickets.SingleOrDefaultAsync(x => x.Id == newTicket.BaseTicketId);
                 if (curUser != null && ticketType != null)
@@ -238,10 +252,7 @@ namespace HelpDeskTeamProject.Controllers
             }
             else if (newTicket.BaseTicketId == null && newTicket.Description != null && newTicket.BaseTeamId > 0)
             {
-                ApplicationUser user = System.Web.HttpContext.Current.GetOwinContext()
-                            .GetUserManager<ApplicationUserManager>()
-                            .FindById(System.Web.HttpContext.Current.User.Identity.GetUserId());
-                User curUser = await db.Users.SingleOrDefaultAsync(x => x.Email.ToLower().Equals(user.Email.ToLower()));
+                User curUser = await GetCurrentUser();
                 TicketType ticketType = await db.TicketTypes.SingleOrDefaultAsync(x => x.Id == newTicket.TypeId);
                 if (curUser != null && ticketType != null)
                 {
@@ -264,10 +275,7 @@ namespace HelpDeskTeamProject.Controllers
         {
             if (text != null && ticketId != null && ticketId > 0)
             {
-                ApplicationUser user = System.Web.HttpContext.Current.GetOwinContext()
-                            .GetUserManager<ApplicationUserManager>()
-                            .FindById(System.Web.HttpContext.Current.User.Identity.GetUserId());
-                User curUser = await db.Users.SingleOrDefaultAsync(x => x.Email.ToLower().Equals(user.Email.ToLower()));
+                User curUser = await GetCurrentUser();
                 Ticket curTicket = await db.Tickets.Include(y => y.Comments).SingleOrDefaultAsync(x => x.Id == ticketId);
                 Comment newComment = new Comment(text, curUser, DateTime.Now);
                 curTicket.Comments.Add(newComment);
@@ -279,6 +287,20 @@ namespace HelpDeskTeamProject.Controllers
             {
                 return Json(null);
             }
+        }
+
+        private async Task<User> GetCurrentUser()
+        {
+            string userAppId = System.Web.HttpContext.Current.User.Identity.GetUserId();
+            User curUser = await db.Users.SingleOrDefaultAsync(x => x.AppId.Equals(userAppId));
+            return curUser;
+        }
+
+        private async Task<TeamPermissions> GetCurrentTeamPermissions(int ticketTeamId, int curUserId)
+        {
+            Team team = await db.Teams.SingleOrDefaultAsync(x => x.Id == ticketTeamId);
+            TeamPermissions teamPerms = team.UserPermissions.SingleOrDefault(x => x.UserId == curUserId).TeamRole.Permissions;
+            return teamPerms;
         }
     }
 }
