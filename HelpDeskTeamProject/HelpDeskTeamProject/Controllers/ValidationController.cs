@@ -14,37 +14,37 @@ namespace HelpDeskTeamProject.Controllers
         private AppContext db = new AppContext();
 
         
-        public JsonResult IsApplicationRoleNameAvailable(string appRoleName)
+        public JsonResult IsApplicationRoleNameAvailable(string Name)
         {
             bool applicationRoleIsAvailable = db.AppRoles
-                .Where(role => role.Name == appRoleName)
+                .Where(role => role.Name == Name)
                 .Count() == 0;
 
             return Json(applicationRoleIsAvailable, JsonRequestBehavior.AllowGet);
         }
 
-        public JsonResult IsTeamRoleNameAvailable(string teamRoleName)
+        public JsonResult IsTeamRoleNameAvailable(string Name)
         {
             bool teamRoleIsAvailable = db.TeamRoles
-                .Where(role => role.Name == teamRoleName)
+                .Where(role => role.Name == Name)
                 .Count() == 0;
 
             return Json(teamRoleIsAvailable, JsonRequestBehavior.AllowGet);
         }
 
-        public JsonResult IsTeamNameAvailable(string teamName)
+        public JsonResult IsTeamNameAvailable(string Name)
         {
             bool teamNameIsAvailable = db.Teams
-                .Where(team => team.Name == teamName)
+                .Where(team => team.Name == Name)
                 .Count() == 0;
 
             return Json(teamNameIsAvailable, JsonRequestBehavior.AllowGet);
         }
 
-        public JsonResult IsTicketTypeNameAvailable(string ticketTypeName)
+        public JsonResult IsTicketTypeNameAvailable(string Name)
         {
             bool ticketTypeNameIsAvailable = db.TicketTypes
-                .Where(ticketType => ticketType.Name == ticketTypeName)
+                .Where(ticketType => ticketType.Name == Name)
                 .Count() == 0;
 
             return Json(ticketTypeNameIsAvailable, JsonRequestBehavior.AllowGet);

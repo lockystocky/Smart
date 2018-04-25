@@ -219,10 +219,11 @@
     <Compile Include="DataModels\TicketType.cs" />
     <Compile Include="DataModels\User.cs" />
     <Compile Include="DataModels\UserPermission.cs" />
-    <Compile Include="Migrations\201804241049076_commentsDbSet.cs" />
-    <Compile Include="Migrations\201804241049076_commentsDbSet.Designer.cs">
-      <DependentUpon>201804241049076_commentsDbSet.cs</DependentUpon>
+    <Compile Include="Migrations\201804250824138_Comment DbSet.cs" />
+    <Compile Include="Migrations\201804250824138_Comment DbSet.Designer.cs">
+      <DependentUpon>201804250824138_Comment DbSet.cs</DependentUpon>
     </Compile>
+    <Compile Include="Models\AppAndTeamRolesViewModel.cs" />
     <Compile Include="Repositories\IRepository.cs" />
     <Compile Include="Global.asax.cs">
       <DependentUpon>Global.asax</DependentUpon>
@@ -369,7 +370,6 @@
     <EmbeddedResource Include="Migrations\201804221358575_InitialCreate.resx">
       <DependentUpon>201804221358575_InitialCreate.cs</DependentUpon>
     </EmbeddedResource>
-
     <EmbeddedResource Include="Migrations\201804221501277_UserId changed for User.resx">
       <DependentUpon>201804221501277_UserId changed for User.cs</DependentUpon>
     </EmbeddedResource>
@@ -382,9 +382,8 @@
     <EmbeddedResource Include="Migrations\201804242223444_Model validation added.resx">
       <DependentUpon>201804242223444_Model validation added.cs</DependentUpon>
     </EmbeddedResource>
-    <EmbeddedResource Include="Migrations\201804241049076_commentsDbSet.resx">
-      <DependentUpon>201804241049076_commentsDbSet.cs</DependentUpon>
-
+    <EmbeddedResource Include="Migrations\201804250824138_Comment DbSet.resx">
+      <DependentUpon>201804250824138_Comment DbSet.cs</DependentUpon>
     </EmbeddedResource>
   </ItemGroup>
   <PropertyGroup>

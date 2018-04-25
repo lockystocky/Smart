@@ -114,7 +114,7 @@ namespace HelpDeskTeamProject.Controllers
                             .GetUserManager<ApplicationUserManager>()
                             .FindById(System.Web.HttpContext.Current.User.Identity.GetUserId());
                     User appUser = await db.Users.Include(z => z.Teams).SingleOrDefaultAsync(x => x.Email.ToLower().Equals(user.Email.ToLower()));
-                    TeamRole curTeamUserRole = curTeam.UserPermissions.SingleOrDefault(x => x.UserId == appUser.Id).TeamRole;
+                    TeamRole curTeamUserRole = curTeam.UserPermissions.SingleOrDefault(x => x.User.Id == appUser.Id).TeamRole;
                     if (appUser != null && curTeamUserRole != null)
                     {
                         List<Ticket> curTickets = await db.Tickets.Include(x => x.ChildTickets).Include(y => y.Comments).Include(z => z.User).Where(s => s.ParentTicket == null).ToListAsync();

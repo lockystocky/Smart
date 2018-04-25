@@ -7,7 +7,7 @@ using System.Web.Mvc;
 
 namespace HelpDeskTeamProject.DataModels
 {
-    public class ApplicationRole : Role
+    public class ApplicationRole
     {
 
         public int Id { get; set; }
