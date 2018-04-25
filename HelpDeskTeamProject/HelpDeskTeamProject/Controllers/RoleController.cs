@@ -124,10 +124,7 @@ namespace HelpDeskTeamProject.Controllers
 
         public async Task<JsonResult> GetUserTeamPermissions(int? teamId)
         {
-            ApplicationUser user = System.Web.HttpContext.Current.GetOwinContext()
-                            .GetUserManager<ApplicationUserManager>()
-                            .FindById(System.Web.HttpContext.Current.User.Identity.GetUserId());
-            User appUser = await dbContext.Users.Include(z => z.Teams).SingleOrDefaultAsync(x => x.Email.ToLower().Equals(user.Email.ToLower()));
+            User appUser = await GetCurrentUser();
             if (appUser != null && teamId != null)
             {
                 TeamPermissions curPerms = appUser.Teams.SingleOrDefault(x => x.Id == teamId).UserPermissions
@@ -139,10 +136,7 @@ namespace HelpDeskTeamProject.Controllers
 
         public async Task<JsonResult> GetUserAppPermissions()
         {
-            ApplicationUser user = System.Web.HttpContext.Current.GetOwinContext()
-                            .GetUserManager<ApplicationUserManager>()
-                            .FindById(System.Web.HttpContext.Current.User.Identity.GetUserId());
-            User appUser = await dbContext.Users.Include(z => z.AppRole).SingleOrDefaultAsync(x => x.Email.ToLower().Equals(user.Email.ToLower()));
+            User appUser = await GetCurrentUser();
             if (appUser != null)
             {
                 ApplicationPermissions curPerms = appUser.AppRole.Permissions;
@@ -152,6 +146,13 @@ namespace HelpDeskTeamProject.Controllers
                 }
             }
             return Json(null, JsonRequestBehavior.AllowGet);
+        }
+
+        private async Task<User> GetCurrentUser()
+        {
+            string userAppId = System.Web.HttpContext.Current.User.Identity.GetUserId();
+            User curUser = await dbContext.Users.SingleOrDefaultAsync(x => x.AppId.Equals(userAppId));
+            return curUser;
         }
     }
 }
