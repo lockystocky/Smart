@@ -5,7 +5,7 @@
         transform: scale(1.2);
     }
 
-    .displayMargin{
+    .displayMargin {
         margin-top: 5px;
     }
 </style>
@@ -71,6 +71,12 @@
         @Html.LabelFor(m => m.Permissions.IsAdmin, new { @class = "col-md-2 control-label" })
         <div class="col-md-1 checkbox checkboxMargin">
             @Html.CheckBoxFor(m => m.Permissions.IsAdmin)
+        </div>
+    </div>
+    <div class="form-group">
+        @Html.LabelFor(m => m.Permissions.CanManageTicketTypes, new { @class = "col-md-2 control-label" })
+        <div class="col-md-1 checkbox checkboxMargin">
+            @Html.CheckBoxFor(m => m.Permissions.CanManageTicketTypes)
         </div>
     </div>
     <div class="form-group">
