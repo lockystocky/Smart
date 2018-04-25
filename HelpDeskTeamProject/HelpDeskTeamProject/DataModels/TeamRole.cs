@@ -13,7 +13,7 @@ namespace HelpDeskTeamProject.DataModels
 
         [Required]
         [StringLength(20)]
-        [Remote("IsTeamRoleNameAvailable", "Validation", ErrorMessage = "Team role with such name already exists")]
+        //[Remote("IsTeamRoleNameAvailable", "Validation", ErrorMessage = "Team role with such name already exists")]
         public string Name { get; set; }
 
         public virtual TeamPermissions Permissions { get; set; }

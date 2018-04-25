@@ -28,7 +28,7 @@ namespace HelpDeskTeamProject.DataModels
 
         }
 
-        public ApplicationPermissions(bool isAdmin, bool canCreateUser, bool canManageUserRoles, bool canSeeAllTeams, bool canSeeListOfUsers, bool canBlockUsers, bool canCreateTeams)
+        public ApplicationPermissions(bool isAdmin, bool canCreateUser, bool canManageUserRoles, bool canSeeAllTeams, bool canSeeListOfUsers, bool canBlockUsers, bool canCreateTeams, bool canManageTicketTypes)
         {
             IsAdmin = isAdmin;
             CanCreateTeams = canCreateTeams;
@@ -37,6 +37,7 @@ namespace HelpDeskTeamProject.DataModels
             CanSeeAllTeams = canSeeAllTeams;
             CanSeeListOfUsers = canSeeListOfUsers;
             CanBlockUsers = canBlockUsers;
+            CanManageTicketTypes = canManageTicketTypes;
         }
     }
 }

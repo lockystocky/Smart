@@ -18,9 +18,14 @@ namespace HelpDeskTeamProject.Controllers
         AppContext dbContext = new AppContext();
 
 
-        public ActionResult CreateTeamRole()
+        public async Task<ActionResult> CreateTeamRole()
         {
-            return View();
+            User curUser = await GetCurrentUser();
+            if (curUser.AppRole.Permissions.CanManageUserRoles == true || curUser.AppRole.Permissions.IsAdmin == true)
+            {
+                return View();
+            }
+            return RedirectToAction("NoPermissionError", "Ticket");
         }
 
         [HttpPost]
@@ -29,17 +34,30 @@ namespace HelpDeskTeamProject.Controllers
         {
             if (ModelState.IsValid)
             {
-                dbContext.TeamRoles.Add(newTeamRole);
-                await dbContext.SaveChangesAsync();
-                return Redirect("/Role/List");
+                User curUser = await GetCurrentUser();
+                if (curUser.AppRole.Permissions.CanManageUserRoles == true || curUser.AppRole.Permissions.IsAdmin == true)
+                {
+                    dbContext.TeamRoles.Add(newTeamRole);
+                    await dbContext.SaveChangesAsync();
+                    return Redirect("/Role/List");
+                }
+                else
+                {
+                    return RedirectToAction("NoPermissionError", "Ticket");
+                }
             }
             
             return View();
         }
 
-        public ActionResult CreateAppRole()
+        public async Task<ActionResult> CreateAppRole()
         {
-            return View();
+            User curUser = await GetCurrentUser();
+            if (curUser.AppRole.Permissions.CanManageUserRoles == true || curUser.AppRole.Permissions.IsAdmin == true)
+            {
+                return View();
+            }
+            return RedirectToAction("NoPermissionError", "Ticket");
         }
 
         [HttpPost]
@@ -48,9 +66,17 @@ namespace HelpDeskTeamProject.Controllers
         {
             if (ModelState.IsValid)
             {
-                dbContext.AppRoles.Add(newAppRole);
-                await dbContext.SaveChangesAsync();
-                return Redirect("/Role/List");
+                User curUser = await GetCurrentUser();
+                if (curUser.AppRole.Permissions.CanManageUserRoles == true || curUser.AppRole.Permissions.IsAdmin == true)
+                {
+                    dbContext.AppRoles.Add(newAppRole);
+                    await dbContext.SaveChangesAsync();
+                    return Redirect("/Role/List");
+                }
+                else
+                {
+                    return RedirectToAction("NoPermissionError", "Ticket");
+                }
             }
 
             return View();
@@ -58,24 +84,40 @@ namespace HelpDeskTeamProject.Controllers
 
         public async Task<ActionResult> List()
         {
-            var appRoles = await dbContext.AppRoles.ToListAsync();
-            var teamRoles = await dbContext.TeamRoles.ToListAsync();
-            var allRoles = new AppAndTeamRolesViewModel()
+            User curUser = await GetCurrentUser();
+            if (curUser.AppRole.Permissions.CanManageUserRoles == true || curUser.AppRole.Permissions.IsAdmin == true)
             {
-                TeamRoles = teamRoles,
-                ApplicationRoles = appRoles
-            };
+                var appRoles = await dbContext.AppRoles.ToListAsync();
+                var teamRoles = await dbContext.TeamRoles.ToListAsync();
+                var allRoles = new AppAndTeamRolesViewModel()
+                {
+                    TeamRoles = teamRoles,
+                    ApplicationRoles = appRoles
+                };
 
-           return View(allRoles);
+                return View(allRoles);
+            }
+            else
+            {
+                return RedirectToAction("NoPermissionError", "Ticket");
+            }
         }
 
         public async Task<ActionResult> EditAppRole(int? roleId)
         {
             if (roleId != null || roleId < 1)
             {
-                int goodId = Convert.ToInt32(roleId);
-                ApplicationRole role = await dbContext.AppRoles.SingleOrDefaultAsync(x => x.Id == goodId);
-                return View(role);
+                User curUser = await GetCurrentUser();
+                if (curUser.AppRole.Permissions.CanManageUserRoles == true || curUser.AppRole.Permissions.IsAdmin == true)
+                {
+                    int goodId = Convert.ToInt32(roleId);
+                    ApplicationRole role = await dbContext.AppRoles.SingleOrDefaultAsync(x => x.Id == goodId);
+                    return View(role);
+                }
+                else
+                {
+                    return RedirectToAction("NoPermissionError", "Ticket");
+                }
             }
             else
             {
@@ -87,9 +129,17 @@ namespace HelpDeskTeamProject.Controllers
         {
             if (roleId != null || roleId < 1)
             {
-                int goodId = Convert.ToInt32(roleId);
-                TeamRole role = await dbContext.TeamRoles.SingleOrDefaultAsync(x => x.Id == goodId);
-                return View(role);
+                User curUser = await GetCurrentUser();
+                if (curUser.AppRole.Permissions.CanManageUserRoles == true || curUser.AppRole.Permissions.IsAdmin == true)
+                {
+                    int goodId = Convert.ToInt32(roleId);
+                    TeamRole role = await dbContext.TeamRoles.SingleOrDefaultAsync(x => x.Id == goodId);
+                    return View(role);
+                }
+                else
+                {
+                    return RedirectToAction("NoPermissionError", "Ticket");
+                }
             }
             else
             {
@@ -103,11 +153,19 @@ namespace HelpDeskTeamProject.Controllers
         {
             if (ModelState.IsValid)
             {
-                ApplicationRole dbRole = await dbContext.AppRoles.SingleOrDefaultAsync(x => x.Id.Equals(role.Id));
-                dbRole.Name = role.Name;
-                dbRole.Permissions = role.Permissions;
-                await dbContext.SaveChangesAsync();
-                return Redirect("/Role/List");
+                User curUser = await GetCurrentUser();
+                if (curUser.AppRole.Permissions.CanManageUserRoles == true || curUser.AppRole.Permissions.IsAdmin == true)
+                {
+                    ApplicationRole dbRole = await dbContext.AppRoles.SingleOrDefaultAsync(x => x.Id.Equals(role.Id));
+                    dbRole.Name = role.Name;
+                    dbRole.Permissions = role.Permissions;
+                    await dbContext.SaveChangesAsync();
+                    return Redirect("/Role/List");
+                }
+                else
+                {
+                    return RedirectToAction("NoPermissionError", "Ticket");
+                }
             }
 
             return View(role);
@@ -119,11 +177,19 @@ namespace HelpDeskTeamProject.Controllers
         {
             if (ModelState.IsValid)
             {
-                TeamRole dbRole = await dbContext.TeamRoles.SingleOrDefaultAsync(x => x.Id.Equals(role.Id));
-                dbRole.Name = role.Name;
-                dbRole.Permissions = role.Permissions;
-                await dbContext.SaveChangesAsync();
-                return Redirect("/Role/List");
+                User curUser = await GetCurrentUser();
+                if (curUser.AppRole.Permissions.CanManageUserRoles == true || curUser.AppRole.Permissions.IsAdmin == true)
+                {
+                    TeamRole dbRole = await dbContext.TeamRoles.SingleOrDefaultAsync(x => x.Id.Equals(role.Id));
+                    dbRole.Name = role.Name;
+                    dbRole.Permissions = role.Permissions;
+                    await dbContext.SaveChangesAsync();
+                    return Redirect("/Role/List");
+                }
+                else
+                {
+                    return RedirectToAction("NoPermissionError", "Ticket");
+                }
             }
 
             return View(role);

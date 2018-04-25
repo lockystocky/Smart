@@ -11,6 +11,7 @@ using Microsoft.Owin.Security;
 using HelpDeskTeamProject.Models;
 using HelpDeskTeamProject.Context;
 using HelpDeskTeamProject.DataModels;
+using System.Data.Entity;
 
 namespace HelpDeskTeamProject.Controllers
 {
@@ -159,7 +160,11 @@ namespace HelpDeskTeamProject.Controllers
                 var result = await UserManager.CreateAsync(user, model.Password);
                 if (result.Succeeded)
                 {
-                    ApplicationRole defaultRole = new ApplicationRole("Default User", new ApplicationPermissions(false, false, false, false, false, false, true));
+                    ApplicationRole defaultRole = await dbContext.AppRoles.SingleOrDefaultAsync(x => x.Name.Equals("default-user"));
+                    if (defaultRole == null)
+                    {
+                        defaultRole = new ApplicationRole("default-user", new ApplicationPermissions(false, false, false, false, false, false, true, false));
+                    }
                     dbContext.Users.Add(new User(model.Name, model.Surname, user.Email, user.Id, defaultRole));
                     await dbContext.SaveChangesAsync();
                     await SignInManager.SignInAsync(user, isPersistent:false, rememberBrowser:false);

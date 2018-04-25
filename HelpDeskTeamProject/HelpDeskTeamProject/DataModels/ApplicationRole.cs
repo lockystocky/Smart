@@ -14,7 +14,7 @@ namespace HelpDeskTeamProject.DataModels
 
         [Required]
         [StringLength(20)]
-        [Remote("IsApplicationRoleNameAvailable", "Validation", ErrorMessage = "Application role with such name already exists")]
+        //[Remote("IsApplicationRoleNameAvailable", "Validation", ErrorMessage = "Application role with such name already exists")]
         public string Name { get; set; }
 
         public virtual ApplicationPermissions Permissions { get; set; }
