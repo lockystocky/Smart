@@ -219,6 +219,10 @@
     <Compile Include="DataModels\TicketType.cs" />
     <Compile Include="DataModels\User.cs" />
     <Compile Include="DataModels\UserPermission.cs" />
+    <Compile Include="Migrations\201804241049076_commentsDbSet.cs" />
+    <Compile Include="Migrations\201804241049076_commentsDbSet.Designer.cs">
+      <DependentUpon>201804241049076_commentsDbSet.cs</DependentUpon>
+    </Compile>
     <Compile Include="Repositories\IRepository.cs" />
     <Compile Include="Global.asax.cs">
       <DependentUpon>Global.asax</DependentUpon>
@@ -333,7 +337,6 @@
     <Content Include="Views\Role\List.cshtml" />
     <Content Include="Views\Role\EditAppRole.cshtml" />
     <Content Include="Views\Role\EditTeamRole.cshtml" />
-    <Content Include="Views\Teams\Tickets.cshtml" />
     <Content Include="Views\Admin\Index.cshtml" />
     <Content Include="Views\Admin\GetTeamsAndRoles.cshtml" />
     <Content Include="Views\Admin\Edit.cshtml" />
@@ -343,6 +346,7 @@
     <Content Include="Views\Teams\JoinTeam.cshtml" />
     <Content Include="Views\Ticket\NewType.cshtml" />
     <Content Include="Views\Ticket\TypeList.cshtml" />
+    <Content Include="Views\Ticket\Edit.cshtml" />
   </ItemGroup>
   <ItemGroup>
     <Folder Include="App_Data\" />
@@ -365,6 +369,7 @@
     <EmbeddedResource Include="Migrations\201804221358575_InitialCreate.resx">
       <DependentUpon>201804221358575_InitialCreate.cs</DependentUpon>
     </EmbeddedResource>
+
     <EmbeddedResource Include="Migrations\201804221501277_UserId changed for User.resx">
       <DependentUpon>201804221501277_UserId changed for User.cs</DependentUpon>
     </EmbeddedResource>
@@ -376,6 +381,10 @@
     </EmbeddedResource>
     <EmbeddedResource Include="Migrations\201804242223444_Model validation added.resx">
       <DependentUpon>201804242223444_Model validation added.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Migrations\201804241049076_commentsDbSet.resx">
+      <DependentUpon>201804241049076_commentsDbSet.cs</DependentUpon>
+
     </EmbeddedResource>
   </ItemGroup>
   <PropertyGroup>

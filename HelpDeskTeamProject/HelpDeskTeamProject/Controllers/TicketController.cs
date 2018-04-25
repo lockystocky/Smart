@@ -18,6 +18,55 @@ namespace HelpDeskTeamProject.Controllers
     {
         AppContext db = new AppContext();
 
+        public async Task<ActionResult> Edit(int? id)
+        {
+            if (id != null)
+            {
+                List<TicketType> ticketTypes = await db.TicketTypes.ToListAsync();
+                ViewBag.TicketTypes = ticketTypes;
+                Ticket ticket = await db.Tickets.Include(z => z.User).Include(x => x.ChildTickets).Include(y => y.Comments)
+                    .SingleOrDefaultAsync(x => x.Id == id);
+                if (ticket != null)
+                {
+                    return View(ticket);
+                }
+            }
+            return RedirectToAction("Tickets", "Ticket");
+        }
+
+        [HttpPost]
+        public async Task<JsonResult> EditSave(int? id, string description, int? type)
+        {
+            if (id != null && description != null && type != null && description != "")
+            {
+                Ticket ticket = await db.Tickets.SingleOrDefaultAsync(x => x.Id == id);
+                TicketType newType = await db.TicketTypes.SingleOrDefaultAsync(x => x.Id == type);
+                if (ticket != null && newType != null)
+                {
+                    ticket.Description = description;
+                    ticket.Type = newType;
+                    await db.SaveChangesAsync();
+                    return Json(true, JsonRequestBehavior.AllowGet);
+                }
+            }
+            return Json(false, JsonRequestBehavior.AllowGet);
+        }
+
+        public async Task<JsonResult> DeleteComment(int? id)
+        {
+            if (id != null)
+            {
+                Comment comment = await db.Comments.SingleOrDefaultAsync(x => x.Id == id);
+                if (comment != null)
+                {
+                    db.Comments.Remove(comment);
+                    await db.SaveChangesAsync();
+                    return Json(true, JsonRequestBehavior.AllowGet);
+                }
+            }
+            return Json(false, JsonRequestBehavior.AllowGet);
+        }
+
         public async Task<JsonResult> DeleteTicket(int? id)
         {
             if (id != null)
@@ -59,16 +108,48 @@ namespace HelpDeskTeamProject.Controllers
             if (teamId != null)
             {
                 Team curTeam = await db.Teams.Include(x => x.Tickets).SingleOrDefaultAsync(y => y.Id == teamId);
-
                 if (curTeam != null)
                 {
-                    List<Ticket> curTickets = await db.Tickets.Include(x => x.ChildTickets).Include(y => y.Comments).Include(z => z.User).Where(s => s.ParentTicket == null).ToListAsync();
-                    List<TicketDTO> curTicketsDto = new List<TicketDTO>();
-                    foreach (Ticket value in curTickets)
+                    ApplicationUser user = System.Web.HttpContext.Current.GetOwinContext()
+                            .GetUserManager<ApplicationUserManager>()
+                            .FindById(System.Web.HttpContext.Current.User.Identity.GetUserId());
+                    User appUser = await db.Users.Include(z => z.Teams).SingleOrDefaultAsync(x => x.Email.ToLower().Equals(user.Email.ToLower()));
+                    TeamRole curTeamUserRole = curTeam.UserPermissions.SingleOrDefault(x => x.UserId == appUser.Id).TeamRole;
+                    if (appUser != null && curTeamUserRole != null)
                     {
-                        curTicketsDto.Add(new TicketDTO(value));
+                        List<Ticket> curTickets = await db.Tickets.Include(x => x.ChildTickets).Include(y => y.Comments).Include(z => z.User).Where(s => s.ParentTicket == null).ToListAsync();
+                        List<TicketDTO> curTicketsDto = new List<TicketDTO>();
+                        foreach (Ticket value in curTickets)
+                        {
+                            TicketDTO tempDto = new TicketDTO(value);
+                            if (appUser.Id == value.User.Id || appUser.AppRole.Permissions.IsAdmin == true)
+                            {
+                                tempDto.CanDelete = true;
+                                tempDto.CanEdit = true;
+                            }
+                            else
+                            {
+                                if (curTeamUserRole.Permissions.CanEditComments == true)
+                                {
+                                    tempDto.CanEdit = true;
+                                }
+                                else
+                                {
+                                    tempDto.CanEdit = false;
+                                }
+                                if (curTeamUserRole.Permissions.CanDeleteComments == true)
+                                {
+                                    tempDto.CanDelete = true;
+                                }
+                                else
+                                {
+                                    tempDto.CanDelete = false;
+                                }
+                            }
+                            curTicketsDto.Add(tempDto);
+                        }
+                        return Json(curTicketsDto, JsonRequestBehavior.AllowGet);
                     }
-                    return Json(curTicketsDto, JsonRequestBehavior.AllowGet);
                 }
             }
             return Json(null);
@@ -92,7 +173,6 @@ namespace HelpDeskTeamProject.Controllers
 
         public async Task<ActionResult> ShowTicket(int? id)
         {
-            id = 1;
             if (id != null)
             {
                 Ticket ticket = await db.Tickets.Include(y => y.User).Include(s => s.ChildTickets)
@@ -103,7 +183,7 @@ namespace HelpDeskTeamProject.Controllers
                 ViewBag.TicketTypes = ticketTypes;
                 return View(ticket);
             }
-            return View();
+            return RedirectToAction("Tickets", "Ticket");
         }
 
         [HttpPost]

@@ -1,0 +1,105 @@
+﻿@model HelpDeskTeamProject.DataModels.Ticket
+@using HelpDeskTeamProject.DataModels
+@{
+    string[] statusColorsArray = { StatusColors.orangered.ToString(),
+        StatusColors.darkorange.ToString(),
+        StatusColors.limegreen.ToString(),
+        StatusColors.dimgrey.ToString() };
+
+    string[] ticketStateNames = { TicketState.New.ToString(), TicketState.InProgress.ToString(),
+        TicketState.Done.ToString(), TicketState.Rejected.ToString() };
+}
+
+<link rel="stylesheet" href="~/Content/MaterialStyles.css" type="text/css">
+
+<h2>Edit Ticket</h2>
+
+<div>
+    <div class="card">
+        <div class="statusRect" style="background-color: @statusColorsArray[(int)Model.State];"></div>
+        <h5 class="headerMargin"><b>@Model.User.Name</b> <b>@Model.User.Surname</b></h5>
+        <h5 class="dateTime">@Model.TimeCreated.ToString()</h5>
+        <h5 class="dateTime" style="color:@statusColorsArray[(int)Model.State];"><b>@Model.State.ToString()</b></h5>
+        <div class="cardText">
+            <p>@Model.Description</p>
+            <div class="themeText">@Model.Type.Name</div>
+        </div>
+        <div class="divideLine"></div>
+        <div class="replyRectangle">
+            <div class="replyTextMargin"><img src="~/Content/comments.png" style="padding-bottom:1px;" /><b id="ticketCommentsCount"> @Model.Comments.Count</b></div>
+            <div class="replyTextMargin"><img src="~/Content/ticket.png" style="padding-bottom:1px;" /><b id="ticketChildsCount"> @Model.ChildTickets.Count</b></div>
+        </div>
+    </div>
+    <div class="card">
+        <h5 class="headerMargin"><b>Edit Ticket</b></h5>
+        <div class="inputTicketDiv">
+            <textarea id="addTicketText" class="inputTicketText" placeholder="Write here your problem or suggestion...">@Model.Description</textarea>
+        </div>
+        <div style="padding-bottom: 15px; padding-right: 15px; padding-left: 15px;">
+            <div class="selectType">
+                <select id="addTicketType" style="width:100%; min-width:100%; height: 20px; transition: 0.3s;">
+                    <option value="0">Select type</option>
+                    @for (int counter = 0; counter < ViewBag.TicketTypes.Count; counter++)
+                    {
+                        string selectedString = "";
+                        if (Model.Type.Id == ViewBag.TicketTypes[counter].Id)
+                        {
+                            selectedString = "selected";
+                        }
+                        else
+                        {
+                            selectedString = "";
+                        }
+                        <option value="@ViewBag.TicketTypes[counter].Id" @selectedString>@ViewBag.TicketTypes[counter].Name</option>
+                    }
+                </select>
+            </div>
+            <div class="addButtonDiv" onclick="saveTicket();">
+                <p style="padding-top: 1px;">Save</p>
+            </div>
+        </div>
+    </div>
+</div>
+
+<script>
+    function saveTicket() {
+        var textBox = document.getElementById("addTicketText");
+        var typeChoser = document.getElementById("addTicketType");
+        if (textBox.value == "") {
+            textBox.style.border = "groove";
+            textBox.style.borderColor = "orangered";
+            textBox.style.borderWidth = "1.5px";
+        }
+        if (typeChoser.value == 0) {
+            typeChoser.style.border = "groove";
+            typeChoser.style.borderColor = "orangered";
+            typeChoser.style.borderWidth = "1.5px";
+        }
+        if (textBox.value != "" && typeChoser.value != 0) {
+            textBox.style.border = "";
+            textBox.style.borderColor = "";
+            textBox.style.borderWidth = "";
+            typeChoser.style.border = "";
+            typeChoser.style.borderColor = "";
+            typeChoser.style.borderWidth = "";
+            uploadTicket(textBox.value, typeChoser.value);
+        }
+    }
+
+    function uploadTicket(text,type) {
+        var uploaderUrl = "/Ticket/EditSave";
+        var formData = new FormData();
+        formData.append("id", @Model.Id);
+        formData.append("description", text);
+        formData.append("type", type);
+        var xhr = new XMLHttpRequest();
+        xhr.open('POST', uploaderUrl, true);
+        xhr.onloadend = function () {
+            var parsedTicket = JSON.parse(xhr.responseText);
+            if (parsedTicket != null) {
+                location.reload();
+            }
+        }
+        xhr.send(formData);
+    }
+</script>

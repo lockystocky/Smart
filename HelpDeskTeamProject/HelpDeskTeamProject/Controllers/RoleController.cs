@@ -7,6 +7,9 @@ using System.Web.Mvc;
 using System.Data.Entity;
 using HelpDeskTeamProject.Context;
 using HelpDeskTeamProject.DataModels;
+using HelpDeskTeamProject.Models;
+using Microsoft.AspNet.Identity.Owin;
+using Microsoft.AspNet.Identity;
 
 namespace HelpDeskTeamProject.Controllers
 {
@@ -28,6 +31,7 @@ namespace HelpDeskTeamProject.Controllers
             {
                 dbContext.TeamRoles.Add(newTeamRole);
                 await dbContext.SaveChangesAsync();
+                return Redirect("/Role/List");
             }
             
             return View();
@@ -46,6 +50,7 @@ namespace HelpDeskTeamProject.Controllers
             {
                 dbContext.AppRoles.Add(newAppRole);
                 await dbContext.SaveChangesAsync();
+                return Redirect("/Role/List");
             }
 
             return View();
@@ -115,6 +120,38 @@ namespace HelpDeskTeamProject.Controllers
             }
 
             return View(role);
+        }
+
+        public async Task<JsonResult> GetUserTeamPermissions(int? teamId)
+        {
+            ApplicationUser user = System.Web.HttpContext.Current.GetOwinContext()
+                            .GetUserManager<ApplicationUserManager>()
+                            .FindById(System.Web.HttpContext.Current.User.Identity.GetUserId());
+            User appUser = await dbContext.Users.Include(z => z.Teams).SingleOrDefaultAsync(x => x.Email.ToLower().Equals(user.Email.ToLower()));
+            if (appUser != null && teamId != null)
+            {
+                TeamPermissions curPerms = appUser.Teams.SingleOrDefault(x => x.Id == teamId).UserPermissions
+                    .SingleOrDefault(x => x.UserId == appUser.Id).TeamRole.Permissions;
+                return Json(curPerms, JsonRequestBehavior.AllowGet);
+            }
+            return Json(null, JsonRequestBehavior.AllowGet);
+        }
+
+        public async Task<JsonResult> GetUserAppPermissions()
+        {
+            ApplicationUser user = System.Web.HttpContext.Current.GetOwinContext()
+                            .GetUserManager<ApplicationUserManager>()
+                            .FindById(System.Web.HttpContext.Current.User.Identity.GetUserId());
+            User appUser = await dbContext.Users.Include(z => z.AppRole).SingleOrDefaultAsync(x => x.Email.ToLower().Equals(user.Email.ToLower()));
+            if (appUser != null)
+            {
+                ApplicationPermissions curPerms = appUser.AppRole.Permissions;
+                if (curPerms != null)
+                {
+                    return Json(curPerms, JsonRequestBehavior.AllowGet);
+                }
+            }
+            return Json(null, JsonRequestBehavior.AllowGet);
         }
     }
 }

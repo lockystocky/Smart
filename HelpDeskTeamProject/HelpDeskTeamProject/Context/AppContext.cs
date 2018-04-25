@@ -37,5 +37,7 @@ namespace HelpDeskTeamProject.Context
 
         public DbSet<TicketType> TicketTypes { get; set; }
 
+        public DbSet<Comment> Comments { get; set; }
+
     }
 }
