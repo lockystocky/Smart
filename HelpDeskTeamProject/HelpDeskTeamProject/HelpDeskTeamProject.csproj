@@ -200,12 +200,13 @@
     <Compile Include="Controllers\RoleController.cs" />
     <Compile Include="Controllers\TeamsController.cs" />
     <Compile Include="Controllers\TicketController.cs" />
+    <Compile Include="Controllers\ValidationController.cs" />
     <Compile Include="DataModels\AdminLog.cs" />
     <Compile Include="DataModels\ApplicationPermissions.cs" />
     <Compile Include="DataModels\ApplicationRole.cs" />
     <Compile Include="DataModels\Comment.cs" />
     <Compile Include="DataModels\CommentDTO.cs" />
-    <Compile Include="DataModels\InvitationEmail.cs" />
+    <Compile Include="DataModels\InvitedUser.cs" />
     <Compile Include="DataModels\Log.cs" />
     <Compile Include="DataModels\Role.cs" />
     <Compile Include="DataModels\Team.cs" />
@@ -218,9 +219,9 @@
     <Compile Include="DataModels\TicketType.cs" />
     <Compile Include="DataModels\User.cs" />
     <Compile Include="DataModels\UserPermission.cs" />
-    <Compile Include="Migrations\201804241049076_commentsDbSet.cs" />
-    <Compile Include="Migrations\201804241049076_commentsDbSet.Designer.cs">
-      <DependentUpon>201804241049076_commentsDbSet.cs</DependentUpon>
+    <Compile Include="Migrations\201804250824138_Comment DbSet.cs" />
+    <Compile Include="Migrations\201804250824138_Comment DbSet.Designer.cs">
+      <DependentUpon>201804250824138_Comment DbSet.cs</DependentUpon>
     </Compile>
     <Compile Include="Migrations\201804250936231_commentTeamId.cs" />
     <Compile Include="Migrations\201804250936231_commentTeamId.Designer.cs">
@@ -230,6 +231,7 @@
     <Compile Include="Migrations\201804251001555_appPermsAddManageTicketTypes.Designer.cs">
       <DependentUpon>201804251001555_appPermsAddManageTicketTypes.cs</DependentUpon>
     </Compile>
+    <Compile Include="Models\AppAndTeamRolesViewModel.cs" />
     <Compile Include="Repositories\IRepository.cs" />
     <Compile Include="Global.asax.cs">
       <DependentUpon>Global.asax</DependentUpon>
@@ -238,10 +240,27 @@
     <Compile Include="Migrations\201804221358575_InitialCreate.Designer.cs">
       <DependentUpon>201804221358575_InitialCreate.cs</DependentUpon>
     </Compile>
+    <Compile Include="Migrations\201804221501277_UserId changed for User.cs" />
+    <Compile Include="Migrations\201804221501277_UserId changed for User.Designer.cs">
+      <DependentUpon>201804221501277_UserId changed for User.cs</DependentUpon>
+    </Compile>
+    <Compile Include="Migrations\201804241048120_Invitation model changed.cs" />
+    <Compile Include="Migrations\201804241048120_Invitation model changed.Designer.cs">
+      <DependentUpon>201804241048120_Invitation model changed.cs</DependentUpon>
+    </Compile>
+    <Compile Include="Migrations\201804241356433_Invitation model email changed .cs" />
+    <Compile Include="Migrations\201804241356433_Invitation model email changed .Designer.cs">
+      <DependentUpon>201804241356433_Invitation model email changed .cs</DependentUpon>
+    </Compile>
+    <Compile Include="Migrations\201804242223444_Model validation added.cs" />
+    <Compile Include="Migrations\201804242223444_Model validation added.Designer.cs">
+      <DependentUpon>201804242223444_Model validation added.cs</DependentUpon>
+    </Compile>
     <Compile Include="Migrations\Configuration.cs" />
     <Compile Include="Models\AccountViewModels.cs" />
     <Compile Include="Models\IdentityModels.cs" />
     <Compile Include="Models\InviteUserToTeamViewModel.cs" />
+    <Compile Include="Models\JoinTeamViewModel.cs" />
     <Compile Include="Models\ManageTeamViewModel.cs" />
     <Compile Include="Models\ManageViewModels.cs" />
     <Compile Include="Models\TeamWithLastChangesViewModel.cs" />
@@ -333,6 +352,7 @@
     <Content Include="Views\Admin\Error.cshtml" />
     <Content Include="Views\Ticket\Tickets.cshtml" />
     <Content Include="Views\Ticket\ShowTicket.cshtml" />
+    <Content Include="Views\Teams\JoinTeam.cshtml" />
     <Content Include="Views\Ticket\NewType.cshtml" />
     <Content Include="Views\Ticket\TypeList.cshtml" />
     <Content Include="Views\Ticket\Edit.cshtml" />
@@ -340,6 +360,7 @@
   </ItemGroup>
   <ItemGroup>
     <Folder Include="App_Data\" />
+    <Folder Include="Views\Validation\" />
   </ItemGroup>
   <ItemGroup>
     <Content Include="fonts\glyphicons-halflings-regular.woff" />
@@ -358,8 +379,20 @@
     <EmbeddedResource Include="Migrations\201804221358575_InitialCreate.resx">
       <DependentUpon>201804221358575_InitialCreate.cs</DependentUpon>
     </EmbeddedResource>
-    <EmbeddedResource Include="Migrations\201804241049076_commentsDbSet.resx">
-      <DependentUpon>201804241049076_commentsDbSet.cs</DependentUpon>
+    <EmbeddedResource Include="Migrations\201804221501277_UserId changed for User.resx">
+      <DependentUpon>201804221501277_UserId changed for User.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Migrations\201804241048120_Invitation model changed.resx">
+      <DependentUpon>201804241048120_Invitation model changed.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Migrations\201804241356433_Invitation model email changed .resx">
+      <DependentUpon>201804241356433_Invitation model email changed .cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Migrations\201804242223444_Model validation added.resx">
+      <DependentUpon>201804242223444_Model validation added.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Migrations\201804250824138_Comment DbSet.resx">
+      <DependentUpon>201804250824138_Comment DbSet.cs</DependentUpon>
     </EmbeddedResource>
     <EmbeddedResource Include="Migrations\201804250936231_commentTeamId.resx">
       <DependentUpon>201804250936231_commentTeamId.cs</DependentUpon>

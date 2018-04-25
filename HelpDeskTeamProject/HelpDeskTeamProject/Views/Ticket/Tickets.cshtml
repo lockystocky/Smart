@@ -11,10 +11,27 @@
 
 <link rel="stylesheet" href="~/Content/MaterialStyles.css" type="text/css">
 
-<h2>Tickets</h2>
+
+
+<script src="https://ajax.googleapis.com/ajax/libs/jquery/3.3.1/jquery.min.js"></script>
+
+<br/>
+<br />
+<div class="row">
+    <div class="col-md-3">
+        <br />
+        <div class="list-group" id="teamsmenu">
+
+        </div>
+
+    </div>
+    <div class="col-md-9">
+        <a id="managelink"></a>
+        
 
 <div id="baseDiv">
     <div id="newTicketInput" style="display: none;">
+
         <div class="card">
             <h5 class="headerMargin"><b>Add New Ticket</b></h5>
             <div class="inputTicketDiv">
@@ -40,6 +57,9 @@
 
     </div>
 </div>
+</div>
+</div>
+
 
 <script>
     var teamId;
@@ -278,5 +298,82 @@
         getTeamPermissions(teamId);
     }
 
-    window.onloadend = showByTeam(1);
+
+    window.onload = showByTeam(1);
+
+
+
+
+
+
+
+
+
+    function createTeamsMenu(teamsList) {
+        $.each(teamsList, function () {
+            var teamListItem = this;
+            var team = teamListItem.Team;
+            var menuItem = $('<div class="team-name list-group-item list-group-item-action flex-column align-items-start" style="margin-right:0px">');
+            menuItem.attr('id', team.Id);
+            var teamIcon = $('<img class="group-icon">');
+            teamIcon.attr('src', '/Content/Icons/group_icon.png');
+            var teamHeader = $('<p>');
+            teamHeader.append(teamIcon);
+            if (team.Name.length > 15)
+                team.Name = team.Name.slice(0, 12) + "...";
+            teamHeader.append(team.Name);
+            menuItem.append(teamHeader);
+            if (teamListItem.LastTicketText) {
+                var ticketTime = $('<p class="ticket-time">').text(teamListItem.LastTicketTime);
+                var lastMessage = teamListItem.LastTicketAuthor + ": " + teamListItem.LastTicketText;
+                if (lastMessage > 50)
+                    lastMessage = lastMessage.slice(0, 47) + "...";
+                var ticketText = $('<p class="ticket-text">').text(lastMessage);
+                menuItem.append(ticketTime);
+                menuItem.append(ticketText);
+            }
+
+            $('#teamsmenu').append(menuItem);
+            menuItem.click(function () {
+                var shaded = $('.shade:last').removeClass('shade');
+                $(this).addClass('shade');
+                var team_id = $(this).attr('id');
+                
+                 //here must be call of Andrew function to show tickets of team
+                showByTeam(team_id);
+                getManageTeamLink(team_id);
+
+            });
+        });
+    };
+
+    function getTeamsListAndCreateTeamsMenu() {
+        $.getJSON("/Teams/GetCurrentUserTeamsList/")
+            .done(function (teamsList) {
+                createTeamsMenu(teamsList);
+            });
+    };
+
+    function getManageTeamLink(teamId) {        
+        $.get("/teams/GetTeamManagementLink?_teamId=" + teamId, function (data) {
+            if (data) {
+                $('#managelink').text('Manage team');
+                $('#managelink').attr('href', data);
+            }
+            else {
+                $('#managelink').text('');
+                $('#managelink').attr('href', '');
+            }
+           
+        });
+
+    }
+
+    $(function () {
+        getTeamsListAndCreateTeamsMenu();
+    });
+
 </script>
+
+
+

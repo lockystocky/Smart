@@ -153,3 +153,23 @@
     cursor: pointer;
 }
 
+.group-icon {
+    width: 12px;
+    margin-right: 10px;
+    vertical-align: baseline;
+}
+
+.ticket-time {
+    color: gray;
+    text-align: right;
+    font-size: 10px
+}
+
+.ticket-text {
+    font-size: 10px;
+    margin-bottom: 0px;
+}
+
+.shade {
+    background-color: #DCDCDC;
+}

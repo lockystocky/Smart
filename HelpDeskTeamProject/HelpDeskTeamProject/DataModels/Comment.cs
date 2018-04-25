@@ -14,6 +14,7 @@ namespace HelpDeskTeamProject.DataModels
 
         public DateTime TimeCreated { get; set; }
 
+        [Required]
         [StringLength(400)]
         public string Text { get; set; }
 

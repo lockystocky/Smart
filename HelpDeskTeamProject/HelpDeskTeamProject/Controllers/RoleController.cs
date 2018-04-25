@@ -58,8 +58,15 @@ namespace HelpDeskTeamProject.Controllers
 
         public async Task<ActionResult> List()
         {
-            IEnumerable<Role> allRoles = Enumerable.Concat<Role>(await dbContext.TeamRoles.ToListAsync(), await dbContext.AppRoles.ToListAsync());
-            return View(allRoles);
+            var appRoles = await dbContext.AppRoles.ToListAsync();
+            var teamRoles = await dbContext.TeamRoles.ToListAsync();
+            var allRoles = new AppAndTeamRolesViewModel()
+            {
+                TeamRoles = teamRoles,
+                ApplicationRoles = appRoles
+            };
+
+           return View(allRoles);
         }
 
         public async Task<ActionResult> EditAppRole(int? roleId)
@@ -128,7 +135,7 @@ namespace HelpDeskTeamProject.Controllers
             if (appUser != null && teamId != null)
             {
                 TeamPermissions curPerms = appUser.Teams.SingleOrDefault(x => x.Id == teamId).UserPermissions
-                    .SingleOrDefault(x => x.UserId == appUser.Id).TeamRole.Permissions;
+                    .SingleOrDefault(x => x.User.Id == appUser.Id).TeamRole.Permissions;
                 return Json(curPerms, JsonRequestBehavior.AllowGet);
             }
             return Json(null, JsonRequestBehavior.AllowGet);

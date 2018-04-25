@@ -46,7 +46,7 @@
         $.each(teamsList, function () {
             var teamListItem = this;
             var team = teamListItem.Team;
-            var lastTicket = teamListItem.LastTicket;
+           // var lastTicket = teamListItem.LastTicket;
             var menuItem = $('<div class="team-name list-group-item list-group-item-action flex-column align-items-start" style="margin-right:0px">');
             menuItem.attr('id', team.Id);
             var teamIcon = $('<img class="group-icon">');
@@ -57,11 +57,12 @@
                 team.Name = team.Name.slice(0, 12) + "...";
             teamHeader.append(team.Name);
             menuItem.append(teamHeader);
-            if (lastTicket) {
-                var ticketTime = $('<p class="ticket-time">').text(lastTicket.TimeCreated);
-                if (lastTicket.Description.length > 50)
-                    lastTicket.Description = lastTicket.Description.slice(0, 47) + "...";
-                var ticketText = $('<p class="ticket-text">').text(lastTicket.Description);
+            if (teamListItem.LastTicketText) {
+                var ticketTime = $('<p class="ticket-time">').text(teamListItem.LastTicketTime);
+                var lastMessage = teamListItem.LastTicketAuthor + ": " + teamListItem.LastTicketText;
+                if (lastMessage > 50)
+                    lastMessage = lastMessage.slice(0, 47) + "...";
+                var ticketText = $('<p class="ticket-text">').text(lastMessage);
                 menuItem.append(ticketTime);
                 menuItem.append(ticketText);
             }

@@ -7,13 +7,13 @@ namespace HelpDeskTeamProject.Migrations
     using System.Resources;
     
     [GeneratedCode("EntityFramework.Migrations", "6.2.0-61023")]
-    public sealed partial class commentsDbSet : IMigrationMetadata
+    public sealed partial class CommentDbSet : IMigrationMetadata
     {
-        private readonly ResourceManager Resources = new ResourceManager(typeof(commentsDbSet));
+        private readonly ResourceManager Resources = new ResourceManager(typeof(CommentDbSet));
         
         string IMigrationMetadata.Id
         {
-            get { return "201804241049076_commentsDbSet"; }
+            get { return "201804250824138_Comment DbSet"; }
         }
         
         string IMigrationMetadata.Source

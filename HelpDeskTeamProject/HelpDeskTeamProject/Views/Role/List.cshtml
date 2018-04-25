@@ -1,57 +1,70 @@
-﻿@model IEnumerable<HelpDeskTeamProject.DataModels.Role>
+﻿@model HelpDeskTeamProject.Models.AppAndTeamRolesViewModel
 @using HelpDeskTeamProject.DataModels;
 @{
     ViewBag.Title = "List";
 }
 
-<h2>List</h2>
 
+<br/>
 <p>@Html.ActionLink("Create New App Role","CreateAppRole","Role")</p>
+
+<table class="table">
+    <tr>
+        <th>
+            @Html.DisplayName("Id")
+        </th>
+        <th>
+            @Html.DisplayName("Application role")
+        </th>       
+        <th></th>
+    </tr>
+
+    @foreach (var appRole in Model.ApplicationRoles)
+    {
+        <tr>
+            <td>
+                @Html.DisplayFor(modelItem => appRole.Id)
+            </td>
+            <td>
+                @Html.DisplayFor(modelItem => appRole.Name)
+            </td>
+           
+            <td>
+                @Html.ActionLink("Edit", "EditAppRole", new { roleId = appRole.Id })
+               
+            </td>
+        </tr>
+    }
+
+</table>
+
+<br/>
+<br />
 <p>@Html.ActionLink("Create New Team Role", "CreateTeamRole", "Role")</p>
 <table class="table">
     <tr>
         <th>
-            @Html.DisplayNameFor(model => model.Id)
+            @Html.DisplayName("Id")
         </th>
         <th>
-            @Html.DisplayNameFor(model => model.Name)
-        </th>
-        <th>
-            RoleType
+            @Html.DisplayName("Team role")
         </th>
         <th></th>
     </tr>
 
-    @foreach (var item in Model)
+    @foreach (var teamRole in Model.TeamRoles)
     {
-        var currentRole = new Role();
-        if (item is ApplicationRole)
-        {
-            currentRole = item as ApplicationRole;
-        }
-        else
-        {
-            currentRole = item as TeamRole;
-        }
         <tr>
             <td>
-                @Html.DisplayFor(modelItem => item.Id)
+                @Html.DisplayFor(modelItem => teamRole.Id)
             </td>
             <td>
-                @Html.DisplayFor(modelItem => item.Name)
+                @Html.DisplayFor(modelItem => teamRole.Name)
             </td>
+
             <td>
-                @Html.DisplayFor(modelItem => item.GetType().Name)
-            </td>
-            <td>
-                @if (currentRole is ApplicationRole)
-                {
-                    @Html.ActionLink("Edit", "EditAppRole", new { roleId = item.Id })
-                }
-                else if (currentRole is TeamRole)
-                {
-                    @Html.ActionLink("Edit", "EditTeamRole", new { roleId = item.Id })
-                }
+                @Html.ActionLink("Edit", "EditAppRole", new { roleId = teamRole.Id })
+
             </td>
         </tr>
     }

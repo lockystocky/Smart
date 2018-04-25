@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
 using System.Linq;
 using System.Web;
+using System.Web.Mvc;
 
 namespace HelpDeskTeamProject.DataModels
 {
@@ -13,6 +14,7 @@ namespace HelpDeskTeamProject.DataModels
         public Guid TeamGuid { get; set; }
 
         [StringLength(30)]
+        [Remote("IsTeamNameAvailable", "Validation", ErrorMessage = "Team with such name already exists")]
         public string Name { get; set; }
 
         public int OwnerId { get; set; }
@@ -21,7 +23,7 @@ namespace HelpDeskTeamProject.DataModels
 
         public virtual List<UserPermission> UserPermissions { get; set; }
 
-        public virtual List<InvitationEmail> InvitedEmails { get; set; }
+        public virtual List<InvitedUser> InvitedUsers { get; set; }
 
         public string InvitationLink { get; set; }
 
