@@ -325,7 +325,6 @@
 
     function createTeamsMenu(teamsList) {
         $.each(teamsList, function () {
-           // var teamListItem = this;
             var team = this;
             var menuItem = $('<div class="team-name list-group-item list-group-item-action flex-column align-items-start" style="margin-right:0px">');
             menuItem.attr('id', team.TeamId);
@@ -333,8 +332,8 @@
             teamIcon.attr('src', '/Content/Icons/group_icon.png');
             var teamHeader = $('<p>');
             teamHeader.append(teamIcon);
-            if (team.Name.length > 15)
-                team.Name = team.Name.slice(0, 12) + "...";
+            if (team.TeamName.length > 15)
+                team.TeamName = team.TeamName.slice(0, 12) + "...";
             teamHeader.append(team.TeamName);
             menuItem.append(teamHeader);
             

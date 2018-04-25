@@ -35,6 +35,8 @@ namespace HelpDeskTeamProject.Services
                     TeamId = team.Id,
                     TeamName = team.Name
                 };
+
+                teamMenu.Add(teamMenuItem);
             }
 
             return teamMenu;
