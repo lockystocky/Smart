@@ -129,22 +129,8 @@ namespace HelpDeskTeamProject.Controllers
                             }
                             else
                             {
-                                if (curTeamUserRole.Permissions.CanEditComments == true)
-                                {
-                                    tempDto.CanEdit = true;
-                                }
-                                else
-                                {
-                                    tempDto.CanEdit = false;
-                                }
-                                if (curTeamUserRole.Permissions.CanDeleteComments == true)
-                                {
-                                    tempDto.CanDelete = true;
-                                }
-                                else
-                                {
-                                    tempDto.CanDelete = false;
-                                }
+                                tempDto.CanEdit = curTeamUserRole.Permissions.CanEditComments;
+                                tempDto.CanDelete = curTeamUserRole.Permissions.CanDeleteComments;
                             }
                             curTicketsDto.Add(tempDto);
                         }
@@ -162,26 +148,66 @@ namespace HelpDeskTeamProject.Controllers
             return View();
         }
 
-        public async Task<ActionResult> TicketsList(int? teamId)
-        {
-            if (teamId != null)
-            {
-                Team team = await db.Teams.SingleOrDefaultAsync(x => x.Id == teamId);
-            }
-            return View();
-        }
+        //public async Task<ActionResult> TicketsList(int? teamId)
+        //{
+        //    if (teamId != null)
+        //    {
+        //        Team team = await db.Teams.SingleOrDefaultAsync(x => x.Id == teamId);
+        //    }
+        //    return View();
+        //}
 
         public async Task<ActionResult> ShowTicket(int? id)
         {
             if (id != null)
             {
+                string userAppId = System.Web.HttpContext.Current.User.Identity.GetUserId();
+                User curUser = await db.Users.SingleOrDefaultAsync(x => x.AppId.Equals(userAppId));
                 Ticket ticket = await db.Tickets.Include(y => y.User).Include(s => s.ChildTickets)
                     .SingleOrDefaultAsync(x => x.Id == id);
                 ticket.ChildTickets = await db.Tickets.Include(z => z.User).Include(y => y.ChildTickets).Include(w => w.Comments)
                     .Where(x => x.ParentTicket.Id == ticket.Id).ToListAsync();
+                Team team = await db.Teams.Include(x => x.UserPermissions).SingleOrDefaultAsync(y => y.Id == ticket.TeamId);
+                TeamPermissions teamPerms = team.UserPermissions.SingleOrDefault(x => x.UserId == curUser.Id).TeamRole.Permissions;
+
+                TicketDTO ticketDto = new TicketDTO(ticket);
+                List<TicketDTO> childTicketsDto = new List<TicketDTO>();
+                foreach (Ticket value in ticket.ChildTickets)
+                {
+                    TicketDTO tempDto = new TicketDTO(value);
+                    if (curUser.Id == value.User.Id || curUser.AppRole.Permissions.IsAdmin == true)
+                    {
+                        tempDto.CanDelete = true;
+                        tempDto.CanEdit = true;
+                    }
+                    else
+                    {
+                        tempDto.CanEdit = teamPerms.CanEditComments;
+                        tempDto.CanDelete = teamPerms.CanDeleteComments;
+                    }
+                    childTicketsDto.Add(tempDto);
+                }
+                ticketDto.ChildTickets = childTicketsDto;
+
+                List<CommentDTO> commentsDto = new List<CommentDTO>();
+                foreach (Comment value in ticket.Comments)
+                {
+                    CommentDTO tempDto = new CommentDTO(value);
+                    if (curUser.Id == value.User.Id || curUser.AppRole.Permissions.IsAdmin == true)
+                    {
+                        tempDto.CanDelete = true;
+                    }
+                    else
+                    {
+                        tempDto.CanDelete = teamPerms.CanDeleteComments;
+                    }
+                    commentsDto.Add(tempDto);
+                }
+                ticketDto.Comments = commentsDto;
+
                 List<TicketType> ticketTypes = await db.TicketTypes.ToListAsync();
                 ViewBag.TicketTypes = ticketTypes;
-                return View(ticket);
+                return View(ticketDto);
             }
             return RedirectToAction("Tickets", "Ticket");
         }
@@ -205,6 +231,8 @@ namespace HelpDeskTeamProject.Controllers
                     TicketDTO ticketDto = new TicketDTO(ticketFromDb.Id, ticketFromDb.TeamId, ticketFromDb.User, 
                         ticketFromDb.Description, ticketFromDb.Type, ticketFromDb.TimeCreated.ToString(), ticketFromDb.State, 
                         ticketFromDb.ChildTickets.Count, ticketFromDb.Comments.Count);
+                    ticketDto.CanDelete = true;
+                    ticketDto.CanEdit = true;
                     return Json(ticketDto);
                 }
             }
@@ -223,6 +251,8 @@ namespace HelpDeskTeamProject.Controllers
                     TicketDTO ticketDto = new TicketDTO(ticketFromDb.Id, ticketFromDb.TeamId, ticketFromDb.User,
                         ticketFromDb.Description, ticketFromDb.Type, ticketFromDb.TimeCreated.ToString(), ticketFromDb.State,
                         ticketFromDb.ChildTickets.Count, ticketFromDb.Comments.Count);
+                    ticketDto.CanDelete = true;
+                    ticketDto.CanEdit = true;
                     return Json(ticketDto);
                 }
             }
@@ -242,7 +272,7 @@ namespace HelpDeskTeamProject.Controllers
                 Comment newComment = new Comment(text, curUser, DateTime.Now);
                 curTicket.Comments.Add(newComment);
                 await db.SaveChangesAsync();
-                CommentDTO commentToJs = new CommentDTO(newComment.Id, newComment.Text, newComment.User, newComment.TimeCreated.ToString());
+                CommentDTO commentToJs = new CommentDTO(newComment.Id, newComment.Text, newComment.User, newComment.TimeCreated.ToString(), true);
                 return Json(commentToJs);
             }
             else

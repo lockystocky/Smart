@@ -1,4 +1,4 @@
-﻿@model HelpDeskTeamProject.DataModels.Ticket
+﻿@model HelpDeskTeamProject.DataModels.TicketDTO
 @using HelpDeskTeamProject.DataModels
 @{
     string[] statusColorsArray = { StatusColors.orangered.ToString(),
@@ -280,10 +280,13 @@
     <div class="pageDivideLeft">
         <div class="card">
             <div class="statusRect" style="background-color: @statusColorsArray[(int)Model.State];"></div>
-            <h5 class="headerMargin"><b>@Model.User.Name</b> <b>@Model.User.Surname</b></h5>
-            <h5 class="dateTime">@Model.TimeCreated.ToString()</h5>
+            <h5 class="headerMargin"><b>@Model.UserName</b> <b>@Model.UserSurname</b></h5>
+            <h5 class="dateTime">@Model.TimeCreated</h5>
             <h5 class="dateTime" style="color:@statusColorsArray[(int)Model.State];"><b>@Model.State.ToString()</b></h5>
-            <h5 class="deleteButton" onclick="deleteThisTicket()">Delete</h5>
+            @if (Model.CanDelete)
+            {
+                <h5 class="deleteButton" onclick="deleteThisTicket()">Delete</h5>
+            }
             <div class="cardText">
                 <p>@Model.Description</p>
                 <div class="themeText">@Model.Type.Name</div>
@@ -291,9 +294,12 @@
             <div class="divideLine"></div>
             <div class="replyRectangle">
                 <div class="replyTextMargin">Reply</div>
-                <div class="replyTextMargin" onclick="editButtonClick(@Model.Id)">Edit</div>
-                <div class="replyTextMargin"><img src="~/Content/comments.png" style="padding-bottom:1px;" /><b id="ticketCommentsCount"> @Model.Comments.Count</b></div>
-                <div class="replyTextMargin"><img src="~/Content/ticket.png" style="padding-bottom:1px;" /><b id="ticketChildsCount"> @Model.ChildTickets.Count</b></div>
+                @if (Model.CanEdit)
+                {
+                    <div class="replyTextMargin" onclick="editButtonClick(@Model.Id)">Edit</div>
+                }
+                <div class="replyTextMargin"><img src="~/Content/comments.png" style="padding-bottom:1px;" /><b id="ticketCommentsCount"> @Model.CommentsCount</b></div>
+                <div class="replyTextMargin"><img src="~/Content/ticket.png" style="padding-bottom:1px;" /><b id="ticketChildsCount"> @Model.ChildTicketsCount</b></div>
             </div>
         </div>
         <div class="card">
@@ -313,9 +319,12 @@
                 foreach (var comment in Model.Comments)
                 {
                     <div class="card" id="@String.Concat("comment_" + comment.Id)">
-                    <h5 class="headerMargin"><b>@comment.User.Name</b> <b>@comment.User.Surname</b></h5>
-                    <h5 class="dateTime">@comment.TimeCreated.ToString()</h5>
-                    <h5 class="deleteButton" onclick="deleteComAndHide(@comment.Id)">Delete</h5>
+                    <h5 class="headerMargin"><b>@comment.UserName</b> <b>@comment.UserSurname</b></h5>
+                    <h5 class="dateTime">@comment.TimeCreated</h5>
+                    @if (comment.CanDelete)
+                    {
+                        <h5 class="deleteButton" onclick="deleteComAndHide(@comment.Id)">Delete</h5>
+                    }
                         <div class="commentText">
                             <p>@comment.Text</p>
                         </div>
@@ -361,10 +370,13 @@
                 {
                     <div class="card" id="@String.Concat("ticket_" + childTicket.Id)">
                         <div class="statusRect" style="background-color: @statusColorsArray[(int)childTicket.State]"></div>
-                        <h5 class="headerMargin"><b>@childTicket.User.Name</b> <b>@childTicket.User.Surname</b></h5>
-                        <h5 class="dateTime">@childTicket.TimeCreated.ToString()</h5>
+                        <h5 class="headerMargin"><b>@childTicket.UserName</b> <b>@childTicket.UserSurname</b></h5>
+                        <h5 class="dateTime">@childTicket.TimeCreated</h5>
                         <h5 class="dateTime" style="color:@statusColorsArray[(int)childTicket.State];"><b>@childTicket.State.ToString()</b></h5>
-                        <h5 class="deleteButton" onclick="deleteAndHide(@childTicket.Id)">Delete</h5>
+                        @if (childTicket.CanDelete)
+                        {
+                            <h5 class="deleteButton" onclick="deleteAndHide(@childTicket.Id)">Delete</h5>
+                        }
                         <div class="cardText">
                             <p>@childTicket.Description</p>
                             <div class="themeText">@childTicket.Type.Name</div>
@@ -372,9 +384,12 @@
                         <div class="divideLine"></div>
                         <div class="replyRectangle">
                             <div class="replyTextMargin" onclick="showButtonClick(@childTicket.Id)">Show</div>
-                            <div class="replyTextMargin" onclick="editButtonClick(@childTicket.Id)">Edit</div>
-                            <div class="replyTextMargin"><img src="~/Content/comments.png" style="padding-bottom:1px;" /><b> @childTicket.Comments.Count</b></div>
-                            <div class="replyTextMargin"><img src="~/Content/ticket.png" style="padding-bottom:1px;" /><b> @childTicket.ChildTickets.Count</b></div>
+                            @if (childTicket.CanEdit)
+                            {
+                                <div class="replyTextMargin" onclick="editButtonClick(@childTicket.Id)">Edit</div>
+                            }
+                            <div class="replyTextMargin"><img src="~/Content/comments.png" style="padding-bottom:1px;" /><b> @childTicket.CommentsCount</b></div>
+                            <div class="replyTextMargin"><img src="~/Content/ticket.png" style="padding-bottom:1px;" /><b> @childTicket.ChildTicketsCount</b></div>
                         </div>
                     </div>
                 }

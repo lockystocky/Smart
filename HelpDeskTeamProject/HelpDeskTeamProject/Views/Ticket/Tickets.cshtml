@@ -44,7 +44,6 @@
 <script>
     var teamId;
     var emptyTeamTickets = false;
-    //var appPermissions = null;
     var teamPermissions = null;
 
     function displayNewTicket(tickets) {
@@ -79,6 +78,7 @@
             clearTicketsDiv();
             emptyTeamTickets = false;
         }
+        var tempId = ticket.Id;
         var statusNames = @Html.Raw(Json.Encode(ticketStateNames));
         var statusColorsJs = @Html.Raw(Json.Encode(statusColorsArray));
         var ticketsDisplay = document.getElementById("ticketsDiv");
@@ -113,7 +113,6 @@
             var deleteButton = document.createElement("h5");
             deleteButton.className = "deleteButton";
             deleteButton.innerText = "Delete";
-            var tempId = ticket.Id;
             deleteButton.addEventListener("click", function () { deleteAndHide(tempId) });
             cardDiv.appendChild(deleteButton);
         }
@@ -253,21 +252,6 @@
         ticketsDiv.innerHTML = "";
     }
 
-    //function getAppPermissions() {
-    //    if (appPermissions == null) {
-    //        var uploaderUrl = "/Role/GetUserAppPermissions";
-    //        var xhr = new XMLHttpRequest();
-    //        xhr.open('GET', uploaderUrl, true);
-    //        xhr.onloadend = function () {
-    //            var parsedResp = JSON.parse(xhr.responseText);
-    //            if (parsedResp != null) {
-    //                appPermissions = parsedResp;
-    //            }
-    //        }
-    //        xhr.send(null);
-    //    }
-    //}
-
     function getTeamPermissions(id) {
         var uploaderUrl = "/Role/GetUserTeamPermissions?teamId=" + id;
         var xhr = new XMLHttpRequest();
@@ -286,7 +270,6 @@
 
     function showByTeam(id) {
         teamId = id;
-        //showInputTicket();
         clearTicketsDiv();
         getTickets(teamId);
         getTeamPermissions(teamId);
