@@ -219,25 +219,9 @@
     <Compile Include="DataModels\TicketType.cs" />
     <Compile Include="DataModels\User.cs" />
     <Compile Include="DataModels\UserPermission.cs" />
-    <Compile Include="Migrations\201804221358575_InitialCreate.cs" />
-    <Compile Include="Migrations\201804221358575_InitialCreate.Designer.cs">
-      <DependentUpon>201804221358575_InitialCreate.cs</DependentUpon>
-    </Compile>
-    <Compile Include="Migrations\201804241049076_commentsDbSet.cs" />
-    <Compile Include="Migrations\201804241049076_commentsDbSet.Designer.cs">
-      <DependentUpon>201804241049076_commentsDbSet.cs</DependentUpon>
-    </Compile>
-    <Compile Include="Migrations\201804250936231_commentTeamId.cs" />
-    <Compile Include="Migrations\201804250936231_commentTeamId.Designer.cs">
-      <DependentUpon>201804250936231_commentTeamId.cs</DependentUpon>
-    </Compile>
-    <Compile Include="Migrations\201804251001555_appPermsAddManageTicketTypes.cs" />
-    <Compile Include="Migrations\201804251001555_appPermsAddManageTicketTypes.Designer.cs">
-      <DependentUpon>201804251001555_appPermsAddManageTicketTypes.cs</DependentUpon>
-    </Compile>
-    <Compile Include="Migrations\201804251259524_fixSolution.cs" />
-    <Compile Include="Migrations\201804251259524_fixSolution.Designer.cs">
-      <DependentUpon>201804251259524_fixSolution.cs</DependentUpon>
+    <Compile Include="Migrations\201804251335365_newInitialMigrations.cs" />
+    <Compile Include="Migrations\201804251335365_newInitialMigrations.Designer.cs">
+      <DependentUpon>201804251335365_newInitialMigrations.cs</DependentUpon>
     </Compile>
     <Compile Include="Models\AppAndTeamRolesViewModel.cs" />
     <Compile Include="Repositories\IRepository.cs" />
@@ -364,20 +348,8 @@
     <Content Include="Scripts\jquery-1.10.2.min.map" />
   </ItemGroup>
   <ItemGroup>
-    <EmbeddedResource Include="Migrations\201804221358575_InitialCreate.resx">
-      <DependentUpon>201804221358575_InitialCreate.cs</DependentUpon>
-    </EmbeddedResource>
-    <EmbeddedResource Include="Migrations\201804241049076_commentsDbSet.resx">
-      <DependentUpon>201804241049076_commentsDbSet.cs</DependentUpon>
-    </EmbeddedResource>
-    <EmbeddedResource Include="Migrations\201804250936231_commentTeamId.resx">
-      <DependentUpon>201804250936231_commentTeamId.cs</DependentUpon>
-    </EmbeddedResource>
-    <EmbeddedResource Include="Migrations\201804251001555_appPermsAddManageTicketTypes.resx">
-      <DependentUpon>201804251001555_appPermsAddManageTicketTypes.cs</DependentUpon>
-    </EmbeddedResource>
-    <EmbeddedResource Include="Migrations\201804251259524_fixSolution.resx">
-      <DependentUpon>201804251259524_fixSolution.cs</DependentUpon>
+    <EmbeddedResource Include="Migrations\201804251335365_newInitialMigrations.resx">
+      <DependentUpon>201804251335365_newInitialMigrations.cs</DependentUpon>
     </EmbeddedResource>
   </ItemGroup>
   <PropertyGroup>
