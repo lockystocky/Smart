@@ -224,6 +224,7 @@
       <DependentUpon>201804251335365_newInitialMigrations.cs</DependentUpon>
     </Compile>
     <Compile Include="Models\AppAndTeamRolesViewModel.cs" />
+    <Compile Include="Models\TeamMenuItem.cs" />
     <Compile Include="Repositories\IRepository.cs" />
     <Compile Include="Global.asax.cs">
       <DependentUpon>Global.asax</DependentUpon>
@@ -237,6 +238,7 @@
     <Compile Include="Models\ManageViewModels.cs" />
     <Compile Include="Models\TeamWithLastChangesViewModel.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
+    <Compile Include="Services\TeamService.cs" />
     <Compile Include="Startup.cs" />
   </ItemGroup>
   <ItemGroup>
@@ -312,7 +314,6 @@
     <Content Include="Views\Teams\Index.cshtml" />
     <Content Include="Views\Teams\AllTeams.cshtml" />
     <Content Include="Views\Teams\InviteUser.cshtml" />
-    <Content Include="Views\Teams\TeamInfo.cshtml" />
     <Content Include="Views\Teams\Teams.cshtml" />
     <Content Include="Views\Teams\ManageTeam.cshtml" />
     <Content Include="Views\Role\List.cshtml" />

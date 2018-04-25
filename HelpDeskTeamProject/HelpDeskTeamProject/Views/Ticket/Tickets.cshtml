@@ -309,28 +309,19 @@
 
     function createTeamsMenu(teamsList) {
         $.each(teamsList, function () {
-            var teamListItem = this;
-            var team = teamListItem.Team;
+           // var teamListItem = this;
+            var team = this;
             var menuItem = $('<div class="team-name list-group-item list-group-item-action flex-column align-items-start" style="margin-right:0px">');
-            menuItem.attr('id', team.Id);
+            menuItem.attr('id', team.TeamId);
             var teamIcon = $('<img class="group-icon">');
             teamIcon.attr('src', '/Content/Icons/group_icon.png');
             var teamHeader = $('<p>');
             teamHeader.append(teamIcon);
             if (team.Name.length > 15)
                 team.Name = team.Name.slice(0, 12) + "...";
-            teamHeader.append(team.Name);
+            teamHeader.append(team.TeamName);
             menuItem.append(teamHeader);
-            if (teamListItem.LastTicketText) {
-                var ticketTime = $('<p class="ticket-time">').text(teamListItem.LastTicketTime);
-                var lastMessage = teamListItem.LastTicketAuthor + ": " + teamListItem.LastTicketText;
-                if (lastMessage > 50)
-                    lastMessage = lastMessage.slice(0, 47) + "...";
-                var ticketText = $('<p class="ticket-text">').text(lastMessage);
-                menuItem.append(ticketTime);
-                menuItem.append(ticketText);
-            }
-
+            
             $('#teamsmenu').append(menuItem);
             menuItem.click(function () {
                 var shaded = $('.shade:last').removeClass('shade');
