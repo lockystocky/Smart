@@ -162,7 +162,7 @@ namespace HelpDeskTeamProject.Controllers
                 {
                     User curUser = await GetCurrentUser();
                     if (curTeam.Users.Find(x => x.Id == curUser.Id) != null){
-                        TeamRole curTeamUserRole = curTeam.UserPermissions.SingleOrDefault(x => x.UserId == curUser.Id).TeamRole;
+                        TeamRole curTeamUserRole = curTeam.UserPermissions.SingleOrDefault(x => x.User.Id == curUser.Id).TeamRole;
                         if (curUser != null && curTeamUserRole != null)
                         {
                             List<Ticket> curTickets = await db.Tickets.Include(x => x.ChildTickets).Include(y => y.Comments).Include(z => z.User).Where(s => s.ParentTicket == null).ToListAsync();
@@ -207,7 +207,7 @@ namespace HelpDeskTeamProject.Controllers
                 ticket.ChildTickets = await db.Tickets.Include(z => z.User).Include(y => y.ChildTickets).Include(w => w.Comments)
                     .Where(x => x.ParentTicket.Id == ticket.Id).ToListAsync();
                 Team team = await db.Teams.Include(x => x.UserPermissions).SingleOrDefaultAsync(y => y.Id == ticket.TeamId);
-                TeamPermissions teamPerms = team.UserPermissions.SingleOrDefault(x => x.UserId == curUser.Id).TeamRole.Permissions;
+                TeamPermissions teamPerms = team.UserPermissions.SingleOrDefault(x => x.User.Id == curUser.Id).TeamRole.Permissions;
                 
                 if (team.Users.Find(x => x.Id == curUser.Id) != null)
                 {
@@ -317,7 +317,7 @@ namespace HelpDeskTeamProject.Controllers
         private async Task<TeamPermissions> GetCurrentTeamPermissions(int ticketTeamId, int curUserId)
         {
             Team team = await db.Teams.SingleOrDefaultAsync(x => x.Id == ticketTeamId);
-            TeamPermissions teamPerms = team.UserPermissions.SingleOrDefault(x => x.UserId == curUserId).TeamRole.Permissions;
+            TeamPermissions teamPerms = team.UserPermissions.SingleOrDefault(x => x.User.Id == curUserId).TeamRole.Permissions;
             return teamPerms;
         }
     }

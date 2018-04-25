@@ -7,13 +7,13 @@ namespace HelpDeskTeamProject.Migrations
     using System.Resources;
     
     [GeneratedCode("EntityFramework.Migrations", "6.2.0-61023")]
-    public sealed partial class Modelvalidationadded : IMigrationMetadata
+    public sealed partial class fixSolution : IMigrationMetadata
     {
-        private readonly ResourceManager Resources = new ResourceManager(typeof(Modelvalidationadded));
+        private readonly ResourceManager Resources = new ResourceManager(typeof(fixSolution));
         
         string IMigrationMetadata.Id
         {
-            get { return "201804242223444_Model validation added"; }
+            get { return "201804251259524_fixSolution"; }
         }
         
         string IMigrationMetadata.Source

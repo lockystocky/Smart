@@ -45,6 +45,7 @@ namespace HelpDeskTeamProject.Controllers
             var currentUser = GetCurrentUser();
 
             var currentUserTeamsList = db.Teams
+                .Include(z => z.Users)
                 .Include(t => t.Tickets)
                 .Where(t => t.Users.Select(u => u.Id).Contains(currentUser.Id))
                 .ToList();            
