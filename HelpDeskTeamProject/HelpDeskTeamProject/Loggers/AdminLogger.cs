@@ -18,11 +18,14 @@ namespace HelpDeskTeamProject.Loggers
             {
                 adminActions.Add(AdminAction.BlockUser);
             }
-            else if (originalObject.AppRole.Permissions.IsAdmin != changedObject.AppRole.Permissions.IsAdmin)
+            if (originalObject.AppRole.Permissions.IsAdmin != changedObject.AppRole.Permissions.IsAdmin)
+            {
+                adminActions.Add(AdminAction.ChangeUserRole);
+            }
+            else
             {
                 adminActions.Add(AdminAction.ChangedUserData);
             }
-            adminActions.Add(AdminAction.ChangedUserData);
 
             return adminActions;
         }
@@ -35,11 +38,11 @@ namespace HelpDeskTeamProject.Loggers
             {
                 state += " was blocked or unblocked ";
             }
-            else if (adminActions.Contains(AdminAction.ChangeUserRole))
+            if (adminActions.Contains(AdminAction.ChangeUserRole))
             {
                 state += "application role was changed";
             }
-            else if (adminActions.Contains(AdminAction.ChangedUserData))
+            if (adminActions.Contains(AdminAction.ChangedUserData))
             {
                 state += "data was changed";
             }

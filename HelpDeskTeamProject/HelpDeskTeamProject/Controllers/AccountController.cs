@@ -73,6 +73,14 @@ namespace HelpDeskTeamProject.Controllers
         [ValidateAntiForgeryToken]
         public async Task<ActionResult> Login(LoginViewModel model, string returnUrl)
         {
+            var userName = model.Email;
+            var currentUser = dbContext.Users.Where(u => u.Email == userName).FirstOrDefault();
+
+            if (currentUser.IsBanned)
+            {
+                return View("Error");
+            }
+
             if (!ModelState.IsValid)
             {
                 return View(model);
