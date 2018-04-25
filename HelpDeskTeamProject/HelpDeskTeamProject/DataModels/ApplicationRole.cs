@@ -12,8 +12,8 @@ namespace HelpDeskTeamProject.DataModels
 
         public int Id { get; set; }
 
-        [Required]
-        [StringLength(20)]
+        //[Required]
+        //[StringLength(20)]
         //[Remote("IsApplicationRoleNameAvailable", "Validation", ErrorMessage = "Application role with such name already exists")]
         public string Name { get; set; }
 

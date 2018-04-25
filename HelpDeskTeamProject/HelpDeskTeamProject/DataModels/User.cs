@@ -11,16 +11,16 @@ namespace HelpDeskTeamProject.DataModels
     {
         public int Id { get; set; }
 
-        [Required]
-        [StringLength(20)]
+        //[Required]
+        //[StringLength(20)]
         public string Name { get; set; }
 
-        [Required]
-        [StringLength(20)]
+        //[Required]
+        //[StringLength(20)]
         public string Surname { get; set; }
 
-        [Required]
-        [EmailAddress]
+        //[Required]
+        //[EmailAddress]
         public string Email { get; set; }
 
         public string AppId { get; set; }
