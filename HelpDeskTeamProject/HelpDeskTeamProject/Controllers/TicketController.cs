@@ -77,12 +77,15 @@ namespace HelpDeskTeamProject.Controllers
             {
                 Comment comment = await db.Comments.SingleOrDefaultAsync(x => x.Id == id);
                 User curUser = await GetCurrentUser();
-                //TeamPermissions teamPerms = await GetCurrentTeamPermissions(comment, curUser.Id);
-                if (comment != null)
+                TeamPermissions teamPerms = await GetCurrentTeamPermissions(comment.TeamId, curUser.Id);
+                if (comment != null && teamPerms != null)
                 {
-                    db.Comments.Remove(comment);
-                    await db.SaveChangesAsync();
-                    return Json(true, JsonRequestBehavior.AllowGet);
+                    if (comment.User.Id == curUser.Id || teamPerms.CanDeleteComments || curUser.AppRole.Permissions.IsAdmin)
+                    {
+                        db.Comments.Remove(comment);
+                        await db.SaveChangesAsync();
+                        return Json(true, JsonRequestBehavior.AllowGet);
+                    }
                 }
             }
             return Json(false, JsonRequestBehavior.AllowGet);
@@ -93,16 +96,29 @@ namespace HelpDeskTeamProject.Controllers
             if (id != null)
             {
                 Ticket ticket = await db.Tickets.SingleOrDefaultAsync(x => x.Id == id);
-                db.Tickets.Remove(ticket);
-                await db.SaveChangesAsync();
-                return Json(true, JsonRequestBehavior.AllowGet);
+                User curUser = await GetCurrentUser();
+                TeamPermissions teamPerms = await GetCurrentTeamPermissions(ticket.TeamId, curUser.Id);
+                if (ticket != null && teamPerms != null)
+                {
+                    if (ticket.User.Id == curUser.Id || teamPerms.CanDeleteTickets || curUser.AppRole.Permissions.IsAdmin)
+                    {
+                        db.Tickets.Remove(ticket);
+                        await db.SaveChangesAsync();
+                        return Json(true, JsonRequestBehavior.AllowGet);
+                    }
+                }
             }
             return Json(false, JsonRequestBehavior.AllowGet);
         }
 
         public async Task<ActionResult> NewType()
         {
-            return View();
+            User curUser = await GetCurrentUser();
+            if (curUser.AppRole.Permissions.CanManageTicketTypes)
+            {
+                return View();
+            }
+            return NoPermissionError();
         }
 
         [ValidateAntiForgeryToken]
@@ -111,17 +127,30 @@ namespace HelpDeskTeamProject.Controllers
         {
             if (ModelState.IsValid)
             {
-                db.TicketTypes.Add(newType);
-                await db.SaveChangesAsync();
-                return RedirectToAction("TypeList", "Ticket");
+                User curUser = await GetCurrentUser();
+                if (curUser.AppRole.Permissions.CanManageTicketTypes)
+                {
+                    db.TicketTypes.Add(newType);
+                    await db.SaveChangesAsync();
+                    return RedirectToAction("TypeList", "Ticket");
+                }
+                else
+                {
+                    return NoPermissionError();
+                }
             }
             return View(newType);
         }
 
         public async Task<ActionResult> TypeList()
         {
-            List<TicketType> ticketTypes = await db.TicketTypes.ToListAsync();
-            return View(ticketTypes);
+            User curUser = await GetCurrentUser();
+            if (curUser.AppRole.Permissions.CanManageTicketTypes)
+            {
+                List<TicketType> ticketTypes = await db.TicketTypes.ToListAsync();
+                return View(ticketTypes);
+            }
+            return NoPermissionError();
         }
 
         public async Task<JsonResult> GetTicketsByTeam(int? teamId)
@@ -132,27 +161,29 @@ namespace HelpDeskTeamProject.Controllers
                 if (curTeam != null)
                 {
                     User curUser = await GetCurrentUser();
-                    TeamRole curTeamUserRole = curTeam.UserPermissions.SingleOrDefault(x => x.UserId == curUser.Id).TeamRole;
-                    if (curUser != null && curTeamUserRole != null)
-                    {
-                        List<Ticket> curTickets = await db.Tickets.Include(x => x.ChildTickets).Include(y => y.Comments).Include(z => z.User).Where(s => s.ParentTicket == null).ToListAsync();
-                        List<TicketDTO> curTicketsDto = new List<TicketDTO>();
-                        foreach (Ticket value in curTickets)
+                    if (curTeam.Users.Find(x => x.Id == curUser.Id) != null){
+                        TeamRole curTeamUserRole = curTeam.UserPermissions.SingleOrDefault(x => x.UserId == curUser.Id).TeamRole;
+                        if (curUser != null && curTeamUserRole != null)
                         {
-                            TicketDTO tempDto = new TicketDTO(value);
-                            if (curUser.Id == value.User.Id || curUser.AppRole.Permissions.IsAdmin == true)
+                            List<Ticket> curTickets = await db.Tickets.Include(x => x.ChildTickets).Include(y => y.Comments).Include(z => z.User).Where(s => s.ParentTicket == null).ToListAsync();
+                            List<TicketDTO> curTicketsDto = new List<TicketDTO>();
+                            foreach (Ticket value in curTickets)
                             {
-                                tempDto.CanDelete = true;
-                                tempDto.CanEdit = true;
+                                TicketDTO tempDto = new TicketDTO(value);
+                                if (curUser.Id == value.User.Id || curUser.AppRole.Permissions.IsAdmin == true)
+                                {
+                                    tempDto.CanDelete = true;
+                                    tempDto.CanEdit = true;
+                                }
+                                else
+                                {
+                                    tempDto.CanEdit = curTeamUserRole.Permissions.CanEditComments;
+                                    tempDto.CanDelete = curTeamUserRole.Permissions.CanDeleteComments;
+                                }
+                                curTicketsDto.Add(tempDto);
                             }
-                            else
-                            {
-                                tempDto.CanEdit = curTeamUserRole.Permissions.CanEditComments;
-                                tempDto.CanDelete = curTeamUserRole.Permissions.CanDeleteComments;
-                            }
-                            curTicketsDto.Add(tempDto);
+                            return Json(curTicketsDto, JsonRequestBehavior.AllowGet);
                         }
-                        return Json(curTicketsDto, JsonRequestBehavior.AllowGet);
                     }
                 }
             }
@@ -166,15 +197,6 @@ namespace HelpDeskTeamProject.Controllers
             return View();
         }
 
-        //public async Task<ActionResult> TicketsList(int? teamId)
-        //{
-        //    if (teamId != null)
-        //    {
-        //        Team team = await db.Teams.SingleOrDefaultAsync(x => x.Id == teamId);
-        //    }
-        //    return View();
-        //}
-
         public async Task<ActionResult> ShowTicket(int? id)
         {
             if (id != null)
@@ -186,45 +208,48 @@ namespace HelpDeskTeamProject.Controllers
                     .Where(x => x.ParentTicket.Id == ticket.Id).ToListAsync();
                 Team team = await db.Teams.Include(x => x.UserPermissions).SingleOrDefaultAsync(y => y.Id == ticket.TeamId);
                 TeamPermissions teamPerms = team.UserPermissions.SingleOrDefault(x => x.UserId == curUser.Id).TeamRole.Permissions;
-
-                TicketDTO ticketDto = new TicketDTO(ticket);
-                List<TicketDTO> childTicketsDto = new List<TicketDTO>();
-                foreach (Ticket value in ticket.ChildTickets)
+                
+                if (team.Users.Find(x => x.Id == curUser.Id) != null)
                 {
-                    TicketDTO tempDto = new TicketDTO(value);
-                    if (curUser.Id == value.User.Id || curUser.AppRole.Permissions.IsAdmin == true)
+                    TicketDTO ticketDto = new TicketDTO(ticket);
+                    List<TicketDTO> childTicketsDto = new List<TicketDTO>();
+                    foreach (Ticket value in ticket.ChildTickets)
                     {
-                        tempDto.CanDelete = true;
-                        tempDto.CanEdit = true;
+                        TicketDTO tempDto = new TicketDTO(value);
+                        if (curUser.Id == value.User.Id || curUser.AppRole.Permissions.IsAdmin == true)
+                        {
+                            tempDto.CanDelete = true;
+                            tempDto.CanEdit = true;
+                        }
+                        else
+                        {
+                            tempDto.CanEdit = teamPerms.CanEditComments;
+                            tempDto.CanDelete = teamPerms.CanDeleteComments;
+                        }
+                        childTicketsDto.Add(tempDto);
                     }
-                    else
-                    {
-                        tempDto.CanEdit = teamPerms.CanEditComments;
-                        tempDto.CanDelete = teamPerms.CanDeleteComments;
-                    }
-                    childTicketsDto.Add(tempDto);
-                }
-                ticketDto.ChildTickets = childTicketsDto;
+                    ticketDto.ChildTickets = childTicketsDto;
 
-                List<CommentDTO> commentsDto = new List<CommentDTO>();
-                foreach (Comment value in ticket.Comments)
-                {
-                    CommentDTO tempDto = new CommentDTO(value);
-                    if (curUser.Id == value.User.Id || curUser.AppRole.Permissions.IsAdmin == true)
+                    List<CommentDTO> commentsDto = new List<CommentDTO>();
+                    foreach (Comment value in ticket.Comments)
                     {
-                        tempDto.CanDelete = true;
+                        CommentDTO tempDto = new CommentDTO(value);
+                        if (curUser.Id == value.User.Id || curUser.AppRole.Permissions.IsAdmin == true)
+                        {
+                            tempDto.CanDelete = true;
+                        }
+                        else
+                        {
+                            tempDto.CanDelete = teamPerms.CanDeleteComments;
+                        }
+                        commentsDto.Add(tempDto);
                     }
-                    else
-                    {
-                        tempDto.CanDelete = teamPerms.CanDeleteComments;
-                    }
-                    commentsDto.Add(tempDto);
-                }
-                ticketDto.Comments = commentsDto;
+                    ticketDto.Comments = commentsDto;
 
-                List<TicketType> ticketTypes = await db.TicketTypes.ToListAsync();
-                ViewBag.TicketTypes = ticketTypes;
-                return View(ticketDto);
+                    List<TicketType> ticketTypes = await db.TicketTypes.ToListAsync();
+                    ViewBag.TicketTypes = ticketTypes;
+                    return View(ticketDto);
+                }
             }
             return RedirectToAction("Tickets", "Ticket");
         }
@@ -232,41 +257,44 @@ namespace HelpDeskTeamProject.Controllers
         [HttpPost]
         public async Task<JsonResult> AddTicket(TicketBase newTicket)
         {
-            if (newTicket.BaseTicketId != null && newTicket.Description != null && newTicket.BaseTicketId > 0 && newTicket.BaseTeamId > 0)
+            if (ModelState.IsValid)
             {
-                User curUser = await GetCurrentUser();
-                TicketType ticketType = await db.TicketTypes.SingleOrDefaultAsync(x => x.Id == newTicket.TypeId);
-                Ticket baseTicket = await db.Tickets.SingleOrDefaultAsync(x => x.Id == newTicket.BaseTicketId);
-                if (curUser != null && ticketType != null)
+                if (newTicket.BaseTicketId != null && newTicket.Description != null && newTicket.BaseTicketId > 0 && newTicket.BaseTeamId > 0)
                 {
-                    Ticket ticket = new Ticket(newTicket.BaseTeamId, curUser, newTicket.Description, ticketType, DateTime.Now, TicketState.New, baseTicket);
-                    Ticket ticketFromDb = db.Tickets.Add(ticket);
-                    await db.SaveChangesAsync();
-                    TicketDTO ticketDto = new TicketDTO(ticketFromDb.Id, ticketFromDb.TeamId, ticketFromDb.User, 
-                        ticketFromDb.Description, ticketFromDb.Type, ticketFromDb.TimeCreated.ToString(), ticketFromDb.State, 
-                        ticketFromDb.ChildTickets.Count, ticketFromDb.Comments.Count);
-                    ticketDto.CanDelete = true;
-                    ticketDto.CanEdit = true;
-                    return Json(ticketDto);
+                    User curUser = await GetCurrentUser();
+                    TicketType ticketType = await db.TicketTypes.SingleOrDefaultAsync(x => x.Id == newTicket.TypeId);
+                    Ticket baseTicket = await db.Tickets.SingleOrDefaultAsync(x => x.Id == newTicket.BaseTicketId);
+                    if (curUser != null && ticketType != null)
+                    {
+                        Ticket ticket = new Ticket(newTicket.BaseTeamId, curUser, newTicket.Description, ticketType, DateTime.Now, TicketState.New, baseTicket);
+                        Ticket ticketFromDb = db.Tickets.Add(ticket);
+                        await db.SaveChangesAsync();
+                        TicketDTO ticketDto = new TicketDTO(ticketFromDb.Id, ticketFromDb.TeamId, ticketFromDb.User,
+                            ticketFromDb.Description, ticketFromDb.Type, ticketFromDb.TimeCreated.ToString(), ticketFromDb.State,
+                            ticketFromDb.ChildTickets.Count, ticketFromDb.Comments.Count);
+                        ticketDto.CanDelete = true;
+                        ticketDto.CanEdit = true;
+                        return Json(ticketDto);
+                    }
                 }
-            }
-            else if (newTicket.BaseTicketId == null && newTicket.Description != null && newTicket.BaseTeamId > 0)
-            {
-                User curUser = await GetCurrentUser();
-                TicketType ticketType = await db.TicketTypes.SingleOrDefaultAsync(x => x.Id == newTicket.TypeId);
-                if (curUser != null && ticketType != null)
+                else if (newTicket.BaseTicketId == null && newTicket.Description != null && newTicket.BaseTeamId > 0)
                 {
-                    Ticket ticket = new Ticket(newTicket.BaseTeamId, curUser, newTicket.Description, ticketType, DateTime.Now, TicketState.New);
-                    Ticket ticketFromDb = db.Tickets.Add(ticket);
-                    await db.SaveChangesAsync();
-                    TicketDTO ticketDto = new TicketDTO(ticketFromDb.Id, ticketFromDb.TeamId, ticketFromDb.User,
-                        ticketFromDb.Description, ticketFromDb.Type, ticketFromDb.TimeCreated.ToString(), ticketFromDb.State,
-                        ticketFromDb.ChildTickets.Count, ticketFromDb.Comments.Count);
-                    ticketDto.CanDelete = true;
-                    ticketDto.CanEdit = true;
-                    return Json(ticketDto);
+                    User curUser = await GetCurrentUser();
+                    TicketType ticketType = await db.TicketTypes.SingleOrDefaultAsync(x => x.Id == newTicket.TypeId);
+                    if (curUser != null && ticketType != null)
+                    {
+                        Ticket ticket = new Ticket(newTicket.BaseTeamId, curUser, newTicket.Description, ticketType, DateTime.Now, TicketState.New);
+                        Ticket ticketFromDb = db.Tickets.Add(ticket);
+                        await db.SaveChangesAsync();
+                        TicketDTO ticketDto = new TicketDTO(ticketFromDb.Id, ticketFromDb.TeamId, ticketFromDb.User,
+                            ticketFromDb.Description, ticketFromDb.Type, ticketFromDb.TimeCreated.ToString(), ticketFromDb.State,
+                            ticketFromDb.ChildTickets.Count, ticketFromDb.Comments.Count);
+                        ticketDto.CanDelete = true;
+                        ticketDto.CanEdit = true;
+                        return Json(ticketDto);
+                    }
                 }
-            }
+            }            
             return Json(null);
         }
 

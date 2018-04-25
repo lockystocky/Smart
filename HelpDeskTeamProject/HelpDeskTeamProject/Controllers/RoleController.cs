@@ -18,7 +18,7 @@ namespace HelpDeskTeamProject.Controllers
         AppContext dbContext = new AppContext();
 
 
-        public async Task<ActionResult> CreateTeamRole()
+        public ActionResult CreateTeamRole()
         {
             return View();
         }
@@ -37,7 +37,7 @@ namespace HelpDeskTeamProject.Controllers
             return View();
         }
 
-        public async Task<ActionResult> CreateAppRole()
+        public ActionResult CreateAppRole()
         {
             return View();
         }
@@ -58,7 +58,7 @@ namespace HelpDeskTeamProject.Controllers
 
         public async Task<ActionResult> List()
         {
-            IEnumerable<Role> allRoles = Enumerable.Concat<Role>(dbContext.TeamRoles.ToList(), dbContext.AppRoles.ToList());
+            IEnumerable<Role> allRoles = Enumerable.Concat<Role>(await dbContext.TeamRoles.ToListAsync(), await dbContext.AppRoles.ToListAsync());
             return View(allRoles);
         }
 

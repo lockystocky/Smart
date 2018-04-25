@@ -226,6 +226,10 @@
     <Compile Include="Migrations\201804250936231_commentTeamId.Designer.cs">
       <DependentUpon>201804250936231_commentTeamId.cs</DependentUpon>
     </Compile>
+    <Compile Include="Migrations\201804251001555_appPermsAddManageTicketTypes.cs" />
+    <Compile Include="Migrations\201804251001555_appPermsAddManageTicketTypes.Designer.cs">
+      <DependentUpon>201804251001555_appPermsAddManageTicketTypes.cs</DependentUpon>
+    </Compile>
     <Compile Include="Repositories\IRepository.cs" />
     <Compile Include="Global.asax.cs">
       <DependentUpon>Global.asax</DependentUpon>
@@ -359,6 +363,9 @@
     </EmbeddedResource>
     <EmbeddedResource Include="Migrations\201804250936231_commentTeamId.resx">
       <DependentUpon>201804250936231_commentTeamId.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Migrations\201804251001555_appPermsAddManageTicketTypes.resx">
+      <DependentUpon>201804251001555_appPermsAddManageTicketTypes.cs</DependentUpon>
     </EmbeddedResource>
   </ItemGroup>
   <PropertyGroup>

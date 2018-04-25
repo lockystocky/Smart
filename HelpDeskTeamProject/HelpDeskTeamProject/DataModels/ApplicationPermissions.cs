@@ -21,6 +21,8 @@ namespace HelpDeskTeamProject.DataModels
 
         public bool CanCreateTeams { get; set; }
 
+        public bool CanManageTicketTypes { get; set; }
+
         public ApplicationPermissions()
         {
 
