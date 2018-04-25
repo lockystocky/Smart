@@ -17,6 +17,16 @@ namespace HelpDeskTeamProject.Migrations
 
         protected override void Seed(HelpDeskTeamProject.Context.AppContext context)
         {
+            //TeamRole role = context.TeamRoles.SingleOrDefault(x => x.Id == 1);
+            //Team team = context.Teams.SingleOrDefault(x => x.Id == 1);
+            //User user = context.Users.SingleOrDefault(x => x.Email.ToLower().Equals("K2@gmail.com".ToLower()));
+            //UserPermission perms = new UserPermission();
+            //perms.TeamId = team.Id;
+            //perms.UserId = user.Id;
+            //perms.TeamRole = role;
+            //team.UserPermissions.Add(perms);
+            //team.Users.Add(user);
+
             //TicketType t1 = new TicketType();
             //t1.Name = "Database problems";
             //TicketType t2 = new TicketType();

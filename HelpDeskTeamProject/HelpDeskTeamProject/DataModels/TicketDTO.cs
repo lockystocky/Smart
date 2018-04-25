@@ -31,6 +31,10 @@ namespace HelpDeskTeamProject.DataModels
 
         public int CommentsCount { get; set; }
 
+        public List<CommentDTO> Comments { get; set; }
+
+        public List<TicketDTO> ChildTickets { get; set; }
+
         public TicketDTO()
         {
 

@@ -224,6 +224,12 @@
       <DependentUpon>201804250824138_Comment DbSet.cs</DependentUpon>
     </Compile>
     <Compile Include="Models\AppAndTeamRolesViewModel.cs" />
+
+    <Compile Include="Migrations\201804250936231_commentTeamId.cs" />
+    <Compile Include="Migrations\201804250936231_commentTeamId.Designer.cs">
+      <DependentUpon>201804250936231_commentTeamId.cs</DependentUpon>
+    </Compile>
+
     <Compile Include="Repositories\IRepository.cs" />
     <Compile Include="Global.asax.cs">
       <DependentUpon>Global.asax</DependentUpon>
@@ -348,6 +354,7 @@
     <Content Include="Views\Ticket\NewType.cshtml" />
     <Content Include="Views\Ticket\TypeList.cshtml" />
     <Content Include="Views\Ticket\Edit.cshtml" />
+    <Content Include="Views\Ticket\NoPermissionError.cshtml" />
   </ItemGroup>
   <ItemGroup>
     <Folder Include="App_Data\" />
@@ -384,6 +391,9 @@
     </EmbeddedResource>
     <EmbeddedResource Include="Migrations\201804250824138_Comment DbSet.resx">
       <DependentUpon>201804250824138_Comment DbSet.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Migrations\201804250936231_commentTeamId.resx">
+      <DependentUpon>201804250936231_commentTeamId.cs</DependentUpon>
     </EmbeddedResource>
   </ItemGroup>
   <PropertyGroup>

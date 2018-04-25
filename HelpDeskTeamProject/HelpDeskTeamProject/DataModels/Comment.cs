@@ -18,6 +18,8 @@ namespace HelpDeskTeamProject.DataModels
         [StringLength(400)]
         public string Text { get; set; }
 
+        public int TeamId { get; set; }
+
         public Comment()
         {
 
