@@ -224,6 +224,7 @@
       <DependentUpon>201804250824138_Comment DbSet.cs</DependentUpon>
     </Compile>
     <Compile Include="Models\AppAndTeamRolesViewModel.cs" />
+    <Compile Include="Models\TeamMenuItem.cs" />
     <Compile Include="Repositories\IRepository.cs" />
     <Compile Include="Global.asax.cs">
       <DependentUpon>Global.asax</DependentUpon>

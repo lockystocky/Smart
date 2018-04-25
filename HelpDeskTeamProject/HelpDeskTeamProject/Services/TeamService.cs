@@ -20,13 +20,24 @@ namespace HelpDeskTeamProject.Services
         private string DEFAULT_TEAM_ROLE_NAME = WebConfigurationManager.AppSettings["DefaultTeamRoleName"];
         private const string SITE_LINK = "http://localhost:50244/";
 
-        public List<Team> GetUserTeamsList(User user)
+        public List<TeamMenuItem> GetUserTeamsList(User user)
         {
             var userTeamsList = db.Teams
                .Where(t => t.Users.Select(u => u.Id).Contains(user.Id))
                .ToList();
 
-            return userTeamsList;
+            var teamMenu = new List<TeamMenuItem>();
+
+            foreach(var team in userTeamsList)
+            {
+                var teamMenuItem = new TeamMenuItem()
+                {
+                    TeamId = team.Id,
+                    TeamName = team.Name
+                };
+            }
+
+            return teamMenu;
         }
 
         public Team CreateTeamWithOwner(string teamName, User ownerOfTeam)
