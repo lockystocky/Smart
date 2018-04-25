@@ -15,6 +15,7 @@
 <script>
     var emptyTickets = false;
     var emptyComments = false;
+    var teamPermissions = null;
 
     function addTicket() {
         var textBox = document.getElementById("addTicketText");
@@ -272,6 +273,41 @@
         comText.appendChild(comPar);
         cardDiv.appendChild(comText);
     }
+
+    function setVisibilityInputs(comment, ticket) {
+        var commentInput = document.getElementById("inputCommentDiv");
+        var ticketInput = document.getElementById("inputTicketDiv");
+        if (comment == true) {
+            commentInput.style.display = "";
+        }
+        else {
+            commentInput.style.display = "none";
+        }
+        if (ticket == true) {
+            ticketInput.style.display = "";
+        }
+        else {
+            ticketInput.style.display = "none";
+        }
+    }
+
+    function getTeamPermissions() {
+        var uploaderUrl = "/Role/GetUserTeamPermissions?teamId=" + @Model.TeamId;
+        var xhr = new XMLHttpRequest();
+        xhr.open('GET', uploaderUrl, true);
+        xhr.onloadend = function () {
+            var parsedResp = JSON.parse(xhr.responseText);
+            if (parsedResp != null) {
+                teamPermissions = parsedResp;
+                setVisibilityInputs(teamPermissions.CanCommentTicket, teamPermissions.CanCreateTicket);
+            }
+        }
+        xhr.send(null);
+    }
+
+    document.addEventListener('DOMContentLoaded', function () {
+        getTeamPermissions();
+    }, false);
 </script>
 
 <h2>Show Ticket</h2>
@@ -302,7 +338,7 @@
                 <div class="replyTextMargin"><img src="~/Content/ticket.png" style="padding-bottom:1px;" /><b id="ticketChildsCount"> @Model.ChildTicketsCount</b></div>
             </div>
         </div>
-        <div class="card">
+        <div class="card" id="inputCommentDiv" style="display: none;">
             <h5 class="headerMargin"><b>Add New Comment</b></h5>
             <div class="inputTicketDiv">
                 <textarea id="addCommentText" class="inputTicketText" style="height: 55px;" placeholder="Write here your comment..."></textarea>
@@ -343,7 +379,7 @@
         </div>
     </div>
     <div class="pageDivideRight">
-        <div class="card">
+        <div class="card" id="inputTicketDiv" style="display: none;">
             <h5 class="headerMargin"><b>Add New Ticket</b></h5>
             <div class="inputTicketDiv">
                 <textarea id="addTicketText" class="inputTicketText" placeholder="Write here your problem or suggestion..."></textarea>

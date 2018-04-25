@@ -19,12 +19,14 @@ namespace HelpDeskTeamProject.DataModels
 
         public string Text { get; set; }
 
+        public int TeamId { get; set; }
+
         public CommentDTO()
         {
 
         }
 
-        public CommentDTO(int id, string text, User user, string time, bool canDelete)
+        public CommentDTO(int id, string text, User user, string time, bool canDelete, int teamId)
         {
             Id = id;
             Text = text;
@@ -32,6 +34,7 @@ namespace HelpDeskTeamProject.DataModels
             UserSurname = user.Surname;
             TimeCreated = time;
             CanDelete = canDelete;
+            TeamId = teamId;
         }
 
         public CommentDTO(Comment comment)
@@ -41,6 +44,7 @@ namespace HelpDeskTeamProject.DataModels
             UserName = comment.User.Name;
             UserSurname = comment.User.Surname;
             TimeCreated = comment.TimeCreated.ToString();
+            TeamId = comment.TeamId;
         }
     }
 }

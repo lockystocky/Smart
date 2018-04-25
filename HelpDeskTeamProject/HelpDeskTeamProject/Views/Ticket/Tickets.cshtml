@@ -242,9 +242,14 @@
         xhr.send(null);
     }
 
-    function showInputTicket() {
+    function setVisibilityInputTicket(visible) {
         var ticketInput = document.getElementById("newTicketInput");
-        ticketInput.style.display = "";
+        if (visible == true) {
+            ticketInput.style.display = "";
+        }
+        else {
+            ticketInput.style.display = "none";
+        }
     }
 
     function clearTicketsDiv() {
@@ -260,9 +265,7 @@
             var parsedResp = JSON.parse(xhr.responseText);
             if (parsedResp != null) {
                 teamPermissions = parsedResp;
-                if (teamPermissions.CanCreateTicket == true) {
-                    showInputTicket();
-                }
+                setVisibilityInputTicket(teamPermissions.CanCreateTicket);
             }
         }
         xhr.send(null);

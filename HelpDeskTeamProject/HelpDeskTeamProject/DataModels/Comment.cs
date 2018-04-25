@@ -24,11 +24,12 @@ namespace HelpDeskTeamProject.DataModels
 
         }
 
-        public Comment(string text, User user, DateTime time)
+        public Comment(string text, User user, DateTime time, int teamId)
         {
             Text = text;
             User = user;
             TimeCreated = time;
+            TeamId = teamId;
         }
     }
 }
