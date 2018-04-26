@@ -324,15 +324,8 @@
     <Content Include="Views\Shared\_LoginPartial.cshtml" />
     <Content Include="Views\Role\CreateTeamRole.cshtml" />
     <Content Include="Views\Role\CreateAppRole.cshtml" />
-    <Content Include="Views\Teams\AllTeams.cshtml" />
     <Content Include="Views\Teams\Create.cshtml" />
-    <Content Include="Views\Teams\Delete.cshtml" />
-    <Content Include="Views\Teams\Details.cshtml" />
-    <Content Include="Views\Teams\Edit.cshtml" />
-    <Content Include="Views\Teams\Index.cshtml" />
-    <Content Include="Views\Teams\AllTeams.cshtml" />
     <Content Include="Views\Teams\InviteUser.cshtml" />
-    <Content Include="Views\Teams\Teams.cshtml" />
     <Content Include="Views\Teams\ManageTeam.cshtml" />
     <Content Include="Views\Role\List.cshtml" />
     <Content Include="Views\Role\EditAppRole.cshtml" />
