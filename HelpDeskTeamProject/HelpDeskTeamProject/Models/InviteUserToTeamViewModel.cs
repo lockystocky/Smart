@@ -3,6 +3,7 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Web;
+using System.ComponentModel.DataAnnotations;
 
 namespace HelpDeskTeamProject.Models
 {
@@ -10,6 +11,7 @@ namespace HelpDeskTeamProject.Models
     {
         public Team TeamToInvite { get; set; }
 
+        [EmailAddress]
         public string EmailOfInvitedUser { get; set; }
     }
 }

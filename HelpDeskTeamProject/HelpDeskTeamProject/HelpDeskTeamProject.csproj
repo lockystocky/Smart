@@ -218,6 +218,7 @@
     <Compile Include="DataModels\TicketLog.cs" />
     <Compile Include="DataModels\TicketType.cs" />
     <Compile Include="DataModels\User.cs" />
+    <Compile Include="DataModels\UserDTO.cs" />
     <Compile Include="DataModels\UserPermission.cs" />
     <Compile Include="Migrations\201804251335365_newInitialMigrations.cs" />
     <Compile Include="Migrations\201804251335365_newInitialMigrations.Designer.cs">
@@ -344,6 +345,7 @@
     <Content Include="Views\Ticket\Edit.cshtml" />
     <Content Include="Views\Ticket\NoPermissionError.cshtml" />
     <Content Include="Views\Admin\ShowAdminLogs.cshtml" />
+    <Content Include="Views\Admin\EditRolesList.cshtml" />
   </ItemGroup>
   <ItemGroup>
     <Folder Include="App_Data\" />

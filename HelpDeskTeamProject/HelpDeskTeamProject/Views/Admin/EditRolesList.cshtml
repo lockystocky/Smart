@@ -1,0 +1,88 @@
+﻿@model IEnumerable<HelpDeskTeamProject.DataModels.UserDTO>
+
+<h2>Edit Roles List</h2>
+
+<div class="form-group">
+    <div class="col-md-10">
+        <div class="btn btn-default" onclick="saveButtonClick()">Save</div>
+    </div>
+</div>
+<div>
+    <table class="table">
+        <tr>
+            <th>
+                @Html.DisplayName("Id")
+            </th>
+            <th>
+                @Html.DisplayName("Name")
+            </th>
+            <th>
+                @Html.DisplayName("Surname")
+            </th>
+            <th>
+                @Html.DisplayName("App Role")
+            </th>
+        </tr>
+
+        @foreach (var user in Model)
+        {
+            <tr>
+                <td>
+                    @Html.DisplayFor(modelItem => user.Id)
+                </td>
+                <td>
+                    @Html.DisplayFor(modelItem => user.Name)
+                </td>
+                <td>
+                    @Html.DisplayFor(modelItem => user.Surname)
+                </td>
+                <td>
+                    <select id="@string.Concat("select_", user.Id)">
+                        @foreach (var appRole in ViewBag.AppRoles)
+                        {
+                            string selectedStr = "";
+                            if (user.AppRole.Id == appRole.Id)
+                            {
+                                selectedStr = "selected";
+                            }
+                            else
+                            {
+                                selectedStr = "";
+                            }
+                            <option value="@appRole.Id" @selectedStr>@appRole.Name</option>
+                        }
+                    </select>
+                </td>
+            </tr>
+        }
+    </table>
+
+</div>
+
+<script>
+    var users = @Html.Raw(Json.Encode(Model));
+
+    function saveButtonClick() {
+        var idData = [];
+        var valueData = [];
+        for (var counter = 0; counter < users.length; counter++) {
+            idData[counter] = users[counter].Id;
+            var selectObject = document.getElementById("select_" + users[counter].Id);
+            valueData[counter] = selectObject.value;
+        }
+        sendData(idData, valueData);
+    }
+
+    function sendData(ids, values) {
+        var uploaderUrl = "/Admin/EditRolesListSave";
+        var formData = new FormData();
+        formData.append("ids", ids);
+        formData.append("values", values);
+        var xhr = new XMLHttpRequest();
+        xhr.open('POST', uploaderUrl, true);
+        xhr.onloadend = function () {
+            window.location.reload();
+        }
+        xhr.send(formData);
+    }
+</script>
