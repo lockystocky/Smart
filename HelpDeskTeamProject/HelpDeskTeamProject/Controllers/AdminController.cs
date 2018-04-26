@@ -135,15 +135,16 @@ namespace HelpDeskTeamProject.Controllers
         {
             if (ModelState.IsValid)
             {
-                dbContext.AppRoles.Attach(user.AppRole);
+                //dbContext.AppRoles.Attach(user.AppRole);
                 if (user.Id == 0)
                 {
                     dbContext.Users.Add(user);
                 }
                 else
                 {
-                    var userInDb = dbContext.Users.Include(u => u.AppRole)
-                        .SingleOrDefault(u => u.Id == user.Id);
+                    //var userInDb = dbContext.Users.Include(u => u.AppRole)
+                    //    .SingleOrDefault(u => u.Id == user.Id);
+                    var userInDb = dbContext.Users.Find(user.Id);
                     bool wasChangedUserInDb = userInDb!= user;
                     if (wasChangedUserInDb)
                     {                        
@@ -152,13 +153,38 @@ namespace HelpDeskTeamProject.Controllers
                     if (userInDb != null)
                     {
                         dbContext.Entry(userInDb).CurrentValues.SetValues(user);
-                        userInDb.AppRole.Permissions = user.AppRole.Permissions;
+                        //userInDb.AppRole.Permissions = user.AppRole.Permissions;
                     }
                 }
                 dbContext.SaveChanges();
                 return RedirectToAction("Index");
             }
             return View(user);
+        }
+
+        public ActionResult Delete(int? id)
+        {
+            if (id == null)
+            {
+                return new HttpStatusCodeResult(HttpStatusCode.BadRequest);
+            }
+            AdminLog adminLog = dbContext.AdminLogs.Find(id);
+            if (adminLog == null)
+            {
+                return HttpNotFound();
+            }
+            return View(adminLog);
+        }
+
+        // POST: /Movies/Delete/5
+        [HttpPost, ActionName("Delete")]
+        [ValidateAntiForgeryToken]
+        public ActionResult DeleteConfirmed(int id)
+        {
+            AdminLog adminLog = dbContext.AdminLogs.Find(id);
+            dbContext.AdminLogs.Remove(adminLog);
+            dbContext.SaveChanges();
+            return RedirectToAction("ShowAdminLogs");
         }
 
         public ActionResult ShowAdminLogs()
