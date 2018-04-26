@@ -8,6 +8,7 @@ using HelpDeskTeamProject.DataModels;
 using HelpDeskTeamProject;
 using HelpDeskTeamProject.Context;
 using HelpDeskTeamProject.Services;
+using HelpDeskTeamProject.Classes;
 
 namespace HelpDeskTeamProject.Autofac
 {
@@ -19,6 +20,7 @@ namespace HelpDeskTeamProject.Autofac
             builder.RegisterControllers(typeof(MvcApplication).Assembly);
             builder.RegisterType<AppContext>().As<IAppContext>().InstancePerRequest();
             builder.RegisterType<TeamService>().As<ITeamService>().InstancePerRequest();
+            builder.RegisterType<HtmlValidator>().As<IHtmlValidator>().InstancePerRequest();
             var container = builder.Build();
             System.Web.Mvc.DependencyResolver.SetResolver(new AutofacDependencyResolver(container));
         }
