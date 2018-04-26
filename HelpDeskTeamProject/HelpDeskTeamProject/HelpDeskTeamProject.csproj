@@ -231,10 +231,6 @@
     <Compile Include="Migrations\201804260842319_removedMoreValidations.Designer.cs">
       <DependentUpon>201804260842319_removedMoreValidations.cs</DependentUpon>
     </Compile>
-    <Compile Include="Migrations\201804261048596_marinasColumnAdded.cs" />
-    <Compile Include="Migrations\201804261048596_marinasColumnAdded.Designer.cs">
-      <DependentUpon>201804261048596_marinasColumnAdded.cs</DependentUpon>
-    </Compile>
     <Compile Include="Models\AppAndTeamRolesViewModel.cs" />
     <Compile Include="Models\TeamMenuItem.cs" />
     <Compile Include="Repositories\IRepository.cs" />
@@ -371,9 +367,6 @@
     </EmbeddedResource>
     <EmbeddedResource Include="Migrations\201804260842319_removedMoreValidations.resx">
       <DependentUpon>201804260842319_removedMoreValidations.cs</DependentUpon>
-    </EmbeddedResource>
-    <EmbeddedResource Include="Migrations\201804261048596_marinasColumnAdded.resx">
-      <DependentUpon>201804261048596_marinasColumnAdded.cs</DependentUpon>
     </EmbeddedResource>
   </ItemGroup>
   <PropertyGroup>
