@@ -50,8 +50,17 @@ namespace HelpDeskTeamProject.Controllers
             return Json(currentUserTeamsList, JsonRequestBehavior.AllowGet);
         }
 
+        [Authorize]
+        public ActionResult GetCurrentUserName()
+        {
+            var currentUser = GetCurrentUser();
+            string name = currentUser.Name + " " + currentUser.Surname;
 
-       
+            return Json(name, JsonRequestBehavior.AllowGet);
+        }
+
+
+
         //create new team
         [Authorize]
         public ActionResult Create()
@@ -76,6 +85,8 @@ namespace HelpDeskTeamProject.Controllers
 
             return View(team);
         }
+
+
 
         
 

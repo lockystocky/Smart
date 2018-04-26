@@ -11,7 +11,7 @@
 
 </head>
 <body>
-    <div class="navbar navbar-inverse navbar-fixed-top" style="background-color: #e3f2fd; border:none">
+    <div class="navbar navbar-inverse navbar-fixed-top" style="background-color: #E0FFFF; border:none">
         <div class="container">
             <div class="navbar-header">
                 <button type="button" class="navbar-toggle" data-toggle="collapse" data-target=".navbar-collapse">
@@ -25,19 +25,19 @@
                 <ul class="nav navbar-nav">
                     <li>@Html.ActionLink("Home", "Index", "Home")</li>
                     @if (Request.IsAuthenticated)
-    {
-                <li>@Html.ActionLink("Teams", "Tickets", "Ticket")</li>
-                <li>@Html.ActionLink("Create team", "Create", "Teams")</li>
-}
+                    {
+                        <li>@Html.ActionLink("Teams", "Tickets", "Ticket")</li>
+                        <li>@Html.ActionLink("Create team", "Create", "Teams")</li>
+                    }
 
 
 
                     @if (User.Identity.GetUserName() == "adminsmart#gmail.com")
-    {
-                <li><button type="button" class="btn btn-info" onclick="location.href='@Url.Action("Index", "Admin")'">Admin Panel</button></li>
-}
+                    {
+                        <li><button type="button" class="btn btn-info" onclick="location.href='@Url.Action("Index", "Admin")'">Admin Panel</button></li>
+                    }
 
-                    <li><a href="/Ticket/ShowTicket?id=1">ShowTicket</a></li>
+
 
                 </ul>
                 @Html.Partial("_LoginPartial")
@@ -46,7 +46,7 @@
     </div>
     <div class="container body-content">
         @RenderBody()
-            @*<hr />
+        @*<hr />
             <footer>
                 <p>&copy; @DateTime.Now.Year – приложение ASP.NET</p>
             </footer>*@
@@ -55,5 +55,6 @@
     @Scripts.Render("~/bundles/jquery")
     @Scripts.Render("~/bundles/bootstrap")
     @RenderSection("scripts", required: false)
+    
 </body>
 </html>
