@@ -6,7 +6,8 @@ using System.Threading.Tasks;
 
 namespace HelpDeskTeamProject.Classes
 {
-    interface IHtmlValidator
+    public interface IHtmlValidator
     {
+        List<string> Validate(string html);
     }
 }
