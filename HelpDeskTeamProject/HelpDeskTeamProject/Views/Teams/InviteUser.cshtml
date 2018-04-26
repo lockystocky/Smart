@@ -10,9 +10,9 @@
 @using (Html.BeginForm())
 {
 <div class="form-horizontal">
-    
-    @Html.EditorFor(model => model.TeamToInvite.Id, new { htmlAttributes = new { @class = "form-control hidden"} })
-       
+
+    @Html.EditorFor(model => model.TeamToInvite.Id, new { htmlAttributes = new { @class = "form-control hidden" } })
+
     <div class="form-group">
         @Html.LabelFor(model => model.TeamToInvite.Name, htmlAttributes: new { @class = "control-label col-md-2" })
         <div class="col-md-10">
@@ -20,6 +20,9 @@
             @Html.ValidationMessageFor(model => model.TeamToInvite.Name, "", new { @class = "text-danger" })
         </div>
     </div>
+
+    @Html.EditorFor(model => model.TeamToInvite.Name, new { htmlAttributes = new { @class = "form-control hidden" } })
+
 
     <div class="form-group">
         @Html.LabelFor(model => model.EmailOfInvitedUser, htmlAttributes: new { @class = "control-label col-md-2" })

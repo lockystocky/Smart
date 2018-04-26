@@ -23,7 +23,7 @@ namespace HelpDeskTeamProject.Controllers
        // private AppContext db = new AppContext();
         private string TEAM_OWNER_ROLE_NAME = WebConfigurationManager.AppSettings["TeamOwnerRoleName"];
         private string DEFAULT_TEAM_ROLE_NAME = WebConfigurationManager.AppSettings["DefaultTeamRoleName"];
-        private const string SITE_LINK = "http://localhost:50244/";
+       // private const string SITE_LINK = Reques //"http://localhost:50244/";
         private TeamService teamService = new TeamService();
 
         //view list of all existing teams

@@ -18,7 +18,7 @@ namespace HelpDeskTeamProject.Services
         private AppContext db = new AppContext();
         private string TEAM_OWNER_ROLE_NAME = WebConfigurationManager.AppSettings["TeamOwnerRoleName"];
         private string DEFAULT_TEAM_ROLE_NAME = WebConfigurationManager.AppSettings["DefaultTeamRoleName"];
-        private const string SITE_LINK = "http://localhost:50244/";
+        //private const string SITE_LINK = "http://localhost:50244/";
 
         public List<TeamMenuItem> GetUserTeamsList(User user)
         {
@@ -58,12 +58,15 @@ namespace HelpDeskTeamProject.Services
 
             var owner = db.Users.Find(ownerId);
 
+            var request = HttpContext.Current.Request;
+            string siteUrl = $"{request.Url.Scheme}://{request.Url.Authority}";
+
             Team team = new Team()
             {
                 Name = teamName,
                 OwnerId = ownerId,
                 TeamGuid = teamGuid,
-                InvitationLink = SITE_LINK + "/teams/jointeam/" + teamGuid.ToString() + "/",
+                InvitationLink = siteUrl + "/teams/jointeam/" + teamGuid.ToString() + "/",
                 InvitedUsers = new List<InvitedUser>(),
                 UserPermissions = new List<UserPermission>(),
                 Tickets = new List<Ticket>(),
@@ -231,8 +234,8 @@ namespace HelpDeskTeamProject.Services
         {
             var team = db.Teams.Find(teamId);
 
-            bool isUserAlreadyInvited = team.InvitedUsers.Where(user => user.Email == email).Count() > 0;
-            bool isUserAlreadyTeamMember = team.Users.Where(user => user.Email == email).Count() > 0;
+            bool isUserAlreadyInvited = team.InvitedUsers.Where(user => user.Email.ToLower() == email.ToLower()).Count() > 0;
+            bool isUserAlreadyTeamMember = team.Users.Where(user => user.Email.ToLower() == email.ToLower()).Count() > 0;
 
             if (!isUserAlreadyInvited && !isUserAlreadyTeamMember)
             {
