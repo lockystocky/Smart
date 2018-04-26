@@ -229,6 +229,7 @@
     <Compile Include="DataModels\TicketLog.cs" />
     <Compile Include="DataModels\TicketType.cs" />
     <Compile Include="DataModels\User.cs" />
+    <Compile Include="DataModels\UserDTO.cs" />
     <Compile Include="DataModels\UserPermission.cs" />
     <Compile Include="Migrations\201804251335365_newInitialMigrations.cs" />
     <Compile Include="Migrations\201804251335365_newInitialMigrations.Designer.cs">
@@ -258,6 +259,7 @@
     <Compile Include="Models\ManageViewModels.cs" />
     <Compile Include="Models\TeamWithLastChangesViewModel.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
+    <Compile Include="Services\AdminService.cs" />
     <Compile Include="Services\ITeamService.cs" />
     <Compile Include="Services\TeamService.cs" />
     <Compile Include="Startup.cs" />
@@ -279,6 +281,8 @@
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Content>
     <None Include="Scripts\jquery-1.10.2.intellisense.js" />
+    <Content Include="Scripts\EditScripts.js" />
+    <Content Include="Scripts\FilterScripts.js" />
     <Content Include="Scripts\jquery-1.10.2.js" />
     <Content Include="Scripts\jquery-1.10.2.min.js" />
     <None Include="Scripts\jquery.validate-vsdoc.js" />
@@ -289,6 +293,8 @@
     <Content Include="Scripts\modernizr-2.6.2.js" />
     <Content Include="Scripts\respond.js" />
     <Content Include="Scripts\respond.min.js" />
+    <Content Include="Scripts\ShowScripts.js" />
+    <Content Include="Scripts\TicketsScripts.js" />
     <Content Include="Web.config">
       <SubType>Designer</SubType>
     </Content>
@@ -345,6 +351,9 @@
     <Content Include="Views\Ticket\Edit.cshtml" />
     <Content Include="Views\Ticket\NoPermissionError.cshtml" />
     <Content Include="Views\Admin\ShowAdminLogs.cshtml" />
+    <Content Include="Views\Admin\EditRolesList.cshtml" />
+    <Content Include="Views\Admin\Delete.cshtml" />
+    <Content Include="Views\Ticket\Filter.cshtml" />
   </ItemGroup>
   <ItemGroup>
     <Folder Include="App_Data\" />
@@ -388,11 +397,11 @@
     <VisualStudio>
       <FlavorProperties GUID="{349c5851-65df-11da-9384-00065b846f21}">
         <WebProjectProperties>
-          <UseIIS>False</UseIIS>
+          <UseIIS>True</UseIIS>
           <AutoAssignPort>True</AutoAssignPort>
           <DevelopmentServerPort>50102</DevelopmentServerPort>
           <DevelopmentServerVPath>/</DevelopmentServerVPath>
-          <IISUrl>http://localhost:50244/</IISUrl>
+          <IISUrl>http://localhost:50199/</IISUrl>
           <NTLMAuthentication>False</NTLMAuthentication>
           <UseCustomServer>False</UseCustomServer>
           <CustomServerUrl>

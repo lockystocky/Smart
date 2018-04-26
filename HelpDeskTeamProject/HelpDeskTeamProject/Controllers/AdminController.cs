@@ -12,6 +12,8 @@ using System.Web.Mvc;
 using Microsoft.AspNet.Identity;
 using HelpDeskTeamProject.Loggers;
 using System.Reflection;
+using System.Threading.Tasks;
+using Newtonsoft.Json;
 
 namespace HelpDeskTeamProject.Controllers
 {
@@ -24,6 +26,67 @@ namespace HelpDeskTeamProject.Controllers
             dbContext = context;
         }
         
+        public async Task<ActionResult> EditRolesList()
+        {
+            string userAppId = System.Web.HttpContext.Current.User.Identity.GetUserId();
+            User curUser = await dbContext.Users.SingleOrDefaultAsync(x => x.AppId.Equals(userAppId));
+            if (curUser != null)
+            {
+                if (curUser.AppRole.Permissions.CanManageUserRoles || curUser.AppRole.Permissions.IsAdmin)
+                {
+                    IEnumerable<User> usersList = await dbContext.Users.Include(x => x.AppRole).ToListAsync();
+                    List<UserDTO> dtoUsersList = new List<UserDTO>();
+                    foreach (User value in usersList)
+                    {
+                        dtoUsersList.Add(new UserDTO(value));
+                    }
+                    List<ApplicationRole> appRoles = await dbContext.AppRoles.ToListAsync();
+                    ViewBag.AppRoles = appRoles;
+                    return View(dtoUsersList);
+                }
+                else
+                {
+                    return RedirectToAction("NoPermissionError", "Ticket");
+                }
+            }
+            return RedirectToAction("Index", "Admin");
+        }
+
+        [HttpPost]
+        public async Task<ActionResult> EditRolesListSave(string ids, string values)
+        {
+            string[] userIdsArray = ids.Split(',');
+            string[] appIdsArray = values.Split(',');
+            string userAppId = System.Web.HttpContext.Current.User.Identity.GetUserId();
+            User curUser = await dbContext.Users.SingleOrDefaultAsync(x => x.AppId.Equals(userAppId));
+            if (curUser != null)
+            {
+                if (curUser.AppRole.Permissions.CanManageUserRoles || curUser.AppRole.Permissions.IsAdmin)
+                {
+                    if (userIdsArray.Length > 0 && appIdsArray.Length > 0 && userIdsArray.Length == appIdsArray.Length)
+                    {
+                        List<ApplicationRole> roles = await dbContext.AppRoles.ToListAsync();
+                        for (int counter = 0;counter < userIdsArray.Length; counter++)
+                        {
+                            int tempId = Convert.ToInt32(userIdsArray[counter]);
+                            User temp = await dbContext.Users.SingleOrDefaultAsync(x => x.Id == tempId);
+                            if (temp != null)
+                            {
+                                int tempRoleId = Convert.ToInt32(appIdsArray[counter]);
+                                temp.AppRole = roles.SingleOrDefault(x => x.Id == tempRoleId);
+                            }
+                        }
+                        await dbContext.SaveChangesAsync();
+                    }
+                }
+                else
+                {
+                    return RedirectToAction("NoPermissionError", "Ticket");
+                }
+            }
+            return RedirectToAction("EditRolesList", "Admin");
+        }
+
         // GET: Admin
         public ActionResult Index()
         {
@@ -77,15 +140,16 @@ namespace HelpDeskTeamProject.Controllers
         {
             if (ModelState.IsValid)
             {
-                dbContext.AppRoles.Attach(user.AppRole);
+                //dbContext.AppRoles.Attach(user.AppRole);
                 if (user.Id == 0)
                 {
                     dbContext.Users.Add(user);
                 }
                 else
                 {
-                    var userInDb = dbContext.Users.Include(u => u.AppRole)
-                        .SingleOrDefault(u => u.Id == user.Id);
+                    //var userInDb = dbContext.Users.Include(u => u.AppRole)
+                    //    .SingleOrDefault(u => u.Id == user.Id);
+                    var userInDb = dbContext.Users.Find(user.Id);
                     bool wasChangedUserInDb = userInDb!= user;
                     if (wasChangedUserInDb)
                     {                        
@@ -94,13 +158,49 @@ namespace HelpDeskTeamProject.Controllers
                     if (userInDb != null)
                     {
                         dbContext.Entry(userInDb).CurrentValues.SetValues(user);
-                        userInDb.AppRole.Permissions = user.AppRole.Permissions;
+                        //userInDb.AppRole.Permissions = user.AppRole.Permissions;
                     }
                 }
                 dbContext.SaveChanges();
                 return RedirectToAction("Index");
             }
             return View(user);
+        }
+
+        public ActionResult Delete(int? id)
+        {
+            if (id == null)
+            {
+                return new HttpStatusCodeResult(HttpStatusCode.BadRequest);
+            }
+            AdminLog adminLog = dbContext.AdminLogs.Find(id);
+            if (adminLog == null)
+            {
+                return HttpNotFound();
+            }
+            return View(adminLog);
+        }
+
+        // POST: /Movies/Delete/5
+        [HttpPost, ActionName("Delete")]
+        [ValidateAntiForgeryToken]
+        public ActionResult DeleteConfirmed(int id)
+        {
+            AdminLog adminLog = dbContext.AdminLogs.Find(id);
+            dbContext.AdminLogs.Remove(adminLog);
+            dbContext.SaveChanges();
+            return RedirectToAction("ShowAdminLogs");
+        }
+
+        public ActionResult Clear()
+        {
+            var lastId = dbContext.AdminLogs
+                                    .OrderByDescending(p => p.Id)
+                                    .FirstOrDefault().Id;
+            var adminLogs = dbContext.AdminLogs.Where(p => p.Id <= lastId && p.Id >= lastId - 4).ToList();
+            dbContext.AdminLogs.RemoveRange(adminLogs);
+            dbContext.SaveChanges();
+            return RedirectToAction("ShowAdminLogs");
         }
 
         public ActionResult ShowAdminLogs()
