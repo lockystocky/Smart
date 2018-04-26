@@ -269,7 +269,7 @@ function showByTeam(id) {
 function createTeamsMenu(teamsList) {
         $.each(teamsList, function () {
             var team = this;
-            var menuItem = $('<div class="team-name list-group-item list-group-item-action flex-column align-items-start" style="margin-right:0px">');
+            var menuItem = $('<div class="team-name list-group-item list-group-item-action flex-column align-items-start teamHover" style="margin-right:0px">');
             menuItem.attr('id', team.TeamId);
             var teamIcon = $('<img class="group-icon">');
             teamIcon.attr('src', '/Content/Icons/group_icon.png');
