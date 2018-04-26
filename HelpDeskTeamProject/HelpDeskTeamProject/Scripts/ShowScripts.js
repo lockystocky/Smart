@@ -113,6 +113,7 @@ function displayNewTicket(ticket) {
     cardText.appendChild(ticketDescr);
     var themeText = document.createElement("div");
     themeText.className = "themeText";
+    themeText.onclick = function () { window.location.href = "/Ticket/Filter"; };
     themeText.innerText = ticket.Type.Name;
     cardText.appendChild(themeText);
     cardDiv.appendChild(cardText);
@@ -327,4 +328,8 @@ function getTeamPermissions() {
         }
     }
     xhr.send(null);
+}
+
+function themeTextClick() {
+    window.location.href = "/Ticket/Filter";
 }

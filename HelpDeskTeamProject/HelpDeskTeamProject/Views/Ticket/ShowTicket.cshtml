@@ -42,7 +42,7 @@
             }
             <div class="cardText">
                 <p>@Model.Description</p>
-                <div class="themeText">@Model.Type.Name</div>
+                <div class="themeText" onclick="themeTextClick()">@Model.Type.Name</div>
             </div>
             <div class="divideLine"></div>
             <div class="replyRectangle">
@@ -132,7 +132,7 @@
                         }
                         <div class="cardText">
                             <p>@childTicket.Description</p>
-                            <div class="themeText">@childTicket.Type.Name</div>
+                            <div class="themeText" onclick="themeTextClick()">@childTicket.Type.Name</div>
                         </div>
                         <div class="divideLine"></div>
                         <div class="replyRectangle">
