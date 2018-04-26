@@ -37,9 +37,16 @@ namespace HelpDeskTeamProject.Controllers
                 User curUser = await GetCurrentUser();
                 if (curUser.AppRole.Permissions.CanManageUserRoles == true || curUser.AppRole.Permissions.IsAdmin == true)
                 {
-                    dbContext.TeamRoles.Add(newTeamRole);
-                    await dbContext.SaveChangesAsync();
-                    return Redirect("/Role/List");
+                    if (await dbContext.TeamRoles.SingleOrDefaultAsync(x => x.Name.Equals(newTeamRole.Name)) == null)
+                    {
+                        dbContext.TeamRoles.Add(newTeamRole);
+                        await dbContext.SaveChangesAsync();
+                        return Redirect("/Role/List");
+                    }
+                    else
+                    {
+                        ModelState.AddModelError("NameExists", "Role with that name already exists.");
+                    }
                 }
                 else
                 {
@@ -69,9 +76,16 @@ namespace HelpDeskTeamProject.Controllers
                 User curUser = await GetCurrentUser();
                 if (curUser.AppRole.Permissions.CanManageUserRoles == true || curUser.AppRole.Permissions.IsAdmin == true)
                 {
-                    dbContext.AppRoles.Add(newAppRole);
-                    await dbContext.SaveChangesAsync();
-                    return Redirect("/Role/List");
+                    if (await dbContext.AppRoles.SingleOrDefaultAsync(x => x.Name.Equals(newAppRole.Name)) == null)
+                    {
+                        dbContext.AppRoles.Add(newAppRole);
+                        await dbContext.SaveChangesAsync();
+                        return Redirect("/Role/List");
+                    }
+                    else
+                    {
+                        ModelState.AddModelError("NameExists", "Role with that name already exists.");
+                    }
                 }
                 else
                 {
@@ -156,11 +170,28 @@ namespace HelpDeskTeamProject.Controllers
                 User curUser = await GetCurrentUser();
                 if (curUser.AppRole.Permissions.CanManageUserRoles == true || curUser.AppRole.Permissions.IsAdmin == true)
                 {
-                    ApplicationRole dbRole = await dbContext.AppRoles.SingleOrDefaultAsync(x => x.Id.Equals(role.Id));
-                    dbRole.Name = role.Name;
-                    dbRole.Permissions = role.Permissions;
-                    await dbContext.SaveChangesAsync();
-                    return Redirect("/Role/List");
+                    var appRoles = dbContext.AppRoles.Where(x => x.Name.Equals(role.Name));
+                    bool hasNoSameNames = true;
+                    foreach (ApplicationRole value in appRoles)
+                    {
+                        if (value.Name.Equals(role.Name) && value.Id != role.Id)
+                        {
+                            hasNoSameNames = false;
+                            break;
+                        }
+                    }
+                    if (hasNoSameNames)
+                    {
+                        ApplicationRole dbRole = await dbContext.AppRoles.SingleOrDefaultAsync(x => x.Id.Equals(role.Id));
+                        dbRole.Name = role.Name;
+                        dbRole.Permissions = role.Permissions;
+                        await dbContext.SaveChangesAsync();
+                        return Redirect("/Role/List");
+                    }
+                    else
+                    {
+                        ModelState.AddModelError("NameExists", "Role with that name already exists.");
+                    }
                 }
                 else
                 {
@@ -180,11 +211,28 @@ namespace HelpDeskTeamProject.Controllers
                 User curUser = await GetCurrentUser();
                 if (curUser.AppRole.Permissions.CanManageUserRoles == true || curUser.AppRole.Permissions.IsAdmin == true)
                 {
-                    TeamRole dbRole = await dbContext.TeamRoles.SingleOrDefaultAsync(x => x.Id.Equals(role.Id));
-                    dbRole.Name = role.Name;
-                    dbRole.Permissions = role.Permissions;
-                    await dbContext.SaveChangesAsync();
-                    return Redirect("/Role/List");
+                    var teamRoles = dbContext.TeamRoles.Where(x => x.Name.Equals(role.Name));
+                    bool hasNoSameNames = true;
+                    foreach (TeamRole value in teamRoles)
+                    {
+                        if (value.Name.Equals(role.Name) && value.Id != role.Id)
+                        {
+                            hasNoSameNames = false;
+                            break;
+                        }
+                    }
+                    if (hasNoSameNames)
+                    {
+                        TeamRole dbRole = await dbContext.TeamRoles.SingleOrDefaultAsync(x => x.Id.Equals(role.Id));
+                        dbRole.Name = role.Name;
+                        dbRole.Permissions = role.Permissions;
+                        await dbContext.SaveChangesAsync();
+                        return Redirect("/Role/List");
+                    }
+                    else
+                    {
+                        ModelState.AddModelError("NameExists", "Role with that name already exists.");
+                    }
                 }
                 else
                 {

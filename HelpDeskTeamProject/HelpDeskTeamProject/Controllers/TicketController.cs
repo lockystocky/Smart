@@ -156,9 +156,18 @@ namespace HelpDeskTeamProject.Controllers
                 {
                     if (curUser.AppRole.Permissions.CanManageTicketTypes || curUser.AppRole.Permissions.IsAdmin)
                     {
-                        db.TicketTypes.Add(newType);
-                        await db.SaveChangesAsync();
-                        return RedirectToAction("TypeList", "Ticket");
+                        TicketType type = await db.TicketTypes.SingleOrDefaultAsync(x => x.Name.Equals(newType.Name));
+                        if (type == null)
+                        {
+                            db.TicketTypes.Add(newType);
+                            await db.SaveChangesAsync();
+                            return RedirectToAction("TypeList", "Ticket");
+                        }
+                        else
+                        {
+                            ModelState.AddModelError("TicketNameExists", "Ticket type with that name already exists.");
+                            return View(newType);
+                        }
                     }
                 }
                 return RedirectToAction("NoPermissionError", "Ticket");
@@ -189,7 +198,8 @@ namespace HelpDeskTeamProject.Controllers
                         TeamRole curTeamUserRole = curTeam.UserPermissions.SingleOrDefault(x => x.User.Id == curUser.Id).TeamRole;
                         if (curUser != null && curTeamUserRole != null)
                         {
-                            List<Ticket> curTickets = await db.Tickets.Include(x => x.ChildTickets).Include(y => y.Comments).Include(z => z.User).Where(s => s.ParentTicket == null).ToListAsync();
+                            List<Ticket> curTickets = await db.Tickets.Include(x => x.ChildTickets).Include(y => y.Comments).Include(z => z.User)
+                                .Where(s => s.ParentTicket == null).Where(q => q.TeamId == curTeam.Id).ToListAsync();
                             List<TicketDTO> curTicketsDto = new List<TicketDTO>();
                             foreach (Ticket value in curTickets)
                             {
