@@ -7,7 +7,7 @@ using System.Web;
 
 namespace HelpDeskTeamProject.Context
 {
-    public class AppContext : DbContext
+    public class AppContext : DbContext, IAppContext
     {
         // You can add custom code to this file. Changes will not be overwritten.
         // 

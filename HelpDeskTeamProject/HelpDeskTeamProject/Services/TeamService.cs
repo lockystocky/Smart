@@ -13,12 +13,16 @@ using System.Web.Mvc;
 
 namespace HelpDeskTeamProject.Services
 {
-    public class TeamService
+    public class TeamService : ITeamService
     {
-        private AppContext db = new AppContext();
+        private IAppContext db;
         private string TEAM_OWNER_ROLE_NAME = WebConfigurationManager.AppSettings["TeamOwnerRoleName"];
         private string DEFAULT_TEAM_ROLE_NAME = WebConfigurationManager.AppSettings["DefaultTeamRoleName"];
-        //private const string SITE_LINK = "http://localhost:50244/";
+
+        public TeamService(IAppContext context)
+        {
+            db = context;
+        }
 
         public List<TeamMenuItem> GetUserTeamsList(User user)
         {

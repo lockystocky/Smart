@@ -25,7 +25,6 @@ else
 <script>
     
     $.get('/teams/getcurrentusername', function (data) {
-        alert(data);
         $('#username').text('Welcome, ' + data + '!');
     });
 </script>

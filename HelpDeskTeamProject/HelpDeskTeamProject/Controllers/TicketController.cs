@@ -16,7 +16,12 @@ namespace HelpDeskTeamProject.Controllers
 {
     public class TicketController : Controller
     {
-        AppContext db = new AppContext();
+        IAppContext db;// = new AppContext();
+
+        public TicketController(IAppContext context)
+        {
+            db = context;
+        }
 
         public ActionResult NoPermissionError()
         {

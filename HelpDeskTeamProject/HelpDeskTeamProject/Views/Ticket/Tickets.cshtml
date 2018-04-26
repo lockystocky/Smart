@@ -26,12 +26,12 @@
     <div class="col-md-9">
 
         <br/>
-        <a id="managelink"></a>
+        
         <div id="manageteamdiv" class="addButtonDiv hidden">
             <p id="managetext" style="padding-top: 1px"></p>
 
         </div>
-        
+        <p id="noteamsmsg"></p>
 
 <div id="baseDiv">
     <div id="newTicketInput" style="display: none;">
@@ -376,7 +376,13 @@
     function getTeamsListAndCreateTeamsMenu() {
         $.getJSON("/Teams/GetCurrentUserTeamsList/")
             .done(function (teamsList) {
-                createTeamsMenu(teamsList);
+                if (teamsList.length > 0) {
+                    $('#noteamsmsg').text('');
+                    createTeamsMenu(teamsList);
+                }
+                else {
+                    $('#noteamsmsg').text('There are no teams associated with your account, create one or ask somebody to invite you');
+                }
             });
     };
 
