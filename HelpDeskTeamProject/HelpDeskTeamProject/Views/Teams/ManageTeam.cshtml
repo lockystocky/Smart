@@ -44,23 +44,27 @@ else
 
     </table>
 }
+        <hr />
         <br />
         <br />
-        @Html.ActionLink("Invite user", "InviteUser", new { teamId = Model.Team.Id})
+        @Html.ActionLink("Invite user", "InviteUser", new { teamId = Model.Team.Id })
+        <br />
+        <br />
         @if (Model.Team.InvitedUsers.Count < 1)
-        {
-            <p>No invited users in this team.</p>
-        }
-        else
-        {
-            <ul>Invited users:
+    {
+        <p>No invited users in this team.</p>
+}
+else
+{
+    <p>Invited users:</p>
 
-                @foreach (var invitedUser in Model.Team.InvitedUsers)
-                {
-                     <li>@invitedUser.Email</li>
-                }
-            </ul>
-        }
+
+foreach (var invitedUser in Model.Team.InvitedUsers)
+{
+    <p>@invitedUser.Email</p>
+}
+
+}
     </div>
     <div class="col-md-2">
 

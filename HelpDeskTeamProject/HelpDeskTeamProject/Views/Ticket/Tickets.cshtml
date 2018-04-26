@@ -24,7 +24,13 @@
 
     </div>
     <div class="col-md-9">
+
+        <br/>
         <a id="managelink"></a>
+        <div id="manageteamdiv" class="addButtonDiv hidden">
+            <p id="managetext" style="padding-top: 1px"></p>
+
+        </div>
         
 
 <div id="baseDiv">
@@ -377,12 +383,15 @@
     function getManageTeamLink(teamId) {        
         $.get("/teams/GetTeamManagementLink?_teamId=" + teamId, function (data) {
             if (data) {
-                $('#managelink').text('Manage team');
-                $('#managelink').attr('href', data);
+                $('#manageteamdiv').removeClass('hidden');
+                $('#managetext').text('Manage team');
+                $('#manageteamdiv').click(function () {
+                    window.location.href = data;
+                });
             }
             else {
-                $('#managelink').text('');
-                $('#managelink').attr('href', '');
+                $('#manageteamdiv').addClass('hidden');
+                $('#manageteamdiv').click(function () { });
             }
            
         });
