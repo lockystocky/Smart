@@ -142,16 +142,20 @@
         divideLine.className = "divideLine";
         cardDiv.appendChild(divideLine);
 
-        var replyRect = document.createElement("div");
-        replyRect.className = "replyRectangle";
+        //var replyRect = document.createElement("div");
+        //replyRect.className = "replyRectangle";
         var showTicketText = document.createElement("div");
         showTicketText.className = "replyTextMargin";
         showTicketText.innerText = "Show";
+        showTicketText.addEventListener("click", function () { showButtonClick(tempId) });
         replyRect.appendChild(showTicketText);
-        var editTicketText = document.createElement("div");
-        editTicketText.className = "replyTextMargin";
-        editTicketText.innerText = "Edit";
-        replyRect.appendChild(editTicketText);
+        if (ticket.CanEdit == true) {
+            var editTicketText = document.createElement("div");
+            editTicketText.className = "replyTextMargin";
+            editTicketText.innerText = "Edit";
+            editTicketText.addEventListener("click", function () { editButtonClick(tempId) });
+            replyRect.appendChild(editTicketText);
+        }
         var commentsTicketDisp = document.createElement("div");
         commentsTicketDisp.className = "replyTextMargin";
         commentsTicketDisp.innerHTML = "<img src=\"/Content/comments.png\" style=\"padding-bottom:1px;\" /><b> " + ticket.CommentsCount +"</b>"
@@ -372,7 +376,7 @@
             </div>
             <div class="divideLine"></div>
             <div class="replyRectangle">
-                <div class="replyTextMargin">Reply</div>
+                @*<div class="replyTextMargin">Reply</div>*@
                 @if (Model.CanEdit)
                 {
                     <div class="replyTextMargin" onclick="editButtonClick(@Model.Id)">Edit</div>
