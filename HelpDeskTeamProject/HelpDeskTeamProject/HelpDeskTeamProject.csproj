@@ -223,6 +223,14 @@
     <Compile Include="Migrations\201804251335365_newInitialMigrations.Designer.cs">
       <DependentUpon>201804251335365_newInitialMigrations.cs</DependentUpon>
     </Compile>
+    <Compile Include="Migrations\201804252202537_removedAttributes.cs" />
+    <Compile Include="Migrations\201804252202537_removedAttributes.Designer.cs">
+      <DependentUpon>201804252202537_removedAttributes.cs</DependentUpon>
+    </Compile>
+    <Compile Include="Migrations\201804260842319_removedMoreValidations.cs" />
+    <Compile Include="Migrations\201804260842319_removedMoreValidations.Designer.cs">
+      <DependentUpon>201804260842319_removedMoreValidations.cs</DependentUpon>
+    </Compile>
     <Compile Include="Models\AppAndTeamRolesViewModel.cs" />
     <Compile Include="Models\TeamMenuItem.cs" />
     <Compile Include="Repositories\IRepository.cs" />
@@ -353,6 +361,12 @@
   <ItemGroup>
     <EmbeddedResource Include="Migrations\201804251335365_newInitialMigrations.resx">
       <DependentUpon>201804251335365_newInitialMigrations.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Migrations\201804252202537_removedAttributes.resx">
+      <DependentUpon>201804252202537_removedAttributes.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Migrations\201804260842319_removedMoreValidations.resx">
+      <DependentUpon>201804260842319_removedMoreValidations.cs</DependentUpon>
     </EmbeddedResource>
   </ItemGroup>
   <PropertyGroup>

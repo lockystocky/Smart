@@ -11,9 +11,9 @@ namespace HelpDeskTeamProject.DataModels
     {
         public int Id { get; set; }
 
-        [Required]
-        [StringLength(20)]
-        [Remote("IsTicketNameAvailable", "Validation", ErrorMessage = "Ticket type with such name already exists")]
+        //[Required]
+        //[StringLength(20)]
+        //[Remote("IsTicketNameAvailable", "Validation", ErrorMessage = "Ticket type with such name already exists")]
         public string Name { get; set; }
     }
 }

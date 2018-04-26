@@ -23,6 +23,27 @@ namespace HelpDeskTeamProject.Controllers
             return View();
         }
 
+        [HttpPost]
+        public async Task<JsonResult> ChangeTicketState(int? ticketId, int? state)
+        {
+            if (ticketId != null && state != null && ticketId > 0 && state >= 0 && state <= 3)
+            {
+                User curUser = await GetCurrentUser();
+                Ticket ticket = await db.Tickets.SingleOrDefaultAsync(x => x.Id == ticketId);
+                if (curUser != null && ticket != null)
+                {
+                    TeamPermissions teamPerms = await GetCurrentTeamPermissions(ticket.TeamId, curUser.Id);
+                    if (curUser.AppRole.Permissions.IsAdmin || teamPerms.CanChangeTicketState)
+                    {
+                        ticket.State = (TicketState)state;
+                        await db.SaveChangesAsync();
+                        return Json(true);
+                    }
+                }
+            }
+            return Json(false);
+        }
+
         public async Task<ActionResult> Edit(int? id)
         {
             if (id != null)
@@ -114,9 +135,12 @@ namespace HelpDeskTeamProject.Controllers
         public async Task<ActionResult> NewType()
         {
             User curUser = await GetCurrentUser();
-            if (curUser.AppRole.Permissions.CanManageTicketTypes)
+            if (curUser != null)
             {
-                return View();
+                if (curUser.AppRole.Permissions.CanManageTicketTypes || curUser.AppRole.Permissions.IsAdmin)
+                {
+                    return View();
+                }
             }
             return RedirectToAction("NoPermissionError", "Ticket");
         }
@@ -128,16 +152,16 @@ namespace HelpDeskTeamProject.Controllers
             if (ModelState.IsValid)
             {
                 User curUser = await GetCurrentUser();
-                if (curUser.AppRole.Permissions.CanManageTicketTypes)
+                if (curUser != null)
                 {
-                    db.TicketTypes.Add(newType);
-                    await db.SaveChangesAsync();
-                    return RedirectToAction("TypeList", "Ticket");
+                    if (curUser.AppRole.Permissions.CanManageTicketTypes || curUser.AppRole.Permissions.IsAdmin)
+                    {
+                        db.TicketTypes.Add(newType);
+                        await db.SaveChangesAsync();
+                        return RedirectToAction("TypeList", "Ticket");
+                    }
                 }
-                else
-                {
-                    return RedirectToAction("NoPermissionError", "Ticket");
-                }
+                return RedirectToAction("NoPermissionError", "Ticket");
             }
             return View(newType);
         }
@@ -145,7 +169,7 @@ namespace HelpDeskTeamProject.Controllers
         public async Task<ActionResult> TypeList()
         {
             User curUser = await GetCurrentUser();
-            if (curUser.AppRole.Permissions.CanManageTicketTypes)
+            if (curUser.AppRole.Permissions.CanManageTicketTypes || curUser.AppRole.Permissions.IsAdmin)
             {
                 List<TicketType> ticketTypes = await db.TicketTypes.ToListAsync();
                 return View(ticketTypes);
