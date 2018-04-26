@@ -10,6 +10,19 @@
 <h2>@ViewBag.Message</h2>
 
 <h1>Admin Panel</h1>
+<table>
+    <tr>
+        <td>
+            <button type="button" class="btn btn-success" onclick="location.href='@Url.Action("ShowAdminLogs", "Admin")'">Admin Logs</button>
+        </td>
+        <td>
+            <button type="button" class="btn btn-warning" onclick="location.href='@Url.Action("List", "Role")'">List of roles</button>
+        </td>
+    </tr>
+    <tr>
+        
+    </tr>
+</table>
 
 <h3>List of Users</h3>
 
@@ -37,7 +50,7 @@
                 }
                 else
                 {
-                    <td></td>
+                    <td>Regular user</td>
                 }
                 <td><button type="button" class="btn btn-default">@Html.ActionLink("Edit", "Edit", new { id = user.Id })</button></td>
                 <td><button type="button" class="btn">@Html.ActionLink("Show Teams and Roles", "GetTeamsAndRoles", new { id = user.Id })</button>
@@ -45,6 +58,8 @@
         }
     </tbody>
 </table>
+
+
 
 
 @section scripts{

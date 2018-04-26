@@ -25,7 +25,7 @@
                 }
                 else
                 {
-                    <td>@team.UserPermissions.Where(p => p.TeamRole.Name == "Customer").FirstOrDefault().TeamRole.Name</td>
+                    <td>@team.UserPermissions.Where(p => p.TeamRole.Name == "Default Team Role").FirstOrDefault().TeamRole.Name</td>
                 }
             </tr>
         }

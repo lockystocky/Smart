@@ -8,17 +8,16 @@ using System.Security.Principal;
 
 namespace HelpDeskTeamProject.Services
 {
-    public class AdminService
+    public static class AdminService
     {
-        public bool CreateAdminButton(IPrincipal user)
+        public static bool CreateAdminButton(string userName)
         {
             AppContext dbContext = new AppContext();
 
-            var userName = user.Identity.GetUserName();
             var currentUser = dbContext.Users.Where(u => u.Email == userName).FirstOrDefault();
             if (currentUser != null)
             {
-                if (currentUser.AppRole.Permissions.IsAdmin)
+                if (currentUser.IsAdmin)
                 {
                     return true;
                 }

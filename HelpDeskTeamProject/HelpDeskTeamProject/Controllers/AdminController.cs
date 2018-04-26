@@ -99,6 +99,31 @@ namespace HelpDeskTeamProject.Controllers
             return View(user);
         }
 
+        public ActionResult Delete(int? id)
+        {
+            if (id == null)
+            {
+                return new HttpStatusCodeResult(HttpStatusCode.BadRequest);
+            }
+            AdminLog adminLog = dbContext.AdminLogs.Find(id);
+            if (adminLog == null)
+            {
+                return HttpNotFound();
+            }
+            return View(adminLog);
+        }
+
+        // POST: /Movies/Delete/5
+        [HttpPost, ActionName("Delete")]
+        [ValidateAntiForgeryToken]
+        public ActionResult DeleteConfirmed(int id)
+        {
+            AdminLog adminLog = dbContext.AdminLogs.Find(id);
+            dbContext.AdminLogs.Remove(adminLog);
+            dbContext.SaveChanges();
+            return RedirectToAction("ShowAdminLogs");
+        }
+
         public ActionResult ShowAdminLogs()
         {
             return View(dbContext.AdminLogs.ToList());

@@ -1,8 +1,9 @@
-﻿@using  Microsoft.AspNet.Identity
+﻿@using Microsoft.AspNet.Identity
+@using HelpDeskTeamProject.Services
 <!DOCTYPE html>
 <html>
 <head>
-<meta http-equiv="Content-Type" content="text/html; charset=utf-8"/>
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>@ViewBag.Title – приложение ASP.NET</title>
@@ -27,9 +28,9 @@
                     <li>@Html.ActionLink("О программе", "About", "Home")</li>
                     <li>@Html.ActionLink("Контакт", "Contact", "Home")</li>
 
-                    
-                    
-                    @if (User.Identity.GetUserName() == "adminsmart#gmail.com")
+
+
+                    @if (AdminService.CreateAdminButton(User.Identity.GetUserName()))
                     {
                         <li><button type="button" class="btn btn-info" onclick="location.href='@Url.Action("Index", "Admin")'">Admin Panel</button></li>
                     }
@@ -43,7 +44,7 @@
     </div>
     <div class="container body-content">
         @RenderBody()
-            @*<hr />
+        @*<hr />
             <footer>
                 <p>&copy; @DateTime.Now.Year – приложение ASP.NET</p>
             </footer>*@
