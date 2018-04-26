@@ -23,6 +23,19 @@ namespace HelpDeskTeamProject.Controllers
             return View();
         }
 
+        public async Task<ActionResult> Filter()
+        {
+            User curUser = await GetCurrentUser();
+            if (curUser != null)
+            {
+                List<TicketType> ticketTypes = await db.TicketTypes.ToListAsync();
+                ViewBag.TicketTypes = ticketTypes;
+                List<Team> teams = curUser.Teams;
+                return View(teams);
+            }
+            return RedirectToAction("Tickets", "Ticket");
+        }
+
         [HttpPost]
         public async Task<JsonResult> ChangeTicketState(int? ticketId, int? state)
         {
@@ -339,6 +352,43 @@ namespace HelpDeskTeamProject.Controllers
                 }
             }
             return Json(null);
+        }
+
+        [HttpPost]
+        public async Task<JsonResult> GetTicketsByTeamAndType(int? teamId, int? typeId)
+        {
+            if (teamId != null && typeId != null && teamId > 0 && typeId > 0)
+            {
+                User curUser = await GetCurrentUser();
+                TicketType curType = await db.TicketTypes.SingleOrDefaultAsync(x => x.Id == typeId);
+                Team curTeam = await db.Teams.SingleOrDefaultAsync(x => x.Id == teamId);
+                if (curTeam != null && curType != null && curUser != null)
+                {
+                    if (curTeam.Users.Find(x => x.Id == curUser.Id) != null)
+                    {
+                        TeamPermissions teamPerms = curTeam.UserPermissions.SingleOrDefault(x => x.User.Id == curUser.Id).TeamRole.Permissions;
+                        List<Ticket> ticketsList = await db.Tickets.Where(x => x.TeamId == curTeam.Id).Where(y => y.Type.Id == typeId).ToListAsync();
+                        List<TicketDTO> dtoTicketsList = new List<TicketDTO>();
+                        foreach (Ticket value in ticketsList)
+                        {
+                            TicketDTO tempDto = new TicketDTO(value);
+                            if (curUser.Id == value.User.Id && curUser.AppRole.Permissions.IsAdmin)
+                            {
+                                tempDto.CanEdit = true;
+                                tempDto.CanDelete = true;
+                            }
+                            else
+                            {
+                                tempDto.CanEdit = teamPerms.CanEditTickets;
+                                tempDto.CanDelete = teamPerms.CanDeleteTickets;
+                            }
+                            dtoTicketsList.Add(tempDto);
+                        }
+                        return Json(dtoTicketsList);
+                    }
+                }
+            }
+            return Json(false);
         }
 
         private async Task<User> GetCurrentUser()

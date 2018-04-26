@@ -1,0 +1,45 @@
+﻿@model IEnumerable<HelpDeskTeamProject.DataModels.Team>
+@using HelpDeskTeamProject.DataModels
+@{
+    string[] statusColorsArray = { StatusColors.orangered.ToString(),
+        StatusColors.darkorange.ToString(),
+        StatusColors.limegreen.ToString(),
+        StatusColors.dimgrey.ToString() };
+
+    string[] ticketStateNames = { TicketState.New.ToString(), TicketState.InProgress.ToString(),
+        TicketState.Done.ToString(), TicketState.Rejected.ToString() };
+}
+
+<script>
+    var teamId;
+    var emptyTeamTickets = false;
+    var teamPermissions = null;
+    var canChangeTicketState = false;
+    var statusNames = @Html.Raw(Json.Encode(ticketStateNames));
+    var statusColorsJs = @Html.Raw(Json.Encode(statusColorsArray));
+</script>
+<link rel="stylesheet" href="~/Content/MaterialStyles.css" type="text/css">
+<script src="~/Scripts/FilterScripts.js"></script>
+
+<h2>Filter Tickets</h2>
+
+<div>
+    <select onchange="selectStateChanged()" id="selectTeam">
+        <option value="0">Select team</option>
+        @foreach (var value in Model)
+        {
+            <option value="@value.Id">@value.Name</option>
+        }
+    </select>
+    <select onchange="selectStateChanged()" id="selectType">
+        <option value="0">Select type</option>
+        @foreach (var value in ViewBag.TicketTypes)
+        {
+            <option value="@value.Id">@value.Name</option>
+        }
+    </select>
+</div>
+<div id="ticketsDiv">
+
+</div>
+

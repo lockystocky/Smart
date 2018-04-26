@@ -184,3 +184,10 @@
 .shade {
     background-color: #DCDCDC;
 }
+
+.teamHover{
+}
+
+.teamHover:hover{
+    cursor: pointer;
+}
