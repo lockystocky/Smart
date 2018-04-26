@@ -26,6 +26,17 @@
     color: grey;
 }
 
+.ticketStatus {
+    padding-top: 2px;
+    padding-left: 5px;
+    display: inline-block;
+    color: grey;
+}
+
+.ticketStatus:hover {
+    cursor: pointer; 
+}
+
 .cardText {
     padding-left: 15px;
     padding-right: 15px;

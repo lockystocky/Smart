@@ -108,12 +108,13 @@
 
         var statusRectDiv = document.createElement("div");
         statusRectDiv.className = "statusRect";
+        statusRectDiv.id = "strect_" + ticket.Id;
         statusRectDiv.style.backgroundColor = statusColorsJs[ticket.State];
         cardDiv.appendChild(statusRectDiv);
 
         var userNameDisp = document.createElement("h5");
         userNameDisp.className = "headerMargin";
-        userNameDisp.innerHTML = "<b>" + ticket.UserName + "</b> <b>" + ticket.UserSurname + "</b>"
+        userNameDisp.innerHTML = "<b>" + ticket.UserName + "</b> <b>" + ticket.UserSurname + "</b>";
         cardDiv.appendChild(userNameDisp);
 
         var timeDisp = document.createElement("h5");
@@ -122,9 +123,11 @@
         cardDiv.appendChild(timeDisp);
 
         var statusDisp = document.createElement("h5");
-        statusDisp.className = "dateTime";
+        statusDisp.className = "ticketStatus";
+        statusDisp.id = "stdisp_" + ticket.Id;
         statusDisp.style.color = statusColorsJs[ticket.State];
-        statusDisp.innerHTML = "<b>" + statusNames[ticket.State] + "</b>"
+        statusDisp.innerHTML = "<b>" + statusNames[ticket.State] + "</b>";
+        statusDisp.onclick = function () { changeStateClick(tempId) };
         cardDiv.appendChild(statusDisp);
 
         if (ticket.CanDelete == true) {
@@ -166,13 +169,32 @@
         }
         var commentsTicketDisp = document.createElement("div");
         commentsTicketDisp.className = "replyTextMargin";
-        commentsTicketDisp.innerHTML = "<img src=\"/Content/comments.png\" style=\"padding-bottom:1px;\" /><b> " + ticket.CommentsCount +"</b>"
+        commentsTicketDisp.innerHTML = "<img src=\"/Content/comments.png\" style=\"padding-bottom:1px;\" /><b> " + ticket.CommentsCount + "</b>";
         replyRect.appendChild(commentsTicketDisp);
         var childTicketDisp = document.createElement("div");
         childTicketDisp.className = "replyTextMargin";
-        childTicketDisp.innerHTML = "<img src=\"/Content/ticket.png\" style=\"padding-bottom:1px;\" /><b> " + ticket.ChildTicketsCount + "</b>"
+        childTicketDisp.innerHTML = "<img src=\"/Content/ticket.png\" style=\"padding-bottom:1px;\" /><b> " + ticket.ChildTicketsCount + "</b>";
         replyRect.appendChild(childTicketDisp);
         cardDiv.appendChild(replyRect);
+    }
+
+    function changeStateClick(id) {
+        var statusNames = @Html.Raw(Json.Encode(ticketStateNames));
+        var statusColorsJs = @Html.Raw(Json.Encode(statusColorsArray));
+        var statusRect = document.getElementById("strect_" + id);
+        var statusDisp = document.getElementById("stdisp_" + id);
+
+        var indexOfCurrent = statusColorsJs.indexOf(statusRect.style.color);
+        if (indexOfCurrent >= 3) {
+            indexOfCurrent = 0;
+        }
+        else {
+            indexOfCurrent++;
+        }
+
+        statusRect.style.color = statusColorsJs[indexOfCurrent];
+        statusDisp.style.color = statusColorsJs[indexOfCurrent];
+        statusDisp.innerText = "<b>" + statusNames[indexOfCurrent] + "</b>";
     }
 
     function editButtonClick(id) {
@@ -295,17 +317,6 @@
         getTickets(teamId);
         getTeamPermissions(teamId);
     }
-
-
-    //window.onload = showByTeam(1);
-
-
-
-
-
-
-
-
 
     function createTeamsMenu(teamsList) {
         $.each(teamsList, function () {
