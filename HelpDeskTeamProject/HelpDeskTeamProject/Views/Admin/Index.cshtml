@@ -31,13 +31,13 @@
                 <td>@user.Id</td>
                 <td>@user.Name</td>
                 <td>@user.Surname</td>
-                @if (user.AppRole.Permissions.IsAdmin)
+                @if (user.IsAdmin)
                 {
                     <td>Admin</td>
                 }
                 else
                 {
-                    <td>@user.AppRole.Name</td>
+                    <td></td>
                 }
                 <td><button type="button" class="btn btn-default">@Html.ActionLink("Edit", "Edit", new { id = user.Id })</button></td>
                 <td><button type="button" class="btn">@Html.ActionLink("Show Teams and Roles", "GetTeamsAndRoles", new { id = user.Id })</button>

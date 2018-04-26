@@ -72,15 +72,16 @@ namespace HelpDeskTeamProject.Controllers
         {
             if (ModelState.IsValid)
             {
-                dbContext.AppRoles.Attach(user.AppRole);
+                //dbContext.AppRoles.Attach(user.AppRole);
                 if (user.Id == 0)
                 {
                     dbContext.Users.Add(user);
                 }
                 else
                 {
-                    var userInDb = dbContext.Users.Include(u => u.AppRole)
-                        .SingleOrDefault(u => u.Id == user.Id);
+                    //var userInDb = dbContext.Users.Include(u => u.AppRole)
+                    //    .SingleOrDefault(u => u.Id == user.Id);
+                    var userInDb = dbContext.Users.Find(user.Id);
                     bool wasChangedUserInDb = userInDb!= user;
                     if (wasChangedUserInDb)
                     {                        
@@ -89,7 +90,7 @@ namespace HelpDeskTeamProject.Controllers
                     if (userInDb != null)
                     {
                         dbContext.Entry(userInDb).CurrentValues.SetValues(user);
-                        userInDb.AppRole.Permissions = user.AppRole.Permissions;
+                        //userInDb.AppRole.Permissions = user.AppRole.Permissions;
                     }
                 }
                 dbContext.SaveChanges();

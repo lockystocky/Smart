@@ -13,12 +13,28 @@ namespace HelpDeskTeamProject.Loggers
     {
         public static List<AdminAction> CheckAction(User originalObject, User changedObject)
         {
+            //List<AdminAction> adminActions = new List<AdminAction>();
+            //if (originalObject.IsBanned != changedObject.IsBanned)
+            //{
+            //    adminActions.Add(AdminAction.BlockUser);
+            //}
+            //if (originalObject.AppRole.Permissions.IsAdmin != changedObject.AppRole.Permissions.IsAdmin)
+            //{
+            //    adminActions.Add(AdminAction.ChangeUserRole);
+            //}
+            //else
+            //{
+            //    adminActions.Add(AdminAction.ChangedUserData);
+            //}
+
+            //return adminActions;
+
             List<AdminAction> adminActions = new List<AdminAction>();
             if (originalObject.IsBanned != changedObject.IsBanned)
             {
                 adminActions.Add(AdminAction.BlockUser);
             }
-            if (originalObject.AppRole.Permissions.IsAdmin != changedObject.AppRole.Permissions.IsAdmin)
+            if (originalObject.IsAdmin != changedObject.IsAdmin)
             {
                 adminActions.Add(AdminAction.ChangeUserRole);
             }
