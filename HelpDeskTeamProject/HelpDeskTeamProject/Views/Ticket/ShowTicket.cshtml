@@ -16,6 +16,7 @@
     var emptyTickets = false;
     var emptyComments = false;
     var teamPermissions = null;
+    var canChangeTicketState = false;
 
     function addTicket() {
         var textBox = document.getElementById("addTicketText");
@@ -89,6 +90,7 @@
         var ticketsDisplay = document.getElementById("ticketsDisplay");
         var curTicketChildsCount = document.getElementById("ticketChildsCount");
         curTicketChildsCount.innerText = " " + (parseInt(curTicketChildsCount.innerText) + 1);
+        var tempId = ticket.Id;
 
         var cardDiv = document.createElement("div");
         cardDiv.className = "card";
@@ -97,6 +99,7 @@
 
         var statusRectDiv = document.createElement("div");
         statusRectDiv.className = "statusRect";
+        statusRectDiv.id = "strect_" + ticket.Id;
         statusRectDiv.style.backgroundColor = statusColorsJs[ticket.State];
         cardDiv.appendChild(statusRectDiv);
 
@@ -111,15 +114,16 @@
         cardDiv.appendChild(timeDisp);
 
         var statusDisp = document.createElement("h5");
-        statusDisp.className = "dateTime";
+        statusDisp.className = "ticketStatus";
+        statusDisp.id = "stdisp_" + ticket.Id;
         statusDisp.style.color = statusColorsJs[ticket.State];
         statusDisp.innerHTML = "<b>" + statusNames[ticket.State] + "</b>"
+        statusDisp.onclick = function () { changeStateClick(tempId) };
         cardDiv.appendChild(statusDisp);
 
         var deleteButton = document.createElement("h5");
         deleteButton.className = "deleteButton";
         deleteButton.innerText = "Delete";
-        var tempId = ticket.Id;
         deleteButton.addEventListener("click", function () { deleteAndHide(tempId) });
         cardDiv.appendChild(deleteButton);
 
@@ -138,16 +142,20 @@
         divideLine.className = "divideLine";
         cardDiv.appendChild(divideLine);
 
-        var replyRect = document.createElement("div");
-        replyRect.className = "replyRectangle";
+        //var replyRect = document.createElement("div");
+        //replyRect.className = "replyRectangle";
         var showTicketText = document.createElement("div");
         showTicketText.className = "replyTextMargin";
         showTicketText.innerText = "Show";
+        showTicketText.addEventListener("click", function () { showButtonClick(tempId) });
         replyRect.appendChild(showTicketText);
-        var editTicketText = document.createElement("div");
-        editTicketText.className = "replyTextMargin";
-        editTicketText.innerText = "Edit";
-        replyRect.appendChild(editTicketText);
+        if (ticket.CanEdit == true) {
+            var editTicketText = document.createElement("div");
+            editTicketText.className = "replyTextMargin";
+            editTicketText.innerText = "Edit";
+            editTicketText.addEventListener("click", function () { editButtonClick(tempId) });
+            replyRect.appendChild(editTicketText);
+        }
         var commentsTicketDisp = document.createElement("div");
         commentsTicketDisp.className = "replyTextMargin";
         commentsTicketDisp.innerHTML = "<img src=\"/Content/comments.png\" style=\"padding-bottom:1px;\" /><b> " + ticket.CommentsCount +"</b>"
@@ -157,6 +165,44 @@
         childTicketDisp.innerHTML = "<img src=\"/Content/ticket.png\" style=\"padding-bottom:1px;\" /><b> " + ticket.ChildTicketsCount + "</b>"
         replyRect.appendChild(childTicketDisp);
         cardDiv.appendChild(replyRect);
+    }
+
+    function changeStateClick(id) {
+        if (canChangeTicketState) {
+            var statusNames = @Html.Raw(Json.Encode(ticketStateNames));
+            var statusColorsJs = @Html.Raw(Json.Encode(statusColorsArray));
+            var statusRect = document.getElementById("strect_" + id);
+            var statusDisp = document.getElementById("stdisp_" + id);
+
+            var indexOfCurrent = statusColorsJs.indexOf(statusRect.style.backgroundColor);
+            if (indexOfCurrent >= 3) {
+                indexOfCurrent = 0;
+            }
+            else {
+                indexOfCurrent++;
+            }
+
+            statusRect.style.backgroundColor = statusColorsJs[indexOfCurrent];
+            statusDisp.style.color = statusColorsJs[indexOfCurrent];
+            statusDisp.innerHTML = "<b>" + statusNames[indexOfCurrent] + "</b>";
+            sendTicketState(id, indexOfCurrent);
+        } 
+    }
+
+    function sendTicketState(id, state) {
+        var uploaderUrl = "/Ticket/ChangeTicketState";
+        var formData = new FormData();
+        formData.append("ticketId", id);
+        formData.append("state", state);
+        var xhr = new XMLHttpRequest();
+        xhr.open('POST', uploaderUrl, true);
+        xhr.onloadend = function () {
+            var parsedTicket = JSON.parse(xhr.responseText);
+            if (parsedTicket != null) {
+                console.log(parsedTicket);
+            }
+        }
+        xhr.send(formData);
     }
 
     function addComment() {
@@ -299,6 +345,7 @@
             var parsedResp = JSON.parse(xhr.responseText);
             if (parsedResp != null) {
                 teamPermissions = parsedResp;
+                canChangeTicketState = teamPermissions.CanChangeTicketState;
                 setVisibilityInputs(teamPermissions.CanCommentTicket, teamPermissions.CanCreateTicket);
             }
         }
@@ -315,10 +362,10 @@
 <div>
     <div class="pageDivideLeft">
         <div class="card">
-            <div class="statusRect" style="background-color: @statusColorsArray[(int)Model.State];"></div>
+            <div class="statusRect" id="@string.Concat("strect_", Model.Id)" style="background-color: @statusColorsArray[(int)Model.State];"></div>
             <h5 class="headerMargin"><b>@Model.UserName</b> <b>@Model.UserSurname</b></h5>
             <h5 class="dateTime">@Model.TimeCreated</h5>
-            <h5 class="dateTime" style="color:@statusColorsArray[(int)Model.State];"><b>@Model.State.ToString()</b></h5>
+            <h5 class="ticketStatus" id="@string.Concat("stdisp_", Model.Id)" onclick="changeStateClick(@Model.Id)" style="color:@statusColorsArray[(int)Model.State];"><b>@Model.State.ToString()</b></h5>
             @if (Model.CanDelete)
             {
                 <h5 class="deleteButton" onclick="deleteThisTicket()">Delete</h5>
@@ -329,7 +376,7 @@
             </div>
             <div class="divideLine"></div>
             <div class="replyRectangle">
-                <div class="replyTextMargin">Reply</div>
+                @*<div class="replyTextMargin">Reply</div>*@
                 @if (Model.CanEdit)
                 {
                     <div class="replyTextMargin" onclick="editButtonClick(@Model.Id)">Edit</div>
@@ -405,10 +452,10 @@
                 foreach (var childTicket in Model.ChildTickets)
                 {
                     <div class="card" id="@String.Concat("ticket_" + childTicket.Id)">
-                        <div class="statusRect" style="background-color: @statusColorsArray[(int)childTicket.State]"></div>
+                        <div class="statusRect" id="@string.Concat("strect_", childTicket.Id)" style="background-color: @statusColorsArray[(int)childTicket.State]"></div>
                         <h5 class="headerMargin"><b>@childTicket.UserName</b> <b>@childTicket.UserSurname</b></h5>
                         <h5 class="dateTime">@childTicket.TimeCreated</h5>
-                        <h5 class="dateTime" style="color:@statusColorsArray[(int)childTicket.State];"><b>@childTicket.State.ToString()</b></h5>
+                        <h5 class="ticketStatus" id="@string.Concat("stdisp_", childTicket.Id)" onclick="changeStateClick(@childTicket.Id)" style="color:@statusColorsArray[(int)childTicket.State];"><b>@childTicket.State.ToString()</b></h5>
                         @if (childTicket.CanDelete)
                         {
                             <h5 class="deleteButton" onclick="deleteAndHide(@childTicket.Id)">Delete</h5>

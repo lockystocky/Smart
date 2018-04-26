@@ -27,6 +27,8 @@ namespace HelpDeskTeamProject.DataModels
 
         public bool IsBanned { get; set; }
 
+        public bool IsAdmin { get; set; }
+
         public virtual ApplicationRole AppRole { get; set; }
 
         public virtual List<Team> Teams { get; set; }

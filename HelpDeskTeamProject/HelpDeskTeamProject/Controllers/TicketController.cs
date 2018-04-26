@@ -23,6 +23,27 @@ namespace HelpDeskTeamProject.Controllers
             return View();
         }
 
+        [HttpPost]
+        public async Task<JsonResult> ChangeTicketState(int? ticketId, int? state)
+        {
+            if (ticketId != null && state != null && ticketId > 0 && state >= 0 && state <= 3)
+            {
+                User curUser = await GetCurrentUser();
+                Ticket ticket = await db.Tickets.SingleOrDefaultAsync(x => x.Id == ticketId);
+                if (curUser != null && ticket != null)
+                {
+                    TeamPermissions teamPerms = await GetCurrentTeamPermissions(ticket.TeamId, curUser.Id);
+                    if (curUser.AppRole.Permissions.IsAdmin || teamPerms.CanChangeTicketState)
+                    {
+                        ticket.State = (TicketState)state;
+                        await db.SaveChangesAsync();
+                        return Json(true);
+                    }
+                }
+            }
+            return Json(false);
+        }
+
         public async Task<ActionResult> Edit(int? id)
         {
             if (id != null)
@@ -113,11 +134,13 @@ namespace HelpDeskTeamProject.Controllers
 
         public async Task<ActionResult> NewType()
         {
-
             User curUser = await GetCurrentUser();
-            if (curUser != null && curUser.AppRole.Permissions.CanManageTicketTypes || curUser.AppRole.Permissions.IsAdmin)
+            if (curUser != null)
             {
-                return View();
+                if (curUser.AppRole.Permissions.CanManageTicketTypes || curUser.AppRole.Permissions.IsAdmin)
+                {
+                    return View();
+                }
             }
             return RedirectToAction("NoPermissionError", "Ticket");
         }
@@ -129,16 +152,25 @@ namespace HelpDeskTeamProject.Controllers
             if (ModelState.IsValid)
             {
                 User curUser = await GetCurrentUser();
-                if (curUser.AppRole.Permissions.CanManageTicketTypes || curUser.AppRole.Permissions.IsAdmin)
+                if (curUser != null)
                 {
-                    db.TicketTypes.Add(newType);
-                    await db.SaveChangesAsync();
-                    return RedirectToAction("TypeList", "Ticket");
+                    if (curUser.AppRole.Permissions.CanManageTicketTypes || curUser.AppRole.Permissions.IsAdmin)
+                    {
+                        TicketType type = await db.TicketTypes.SingleOrDefaultAsync(x => x.Name.Equals(newType.Name));
+                        if (type == null)
+                        {
+                            db.TicketTypes.Add(newType);
+                            await db.SaveChangesAsync();
+                            return RedirectToAction("TypeList", "Ticket");
+                        }
+                        else
+                        {
+                            ModelState.AddModelError("TicketNameExists", "Ticket type with that name already exists.");
+                            return View(newType);
+                        }
+                    }
                 }
-                else
-                {
-                    return RedirectToAction("NoPermissionError", "Ticket");
-                }
+                return RedirectToAction("NoPermissionError", "Ticket");
             }
             return View(newType);
         }
@@ -166,7 +198,8 @@ namespace HelpDeskTeamProject.Controllers
                         TeamRole curTeamUserRole = curTeam.UserPermissions.SingleOrDefault(x => x.User.Id == curUser.Id).TeamRole;
                         if (curUser != null && curTeamUserRole != null)
                         {
-                            List<Ticket> curTickets = await db.Tickets.Include(x => x.ChildTickets).Include(y => y.Comments).Include(z => z.User).Where(s => s.ParentTicket == null).ToListAsync();
+                            List<Ticket> curTickets = await db.Tickets.Include(x => x.ChildTickets).Include(y => y.Comments).Include(z => z.User)
+                                .Where(s => s.ParentTicket == null).Where(q => q.TeamId == curTeam.Id).ToListAsync();
                             List<TicketDTO> curTicketsDto = new List<TicketDTO>();
                             foreach (Ticket value in curTickets)
                             {
