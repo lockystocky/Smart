@@ -4,39 +4,50 @@
 @{
     ViewBag.Title = "InviteUser";
 }
-
-<h2>InviteUser</h2>
-<p class = "text-danger">@ViewBag.ErrorMessage</p>
-@using (Html.BeginForm())
-{
-<div class="form-horizontal">
-
-    @Html.EditorFor(model => model.TeamToInvite.Id, new { htmlAttributes = new { @class = "form-control hidden" } })
-
-    <div class="form-group">
-        @Html.LabelFor(model => model.TeamToInvite.Name, htmlAttributes: new { @class = "control-label col-md-2" })
-        <div class="col-md-10">
-            @Html.DisplayFor(model => model.TeamToInvite.Name, new { htmlAttributes = new { @class = "form-control" } })
-            @Html.ValidationMessageFor(model => model.TeamToInvite.Name, "", new { @class = "text-danger" })
-        </div>
+<div class="row">
+    <div class="col-md-3">
     </div>
+    <div class="col-md-6">
+        <br />
+        <br />
+        <br />
+        <p class="text-danger">@ViewBag.ErrorMessage</p>
+        @using (Html.BeginForm())
+    {
+        <div class="form-horizontal">
 
-    @Html.EditorFor(model => model.TeamToInvite.Name, new { htmlAttributes = new { @class = "form-control hidden" } })
+            @Html.EditorFor(model => model.TeamToInvite.Id, new { htmlAttributes = new { @class = "form-control hidden" } })
+
+            <div class="form-group">
+                @Html.Label("Team name:", htmlAttributes: new { @class = "control-label col-md-4" })
+                <div class="col-md-6">
+                    @Html.DisplayFor(model => model.TeamToInvite.Name, new { htmlAttributes = new { @class = "form-control" } })
+                    @Html.ValidationMessageFor(model => model.TeamToInvite.Name, "", new { @class = "text-danger" })
+                </div>
+            </div>
+
+            @Html.EditorFor(model => model.TeamToInvite.Name, new { htmlAttributes = new { @class = "form-control hidden" } })
 
 
-    <div class="form-group">
-        @Html.LabelFor(model => model.EmailOfInvitedUser, htmlAttributes: new { @class = "control-label col-md-2" })
-        <div class="col-md-10">
-            @Html.EditorFor(model => model.EmailOfInvitedUser, new { htmlAttributes = new { @class = "form-control" } })
-            @Html.ValidationMessageFor(model => model.EmailOfInvitedUser, "", new { @class = "text-danger" })
+            <div class="form-group">
+                @Html.Label("Email of user:", htmlAttributes: new { @class = "control-label col-md-4" })
+                <div class="col-md-6">
+                    @Html.EditorFor(model => model.EmailOfInvitedUser, new { htmlAttributes = new { @class = "form-control" } })
+                    @Html.ValidationMessageFor(model => model.EmailOfInvitedUser, "", new { @class = "text-danger" })
+                </div>
+            </div>
+
+            <div class="form-group">
+                <div class="col-md-offset-2 col-md-10">
+                    <input type="submit" value="Invite User" class="btn btn-default" />
+                </div>
+            </div>
         </div>
+}
     </div>
-
-    <div class="form-group">
-        <div class="col-md-offset-2 col-md-10">
-            <input type="submit" value="InviteUser" class="btn btn-default" />
-        </div>
+    <div class="col-md-3">
     </div>
 </div>
-}
+
+        
 
