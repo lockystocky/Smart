@@ -192,6 +192,17 @@ namespace HelpDeskTeamProject.Controllers
             return RedirectToAction("ShowAdminLogs");
         }
 
+        public ActionResult Clear()
+        {
+            var lastId = dbContext.AdminLogs
+                                    .OrderByDescending(p => p.Id)
+                                    .FirstOrDefault().Id;
+            var adminLogs = dbContext.AdminLogs.Where(p => p.Id <= lastId && p.Id >= lastId - 4).ToList();
+            dbContext.AdminLogs.RemoveRange(adminLogs);
+            dbContext.SaveChanges();
+            return RedirectToAction("ShowAdminLogs");
+        }
+
         public ActionResult ShowAdminLogs()
         {
             return View(dbContext.AdminLogs.ToList());

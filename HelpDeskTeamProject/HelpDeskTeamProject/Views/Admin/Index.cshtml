@@ -18,6 +18,12 @@
         <td>
             <button type="button" class="btn btn-warning" onclick="location.href='@Url.Action("List", "Role")'">List of roles</button>
         </td>
+        <td>
+            <button type="button" class="btn btn-danger" onclick="location.href='@Url.Action("TypeList", "Ticket")'">Types of tickets</button>
+        </td>
+        <td>
+            <button type="button" class="btn primary" onclick="location.href='@Url.Action("EditRolesList", "Admin")'">Edit roles list</button>
+        </td>
     </tr>
     <tr>
         
@@ -53,7 +59,7 @@
                     <td>Regular user</td>
                 }
                 <td><button type="button" class="btn btn-default">@Html.ActionLink("Edit", "Edit", new { id = user.Id })</button></td>
-                <td><button type="button" class="btn">@Html.ActionLink("Show Teams and Roles", "GetTeamsAndRoles", new { id = user.Id })</button>
+                <td><button type="button" class="btn">@Html.ActionLink("Show Teams and Roles", "GetTeamsAndRoles", new { id = user.Id })</button></td>
             </tr>
         }
     </tbody>
