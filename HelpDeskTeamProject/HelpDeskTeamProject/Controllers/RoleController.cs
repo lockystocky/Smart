@@ -15,7 +15,12 @@ namespace HelpDeskTeamProject.Controllers
 {
     public class RoleController : Controller
     {
-        AppContext dbContext = new AppContext();
+        IAppContext dbContext;// = new AppContext();
+
+        public RoleController(IAppContext context)
+        {
+            dbContext = context;
+        }
 
 
         public async Task<ActionResult> CreateTeamRole()

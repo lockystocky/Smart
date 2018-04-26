@@ -267,58 +267,64 @@ function showByTeam(id) {
 }
 
 function createTeamsMenu(teamsList) {
-    $.each(teamsList, function () {
-        var team = this;
-        var menuItem = $('<div class="team-name list-group-item list-group-item-action flex-column align-items-start teamHover" style="margin-right:0px">');
-        menuItem.attr('id', team.TeamId);
-        var teamIcon = $('<img class="group-icon">');
-        teamIcon.attr('src', '/Content/Icons/group_icon.png');
-        var teamHeader = $('<p>');
-        teamHeader.append(teamIcon);
-        if (team.TeamName.length > 15)
-            team.TeamName = team.TeamName.slice(0, 12) + "...";
-        teamHeader.append(team.TeamName);
-        menuItem.append(teamHeader);
+        $.each(teamsList, function () {
+            var team = this;
+            var menuItem = $('<div class="team-name list-group-item list-group-item-action flex-column align-items-start" style="margin-right:0px">');
+            menuItem.attr('id', team.TeamId);
+            var teamIcon = $('<img class="group-icon">');
+            teamIcon.attr('src', '/Content/Icons/group_icon.png');
+            var teamHeader = $('<p>');
+            teamHeader.append(teamIcon);
+            if (team.TeamName.length > 15)
+                team.TeamName = team.TeamName.slice(0, 12) + "...";
+            teamHeader.append(team.TeamName);
+            menuItem.append(teamHeader);
+            
+            $('#teamsmenu').append(menuItem);
+            menuItem.click(function () {
+                var shaded = $('.shade:last').removeClass('shade');
+                $(this).addClass('shade');
+                var team_id = $(this).attr('id');
+                
+                 //here must be call of Andrew function to show tickets of team
+                showByTeam(team_id);
+                getManageTeamLink(team_id);
 
-        $('#teamsmenu').append(menuItem);
-        menuItem.click(function () {
-            var shaded = $('.shade:last').removeClass('shade');
-            $(this).addClass('shade');
-            var team_id = $(this).attr('id');
-
-            //here must be call of Andrew function to show tickets of team
-            showByTeam(team_id);
-            getManageTeamLink(team_id);
-
-        });
-    });
-};
-
-function getTeamsListAndCreateTeamsMenu() {
-    $.getJSON("/Teams/GetCurrentUserTeamsList/")
-        .done(function (teamsList) {
-            createTeamsMenu(teamsList);
-        });
-};
-
-function getManageTeamLink(teamId) {
-    $.get("/teams/GetTeamManagementLink?_teamId=" + teamId, function (data) {
-        if (data) {
-            $('#manageteamdiv').removeClass('hidden');
-            $('#managetext').text('Manage team');
-            $('#manageteamdiv').click(function () {
-                window.location.href = data;
             });
-        }
-        else {
-            $('#manageteamdiv').addClass('hidden');
-            $('#manageteamdiv').click(function () { });
-        }
+        });
+    };
 
+    function getTeamsListAndCreateTeamsMenu() {
+        $.getJSON("/Teams/GetCurrentUserTeamsList/")
+            .done(function (teamsList) {
+                if (teamsList.length > 0) {
+                    $('#noteamsmsg').text('');
+                    createTeamsMenu(teamsList);
+                }
+                else {
+                    $('#noteamsmsg').text('There are no teams associated with your account, create one or ask somebody to invite you');
+                }
+            });
+    };
+
+    function getManageTeamLink(teamId) {        
+        $.get("/teams/GetTeamManagementLink?_teamId=" + teamId, function (data) {
+            if (data) {
+                $('#manageteamdiv').removeClass('hidden');
+                $('#managetext').text('Manage team');
+                $('#manageteamdiv').click(function () {
+                    window.location.href = data;
+                });
+            }
+            else {
+                $('#manageteamdiv').addClass('hidden');
+                $('#manageteamdiv').click(function () { });
+            }
+           
+        });
+
+    }
+
+    $(function () {
+        getTeamsListAndCreateTeamsMenu();
     });
-
-}
-
-$(function () {
-    getTeamsListAndCreateTeamsMenu();
-});

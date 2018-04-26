@@ -20,35 +20,25 @@ namespace HelpDeskTeamProject.Controllers
 {
     public class TeamsController : Controller
     {
-       // private AppContext db = new AppContext();
         private string TEAM_OWNER_ROLE_NAME = WebConfigurationManager.AppSettings["TeamOwnerRoleName"];
         private string DEFAULT_TEAM_ROLE_NAME = WebConfigurationManager.AppSettings["DefaultTeamRoleName"];
-       // private const string SITE_LINK = Reques //"http://localhost:50244/";
-        private TeamService teamService = new TeamService();
+        private ITeamService teamService;
 
-        //view list of all existing teams
-        public ActionResult AllTeams()
+        public TeamsController(ITeamService teamService)
         {
-            return View(teamService.GetAllTeams());
+            this.teamService = teamService;
         }
+       
         
-        [Authorize]
-        public ActionResult Teams()
-        {
-            return View();
-        }
-
-        //used in view to create teams menu for curent user 
         [Authorize]
         public ActionResult GetCurrentUserTeamsList()
         {            
-           // db.Configuration.ProxyCreationEnabled = false;
-
             var currentUser = GetCurrentUser();
             var currentUserTeamsList = teamService.GetUserTeamsList(currentUser);     
 
             return Json(currentUserTeamsList, JsonRequestBehavior.AllowGet);
         }
+
 
         [Authorize]
         public ActionResult GetCurrentUserName()
@@ -59,17 +49,14 @@ namespace HelpDeskTeamProject.Controllers
             return Json(name, JsonRequestBehavior.AllowGet);
         }
 
-
-
-        //create new team
+        
         [Authorize]
         public ActionResult Create()
         {
             return View();
         }
-
         
-        //create new team
+
         [HttpPost]
         [Authorize]
         [ValidateAntiForgeryToken]
@@ -86,10 +73,6 @@ namespace HelpDeskTeamProject.Controllers
             return View(team);
         }
 
-
-
-        
-
         private User GetCurrentUser()
         {
             var context = new ApplicationDbContext();
@@ -97,12 +80,7 @@ namespace HelpDeskTeamProject.Controllers
             
             return teamService.GetCurrentUser(currentUserId);
         }
-
-
         
-        //Team Administrator must be able to manage Team  members and their roles
-
-
         public ActionResult ManageTeam(int? teamId)
         {
             var currentUser = GetCurrentUser();
@@ -117,6 +95,7 @@ namespace HelpDeskTeamProject.Controllers
 
             return View(viewModel);
         }
+
 
         [HttpPost]
         public ActionResult ChangeUserRoleInTeam(int userId, int teamId, int roleId)
@@ -161,9 +140,7 @@ namespace HelpDeskTeamProject.Controllers
             return Url.Action("ManageTeam", new { teamId = _teamId }); 
         }
 
-        //Team Administrator must be able to invite users into the team by adding user using email address 
-        //and sending automatic invitation with link to registration
-
+        
         [Authorize]
         public ActionResult InviteUser(int? teamId)
         {
@@ -197,8 +174,6 @@ namespace HelpDeskTeamProject.Controllers
             
             return View(viewModel);
         }
-
-       
 
         [Authorize]
         [Route("teams/jointeam/{teamGuid}/{invitedUserId}")]
@@ -239,41 +214,9 @@ namespace HelpDeskTeamProject.Controllers
             return View(viewModel);
         }
 
-        
-
-       /*
-        // GET: Teams/Delete/5
-        public async Task<ActionResult> Delete(int? id)
-        {
-            if (id == null)
-            {
-                return new HttpStatusCodeResult(HttpStatusCode.BadRequest);
-            }
-            Team team = await db.Teams.FindAsync(id);
-            if (team == null)
-            {
-                return HttpNotFound();
-            }
-            return View(team);
-        }
-
-        // POST: Teams/Delete/5
-        [HttpPost, ActionName("Delete")]
-        [ValidateAntiForgeryToken]
-        public async Task<ActionResult> DeleteConfirmed(int id)
-        {
-            Team team = await db.Teams.FindAsync(id);
-            db.Teams.Remove(team);
-            await db.SaveChangesAsync();
-            return RedirectToAction("Index");
-        }*/
-
+      
         protected override void Dispose(bool disposing)
-        {
-            if (disposing)
-            {
-                //db.Dispose();
-            }
+        {            
             base.Dispose(disposing);
         }
     }

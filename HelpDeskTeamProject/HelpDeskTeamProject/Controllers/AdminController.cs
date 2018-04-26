@@ -19,7 +19,12 @@ namespace HelpDeskTeamProject.Controllers
 {
     public class AdminController : Controller
     {
-        private AppContext dbContext = new AppContext();
+        private IAppContext dbContext;// = new AppContext();
+
+        public AdminController(IAppContext context)
+        {
+            dbContext = context;
+        }
         
         public async Task<ActionResult> EditRolesList()
         {

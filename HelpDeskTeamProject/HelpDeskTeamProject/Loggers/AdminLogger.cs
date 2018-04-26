@@ -46,7 +46,7 @@ namespace HelpDeskTeamProject.Loggers
             return adminActions;
         }
 
-        public static void PostLogToDb(AppContext db, User user, List<AdminAction> adminActions) 
+        public static void PostLogToDb(IAppContext db, User user, List<AdminAction> adminActions) 
         {
             string state = "";
 
