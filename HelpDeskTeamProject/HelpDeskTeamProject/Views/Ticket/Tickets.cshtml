@@ -63,6 +63,7 @@
     var teamId;
     var emptyTeamTickets = false;
     var teamPermissions = null;
+    var canChangeTicketState = false;
 
     function displayNewTicket(tickets) {
         if (emptyTeamTickets == true) {
@@ -179,22 +180,41 @@
     }
 
     function changeStateClick(id) {
-        var statusNames = @Html.Raw(Json.Encode(ticketStateNames));
-        var statusColorsJs = @Html.Raw(Json.Encode(statusColorsArray));
-        var statusRect = document.getElementById("strect_" + id);
-        var statusDisp = document.getElementById("stdisp_" + id);
+        if (canChangeTicketState) {
+            var statusNames = @Html.Raw(Json.Encode(ticketStateNames));
+            var statusColorsJs = @Html.Raw(Json.Encode(statusColorsArray));
+            var statusRect = document.getElementById("strect_" + id);
+            var statusDisp = document.getElementById("stdisp_" + id);
 
-        var indexOfCurrent = statusColorsJs.indexOf(statusRect.style.color);
-        if (indexOfCurrent >= 3) {
-            indexOfCurrent = 0;
-        }
-        else {
-            indexOfCurrent++;
-        }
+            var indexOfCurrent = statusColorsJs.indexOf(statusRect.style.backgroundColor);
+            if (indexOfCurrent >= 3) {
+                indexOfCurrent = 0;
+            }
+            else {
+                indexOfCurrent++;
+            }
 
-        statusRect.style.color = statusColorsJs[indexOfCurrent];
-        statusDisp.style.color = statusColorsJs[indexOfCurrent];
-        statusDisp.innerText = "<b>" + statusNames[indexOfCurrent] + "</b>";
+            statusRect.style.backgroundColor = statusColorsJs[indexOfCurrent];
+            statusDisp.style.color = statusColorsJs[indexOfCurrent];
+            statusDisp.innerHTML = "<b>" + statusNames[indexOfCurrent] + "</b>";
+            sendTicketState(id, indexOfCurrent);
+        } 
+    }
+
+    function sendTicketState(id, state) {
+        var uploaderUrl = "/Ticket/ChangeTicketState";
+        var formData = new FormData();
+        formData.append("ticketId", id);
+        formData.append("state", state);
+        var xhr = new XMLHttpRequest();
+        xhr.open('POST', uploaderUrl, true);
+        xhr.onloadend = function () {
+            var parsedTicket = JSON.parse(xhr.responseText);
+            if (parsedTicket != null) {
+                console.log(parsedTicket);
+            }
+        }
+        xhr.send(formData);
     }
 
     function editButtonClick(id) {
@@ -305,6 +325,7 @@
             var parsedResp = JSON.parse(xhr.responseText);
             if (parsedResp != null) {
                 teamPermissions = parsedResp;
+                canChangeTicketState = teamPermissions.CanChangeTicketState;
                 setVisibilityInputTicket(teamPermissions.CanCreateTicket);
             }
         }
