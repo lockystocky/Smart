@@ -113,8 +113,9 @@ namespace HelpDeskTeamProject.Controllers
 
         public async Task<ActionResult> NewType()
         {
+
             User curUser = await GetCurrentUser();
-            if (curUser.AppRole.Permissions.CanManageTicketTypes)
+            if (curUser != null && curUser.AppRole.Permissions.CanManageTicketTypes || curUser.AppRole.Permissions.IsAdmin)
             {
                 return View();
             }
@@ -128,7 +129,7 @@ namespace HelpDeskTeamProject.Controllers
             if (ModelState.IsValid)
             {
                 User curUser = await GetCurrentUser();
-                if (curUser.AppRole.Permissions.CanManageTicketTypes)
+                if (curUser.AppRole.Permissions.CanManageTicketTypes || curUser.AppRole.Permissions.IsAdmin)
                 {
                     db.TicketTypes.Add(newType);
                     await db.SaveChangesAsync();
@@ -145,7 +146,7 @@ namespace HelpDeskTeamProject.Controllers
         public async Task<ActionResult> TypeList()
         {
             User curUser = await GetCurrentUser();
-            if (curUser.AppRole.Permissions.CanManageTicketTypes)
+            if (curUser.AppRole.Permissions.CanManageTicketTypes || curUser.AppRole.Permissions.IsAdmin)
             {
                 List<TicketType> ticketTypes = await db.TicketTypes.ToListAsync();
                 return View(ticketTypes);
