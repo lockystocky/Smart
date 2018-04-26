@@ -243,6 +243,7 @@
     <Compile Include="Models\ManageViewModels.cs" />
     <Compile Include="Models\TeamWithLastChangesViewModel.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
+    <Compile Include="Services\AdminService.cs" />
     <Compile Include="Services\TeamService.cs" />
     <Compile Include="Startup.cs" />
   </ItemGroup>

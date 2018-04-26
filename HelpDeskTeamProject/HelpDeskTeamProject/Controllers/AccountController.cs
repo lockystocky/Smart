@@ -78,7 +78,7 @@ namespace HelpDeskTeamProject.Controllers
 
             if (currentUser.IsBanned)
             {
-                return View("Error");
+                return View("Lockout");
             }
 
             if (!ModelState.IsValid)
