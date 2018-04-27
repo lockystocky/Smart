@@ -16,6 +16,10 @@ namespace HelpDeskTeamProject.Migrations
 
         protected override void Seed(HelpDeskTeamProject.Context.AppContext context)
         {
+            //User user = context.Users.SingleOrDefault(x => x.Email.ToLower().Equals("Admin1@gmail.com".ToLower()));
+            //user.AppRole.Permissions.IsAdmin = true;
+            //user.IsAdmin = true;
+            //context.SaveChanges();
             //TeamRole role = context.TeamRoles.SingleOrDefault(x => x.Id == 1);
             //Team team = context.Teams.SingleOrDefault(x => x.Id == 1);
             //User user = context.Users.SingleOrDefault(x => x.Email.ToLower().Equals("K2@gmail.com".ToLower()));

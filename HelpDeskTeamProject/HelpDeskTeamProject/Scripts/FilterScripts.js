@@ -26,7 +26,7 @@ function displayNewTicket(tickets) {
 
         var sysMessageDiv = document.createElement("div");
         sysMessageDiv.className = "systemMessageText";
-        sysMessageDiv.innerText = "This team does not have any child tickets, try adding more by clicking add button.";
+        sysMessageDiv.innerText = "This team does not have any child tickets with that type, select different one.";
         cardDiv.appendChild(sysMessageDiv);
     }
 }
