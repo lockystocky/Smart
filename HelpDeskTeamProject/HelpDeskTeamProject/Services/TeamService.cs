@@ -47,6 +47,28 @@ namespace HelpDeskTeamProject.Services
             return teamMenu;
         }
 
+
+        public List<TeamMenuItem> GetTeamsList()
+        {
+            var teamsList = db.Teams
+               .ToList();
+
+            var teamMenu = new List<TeamMenuItem>();
+
+            foreach (var team in teamsList)
+            {
+                var teamMenuItem = new TeamMenuItem()
+                {
+                    TeamId = team.Id,
+                    TeamName = team.Name
+                };
+
+                teamMenu.Add(teamMenuItem);
+            }
+
+            return teamMenu;
+        }
+
         public Team CreateTeamWithOwner(string teamName, User ownerOfTeam)
         {
             Team createdTeam = CreateTeam(teamName, ownerOfTeam.Id);
