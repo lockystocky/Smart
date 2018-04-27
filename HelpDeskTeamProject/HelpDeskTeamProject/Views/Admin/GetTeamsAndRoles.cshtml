@@ -21,11 +21,11 @@
                 <td>@team.Name</td>
                 @if (Model.Id == team.OwnerId)
                 {
-                    <td>@team.UserPermissions.Where(p => p.TeamRole.Name == "Team Owner").FirstOrDefault().TeamRole.Name</td>
+                    <td>@team.UserPermissions.Where(p => p.TeamRole.Name == "team-owner").FirstOrDefault().TeamRole.Name</td>
                 }
-                @if(team.InvitedUsers.Where(p => p.Email == Model.Email).FirstOrDefault() != null)
+                @if(team.InvitedUsers.Where(p => p.Email.ToLower() == Model.Email.ToLower()).FirstOrDefault() != null)
                 {
-                    <td>Default Team User</td>
+                    <td>Invited user</td>
                 }
                 @*else
                 {

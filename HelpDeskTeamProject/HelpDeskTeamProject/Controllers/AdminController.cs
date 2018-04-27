@@ -17,6 +17,7 @@ using Newtonsoft.Json;
 
 namespace HelpDeskTeamProject.Controllers
 {
+    [Authorize]
     public class AdminController : Controller
     {
         private IAppContext dbContext;// = new AppContext();
