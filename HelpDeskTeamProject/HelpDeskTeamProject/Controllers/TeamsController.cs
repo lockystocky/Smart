@@ -49,9 +49,16 @@ namespace HelpDeskTeamProject.Controllers
         public ActionResult GetCurrentUserName()
         {
             var currentUser = GetCurrentUser();
-            string name = currentUser.Name + " " + currentUser.Surname;
-
-            return Json(name, JsonRequestBehavior.AllowGet);
+            if (currentUser != null)
+            {
+                string name = currentUser.Name + " " + currentUser.Surname;
+                return Json(name, JsonRequestBehavior.AllowGet);
+            }
+            else
+            {
+                string name = "";
+                return Json(name, JsonRequestBehavior.AllowGet);
+            }
         }
 
         

@@ -246,6 +246,10 @@
     <Compile Include="Migrations\201804260842319_removedMoreValidations.Designer.cs">
       <DependentUpon>201804260842319_removedMoreValidations.cs</DependentUpon>
     </Compile>
+    <Compile Include="Migrations\201804271024540_finalMigration.cs" />
+    <Compile Include="Migrations\201804271024540_finalMigration.Designer.cs">
+      <DependentUpon>201804271024540_finalMigration.cs</DependentUpon>
+    </Compile>
     <Compile Include="Models\AppAndTeamRolesViewModel.cs" />
     <Compile Include="Models\TeamMenuItem.cs" />
     <Compile Include="Repositories\IRepository.cs" />
@@ -387,6 +391,9 @@
     </EmbeddedResource>
     <EmbeddedResource Include="Migrations\201804260842319_removedMoreValidations.resx">
       <DependentUpon>201804260842319_removedMoreValidations.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Migrations\201804271024540_finalMigration.resx">
+      <DependentUpon>201804271024540_finalMigration.cs</DependentUpon>
     </EmbeddedResource>
   </ItemGroup>
   <PropertyGroup>

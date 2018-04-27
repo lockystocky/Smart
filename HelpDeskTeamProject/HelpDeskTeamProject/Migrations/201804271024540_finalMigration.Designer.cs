@@ -7,13 +7,13 @@ namespace HelpDeskTeamProject.Migrations
     using System.Resources;
     
     [GeneratedCode("EntityFramework.Migrations", "6.2.0-61023")]
-    public sealed partial class marinasColumnAdded : IMigrationMetadata
+    public sealed partial class finalMigration : IMigrationMetadata
     {
-        private readonly ResourceManager Resources = new ResourceManager(typeof(marinasColumnAdded));
+        private readonly ResourceManager Resources = new ResourceManager(typeof(finalMigration));
         
         string IMigrationMetadata.Id
         {
-            get { return "201804261048596_marinasColumnAdded"; }
+            get { return "201804271024540_finalMigration"; }
         }
         
         string IMigrationMetadata.Source

@@ -3,7 +3,7 @@ namespace HelpDeskTeamProject.Migrations
     using System;
     using System.Data.Entity.Migrations;
     
-    public partial class marinasColumnAdded : DbMigration
+    public partial class finalMigration : DbMigration
     {
         public override void Up()
         {
