@@ -122,8 +122,8 @@ function displayNewTicket(ticket) {
     divideLine.className = "divideLine";
     cardDiv.appendChild(divideLine);
 
-    //var replyRect = document.createElement("div");
-    //replyRect.className = "replyRectangle";
+    var replyRect = document.createElement("div");
+    replyRect.className = "replyRectangle";
     var showTicketText = document.createElement("div");
     showTicketText.className = "replyTextMargin";
     showTicketText.innerText = "Show";

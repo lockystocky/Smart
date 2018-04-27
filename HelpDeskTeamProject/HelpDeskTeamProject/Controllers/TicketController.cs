@@ -75,7 +75,7 @@ namespace HelpDeskTeamProject.Controllers
                 TeamPermissions teamPerms = await GetCurrentTeamPermissions(ticket.TeamId, curUser.Id);
                 if (ticket != null && curUser != null && teamPerms != null)
                 {
-                    if (ticket.User.Id == curUser.Id || teamPerms.CanEditTickets || curUser.AppRole.Permissions.IsAdmin)
+                    if (ticket.User.Id == curUser.Id || curUser.AppRole.Permissions.IsAdmin || teamPerms.CanEditTickets)
                     {
                         return View(ticket);
                     }
@@ -96,7 +96,7 @@ namespace HelpDeskTeamProject.Controllers
                 Ticket ticket = await db.Tickets.Include(y => y.User).SingleOrDefaultAsync(x => x.Id == id);
                 User curUser = await GetCurrentUser();
                 TeamPermissions teamPerms = await GetCurrentTeamPermissions(ticket.TeamId, curUser.Id);
-                if (ticket.User.Id == curUser.Id || teamPerms.CanEditTickets || curUser.AppRole.Permissions.IsAdmin)
+                if (ticket.User.Id == curUser.Id || curUser.AppRole.Permissions.IsAdmin || teamPerms.CanEditTickets)
                 {
                     TicketType newType = await db.TicketTypes.SingleOrDefaultAsync(x => x.Id == type);
                     if (ticket != null && newType != null)
@@ -120,7 +120,7 @@ namespace HelpDeskTeamProject.Controllers
                 TeamPermissions teamPerms = await GetCurrentTeamPermissions(comment.TeamId, curUser.Id);
                 if (comment != null && teamPerms != null)
                 {
-                    if (comment.User.Id == curUser.Id || teamPerms.CanDeleteComments || curUser.AppRole.Permissions.IsAdmin)
+                    if (comment.User.Id == curUser.Id || curUser.AppRole.Permissions.IsAdmin || teamPerms.CanDeleteComments)
                     {
                         db.Comments.Remove(comment);
                         await db.SaveChangesAsync();
@@ -140,7 +140,7 @@ namespace HelpDeskTeamProject.Controllers
                 TeamPermissions teamPerms = await GetCurrentTeamPermissions(ticket.TeamId, curUser.Id);
                 if (ticket != null && teamPerms != null)
                 {
-                    if (ticket.User.Id == curUser.Id || teamPerms.CanDeleteTickets || curUser.AppRole.Permissions.IsAdmin)
+                    if (ticket.User.Id == curUser.Id || curUser.AppRole.Permissions.IsAdmin || teamPerms.CanDeleteTickets)
                     {
                         db.Tickets.Remove(ticket);
                         await db.SaveChangesAsync();
@@ -214,9 +214,10 @@ namespace HelpDeskTeamProject.Controllers
                 {
                     User curUser = await GetCurrentUser();
                     if (curTeam.Users.Find(x => x.Id == curUser.Id) != null){
-                        TeamRole curTeamUserRole = curTeam.UserPermissions.SingleOrDefault(x => x.User.Id == curUser.Id).TeamRole;
-                        if (curUser != null && curTeamUserRole != null)
+                        UserPermission curUserPerms = curTeam.UserPermissions.SingleOrDefault(x => x.User.Id == curUser.Id);
+                        if ((curUser != null && curUserPerms != null) || (curUser != null && curUser.AppRole.Permissions.IsAdmin))
                         {
+                            TeamRole curTeamUserRole = curUserPerms.TeamRole;
                             List<Ticket> curTickets = await db.Tickets.Include(x => x.ChildTickets).Include(y => y.Comments).Include(z => z.User)
                                 .Where(s => s.ParentTicket == null).Where(q => q.TeamId == curTeam.Id).ToListAsync();
                             List<TicketDTO> curTicketsDto = new List<TicketDTO>();
@@ -230,8 +231,11 @@ namespace HelpDeskTeamProject.Controllers
                                 }
                                 else
                                 {
-                                    tempDto.CanEdit = curTeamUserRole.Permissions.CanEditTickets;
-                                    tempDto.CanDelete = curTeamUserRole.Permissions.CanDeleteTickets;
+                                    if (curTeamUserRole != null)
+                                    {
+                                        tempDto.CanEdit = curTeamUserRole.Permissions.CanEditTickets;
+                                        tempDto.CanDelete = curTeamUserRole.Permissions.CanDeleteTickets;
+                                    }
                                 }
                                 curTicketsDto.Add(tempDto);
                             }
@@ -260,13 +264,29 @@ namespace HelpDeskTeamProject.Controllers
                 ticket.ChildTickets = await db.Tickets.Include(z => z.User).Include(y => y.ChildTickets).Include(w => w.Comments)
                     .Where(x => x.ParentTicket.Id == ticket.Id).ToListAsync();
                 Team team = await db.Teams.Include(x => x.UserPermissions).SingleOrDefaultAsync(y => y.Id == ticket.TeamId);
-                TeamPermissions teamPerms = team.UserPermissions.SingleOrDefault(x => x.User.Id == curUser.Id).TeamRole.Permissions;
-                
-                if (team.Users.Find(x => x.Id == curUser.Id) != null)
+                UserPermission teamUserPerms = team.UserPermissions.SingleOrDefault(x => x.User.Id == curUser.Id);
+                TeamPermissions teamPerms = null;
+                if (teamUserPerms != null)
+                {
+                    teamPerms = teamUserPerms.TeamRole.Permissions;
+                }
+
+                if (team.Users.Find(x => x.Id == curUser.Id) != null || curUser.AppRole.Permissions.IsAdmin)
                 {
                     TicketDTO ticketDto = new TicketDTO(ticket);
-                    ticketDto.CanEdit = teamPerms.CanEditTickets;
-                    ticketDto.CanDelete = teamPerms.CanDeleteTickets;
+                    if (curUser.AppRole.Permissions.IsAdmin)
+                    {
+                        ticketDto.CanEdit = true;
+                        ticketDto.CanDelete = true;
+                    }
+                    else
+                    {
+                        if (teamPerms != null)
+                        {
+                            ticketDto.CanEdit = teamPerms.CanEditTickets;
+                            ticketDto.CanDelete = teamPerms.CanDeleteTickets;
+                        }
+                    }
                     List<TicketDTO> childTicketsDto = new List<TicketDTO>();
                     foreach (Ticket value in ticket.ChildTickets)
                     {
@@ -278,8 +298,11 @@ namespace HelpDeskTeamProject.Controllers
                         }
                         else
                         {
-                            tempDto.CanEdit = teamPerms.CanEditTickets;
-                            tempDto.CanDelete = teamPerms.CanDeleteTickets;
+                            if (teamPerms != null)
+                            {
+                                tempDto.CanEdit = teamPerms.CanEditTickets;
+                                tempDto.CanDelete = teamPerms.CanDeleteTickets;
+                            }
                         }
                         childTicketsDto.Add(tempDto);
                     }
@@ -407,8 +430,13 @@ namespace HelpDeskTeamProject.Controllers
         private async Task<TeamPermissions> GetCurrentTeamPermissions(int ticketTeamId, int curUserId)
         {
             Team team = await db.Teams.SingleOrDefaultAsync(x => x.Id == ticketTeamId);
-            TeamPermissions teamPerms = team.UserPermissions.SingleOrDefault(x => x.User.Id == curUserId).TeamRole.Permissions;
-            return teamPerms;
+            UserPermission userPerms = team.UserPermissions.SingleOrDefault(x => x.User.Id == curUserId);
+            if (userPerms != null)
+            {
+                TeamPermissions teamPerms = userPerms.TeamRole.Permissions;
+                return teamPerms;
+            }
+            return new TeamPermissions();
         }
     }
 }
