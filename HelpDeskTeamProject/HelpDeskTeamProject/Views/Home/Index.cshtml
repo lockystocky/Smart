@@ -13,8 +13,12 @@
         <p>Help Desk allows you and your staff to focus on your core business while it will solve your problems.</p>
         <h3>Entrust your business to experts</h3>
         <p>Help Desk providers have a pool of highly trained engineers that provide a wide-ranging skillset to your business. This may include IT engineers, security consultants, software developers and network engineers – all through one contract.</p>
-        <h3>Start now</h3>
-        <button id="loginbtn" class="btn btn-dark">Login </button>
+        @if (!Request.IsAuthenticated)
+        {
+            <h3>Start now</h3>
+            <button id="loginbtn" class="btn btn-dark">Login </button>
+        }
+        
         
     </div>
     <div class="col-md-6">
