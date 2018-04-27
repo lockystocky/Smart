@@ -402,7 +402,7 @@ namespace HelpDeskTeamProject.Services
                 return "User is not invited to team.";
 
             if (invitedUser.Code == enteredCode
-                && currentUser.Email == invitedUser.Email
+                && currentUser.Email.ToLower() == invitedUser.Email.ToLower()
                 && !currentUser.Teams.Contains(team) && !team.Users.Contains(currentUser))
             {
                 team.Users.Add(currentUser);
@@ -428,7 +428,7 @@ namespace HelpDeskTeamProject.Services
             if (invitedUser.Code != enteredCode)
                 return "Code does not match.";
 
-            if (currentUser.Email != invitedUser.Email)
+            if (currentUser.Email.ToLower() != invitedUser.Email.ToLower())
                 return "Your current email does not match email which refer to this invitation.";
 
             if (currentUser.Teams.Contains(team) || team.Users.Contains(currentUser))
