@@ -57,14 +57,14 @@ function displayOneTicket(ticket) {
     statusDisp.id = "stdisp_" + ticket.Id;
     statusDisp.style.color = statusColorsJs[ticket.State];
     statusDisp.innerHTML = "<b>" + statusNames[ticket.State] + "</b>";
-    statusDisp.onclick = function () { changeStateClick(tempId) };
+    statusDisp.onclick = function () { changeStateClick(tempId); };
     cardDiv.appendChild(statusDisp);
 
     if (ticket.CanDelete == true) {
         var deleteButton = document.createElement("h5");
         deleteButton.className = "deleteButton";
         deleteButton.innerText = "Delete";
-        deleteButton.addEventListener("click", function () { deleteAndHide(tempId) });
+        deleteButton.addEventListener("click", function () { deleteAndHide(tempId); });
         cardDiv.appendChild(deleteButton);
     }
 
@@ -89,13 +89,13 @@ function displayOneTicket(ticket) {
     var showTicketText = document.createElement("div");
     showTicketText.className = "replyTextMargin";
     showTicketText.innerText = "Show";
-    showTicketText.addEventListener("click", function () { showButtonClick(tempId) });
+    showTicketText.addEventListener("click", function () { showButtonClick(tempId); });
     replyRect.appendChild(showTicketText);
     if (ticket.CanEdit == true) {
         var editTicketText = document.createElement("div");
         editTicketText.className = "replyTextMargin";
         editTicketText.innerText = "Edit";
-        editTicketText.addEventListener("click", function () { editButtonClick(tempId) });
+        editTicketText.addEventListener("click", function () { editButtonClick(tempId); });
         replyRect.appendChild(editTicketText);
     }
     var commentsTicketDisp = document.createElement("div");
@@ -141,7 +141,7 @@ function sendTicketState(id, state) {
         if (parsedTicket != null) {
             console.log(parsedTicket);
         }
-    }
+    };
     xhr.send(formData);
 }
 
@@ -162,7 +162,7 @@ function getTickets(teamId) {
         if (parsedTickets != null) {
             displayNewTicket(parsedTickets);
         }
-    }
+    };
     xhr.send(null);
 }
 
@@ -186,6 +186,7 @@ function addTicket() {
         typeChoser.style.border = "";
         typeChoser.style.borderColor = "";
         typeChoser.style.borderWidth = "";
+        //var escapedValue = window.escape(textBox.value);
         uploadTicket(textBox.value, typeChoser.value, teamId);
         textBox.value = "";
         typeChoser.value = "0";
@@ -206,7 +207,7 @@ function uploadTicket(text, type, teamId) {
         if (parsedTicket != null) {
             displayOneTicket(parsedTicket);
         }
-    }
+    };
     xhr.send(formData);
 }
 
@@ -226,7 +227,7 @@ function deleteTicket(id) {
         if (parsedResp != null) {
             console.log("Ticket deletion result - " + parsedResp);
         }
-    }
+    };
     xhr.send(null);
 }
 
@@ -256,7 +257,7 @@ function getTeamPermissions(id) {
             canChangeTicketState = teamPermissions.CanChangeTicketState;
             setVisibilityInputTicket(teamPermissions.CanCreateTicket);
         }
-    }
+    };
     xhr.send(null);
 }
 

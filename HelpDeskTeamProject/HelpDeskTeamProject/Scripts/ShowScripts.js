@@ -38,7 +38,7 @@ function uploadTicket(text, type) {
         if (parsedTicket != null) {
             displayNewTicket(parsedTicket);
         }
-    }
+    };
     xhr.send(formData);
 }
 
@@ -84,7 +84,7 @@ function displayNewTicket(ticket) {
 
     var userNameDisp = document.createElement("h5");
     userNameDisp.className = "headerMargin";
-    userNameDisp.innerHTML = "<b>" + ticket.UserName + "</b> <b>" + ticket.UserSurname + "</b>"
+    userNameDisp.innerHTML = "<b>" + ticket.UserName + "</b> <b>" + ticket.UserSurname + "</b>";
     cardDiv.appendChild(userNameDisp);
 
     var timeDisp = document.createElement("h5");
@@ -96,14 +96,14 @@ function displayNewTicket(ticket) {
     statusDisp.className = "ticketStatus";
     statusDisp.id = "stdisp_" + ticket.Id;
     statusDisp.style.color = statusColorsJs[ticket.State];
-    statusDisp.innerHTML = "<b>" + statusNames[ticket.State] + "</b>"
-    statusDisp.onclick = function () { changeStateClick(tempId) };
+    statusDisp.innerHTML = "<b>" + statusNames[ticket.State] + "</b>";
+    statusDisp.onclick = function () { changeStateClick(tempId); };
     cardDiv.appendChild(statusDisp);
 
     var deleteButton = document.createElement("h5");
     deleteButton.className = "deleteButton";
     deleteButton.innerText = "Delete";
-    deleteButton.addEventListener("click", function () { deleteAndHide(tempId) });
+    deleteButton.addEventListener("click", function () { deleteAndHide(tempId); });
     cardDiv.appendChild(deleteButton);
 
     var cardText = document.createElement("div");
@@ -127,22 +127,22 @@ function displayNewTicket(ticket) {
     var showTicketText = document.createElement("div");
     showTicketText.className = "replyTextMargin";
     showTicketText.innerText = "Show";
-    showTicketText.addEventListener("click", function () { showButtonClick(tempId) });
+    showTicketText.addEventListener("click", function () { showButtonClick(tempId); });
     replyRect.appendChild(showTicketText);
     if (ticket.CanEdit == true) {
         var editTicketText = document.createElement("div");
         editTicketText.className = "replyTextMargin";
         editTicketText.innerText = "Edit";
-        editTicketText.addEventListener("click", function () { editButtonClick(tempId) });
+        editTicketText.addEventListener("click", function () { editButtonClick(tempId); });
         replyRect.appendChild(editTicketText);
     }
     var commentsTicketDisp = document.createElement("div");
     commentsTicketDisp.className = "replyTextMargin";
-    commentsTicketDisp.innerHTML = "<img src=\"/Content/comments.png\" style=\"padding-bottom:1px;\" /><b> " + ticket.CommentsCount + "</b>"
+    commentsTicketDisp.innerHTML = "<img src=\"/Content/comments.png\" style=\"padding-bottom:1px;\" /><b> " + ticket.CommentsCount + "</b>";
     replyRect.appendChild(commentsTicketDisp);
     var childTicketDisp = document.createElement("div");
     childTicketDisp.className = "replyTextMargin";
-    childTicketDisp.innerHTML = "<img src=\"/Content/ticket.png\" style=\"padding-bottom:1px;\" /><b> " + ticket.ChildTicketsCount + "</b>"
+    childTicketDisp.innerHTML = "<img src=\"/Content/ticket.png\" style=\"padding-bottom:1px;\" /><b> " + ticket.ChildTicketsCount + "</b>";
     replyRect.appendChild(childTicketDisp);
     cardDiv.appendChild(replyRect);
 }
@@ -179,7 +179,7 @@ function sendTicketState(id, state) {
         if (parsedTicket != null) {
             console.log(parsedTicket);
         }
-    }
+    };
     xhr.send(formData);
 }
 
@@ -220,7 +220,7 @@ function deleteTicket(id) {
         if (parsedResp != null) {
             console.log("Ticket deletion result - " + parsedResp);
         }
-    }
+    };
     xhr.send(null);
 }
 
@@ -240,7 +240,7 @@ function deleteComment(id) {
         if (parsedResp != null) {
             console.log("Comment deletion result - " + parsedResp);
         }
-    }
+    };
     xhr.send(null);
 }
 
@@ -256,7 +256,7 @@ function uploadComment(text) {
         if (parsedCom != null) {
             displayNewComment(parsedCom);
         }
-    }
+    };
     xhr.send(formData);
 }
 
@@ -276,7 +276,7 @@ function displayNewComment(comment) {
 
     var userNameDisp = document.createElement("h5");
     userNameDisp.className = "headerMargin";
-    userNameDisp.innerHTML = "<b>" + comment.UserName + "</b> <b>" + comment.UserSurname + "</b>"
+    userNameDisp.innerHTML = "<b>" + comment.UserName + "</b> <b>" + comment.UserSurname + "</b>";
     cardDiv.appendChild(userNameDisp);
 
     var timeDisp = document.createElement("h5");
@@ -287,7 +287,7 @@ function displayNewComment(comment) {
     var deleteButton = document.createElement("h5");
     deleteButton.className = "deleteButton";
     deleteButton.innerText = "Delete";
-    deleteButton.addEventListener("click", function () { deleteComAndHide(comment.Id) });
+    deleteButton.addEventListener("click", function () { deleteComAndHide(comment.Id); });
     cardDiv.appendChild(deleteButton);
 
     var comText = document.createElement("div");
@@ -326,7 +326,7 @@ function getTeamPermissions() {
             canChangeTicketState = teamPermissions.CanChangeTicketState;
             setVisibilityInputs(teamPermissions.CanCommentTicket, teamPermissions.CanCreateTicket);
         }
-    }
+    };
     xhr.send(null);
 }
 

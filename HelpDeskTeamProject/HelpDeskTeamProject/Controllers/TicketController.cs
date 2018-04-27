@@ -14,6 +14,7 @@ using Newtonsoft.Json;
 
 namespace HelpDeskTeamProject.Controllers
 {
+    [Authorize]
     public class TicketController : Controller
     {
         IAppContext db;// = new AppContext();
@@ -319,7 +320,7 @@ namespace HelpDeskTeamProject.Controllers
             if (newTicket.Description != null && newTicket.BaseTeamId > 0)
             {
                 User curUser = await GetCurrentUser();
-
+                //newTicket.Description = HttpUtility.UrlDecode(newTicket.Description);
                 TeamPermissions userPerms = await GetCurrentTeamPermissions(newTicket.BaseTeamId, curUser.Id);
                 if (userPerms.CanCreateTicket == true || curUser.AppRole.Permissions.IsAdmin == true)
                 {

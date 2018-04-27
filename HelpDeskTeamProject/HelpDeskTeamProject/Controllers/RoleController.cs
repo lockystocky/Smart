@@ -13,6 +13,7 @@ using Microsoft.AspNet.Identity;
 
 namespace HelpDeskTeamProject.Controllers
 {
+    [Authorize]
     public class RoleController : Controller
     {
         IAppContext dbContext;// = new AppContext();
