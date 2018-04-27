@@ -165,7 +165,7 @@ namespace HelpDeskTeamProject.Services
             return viewModel;
         }
 
-        public bool ChangeUserRoleInTeam(int userId, int teamId, int newRoleId)
+        public bool ChangeUserRoleInTeam(int userId, int teamId, int newRoleId, User currentUser)
         {
             var team = db.Teams.Find(teamId);
 
@@ -174,6 +174,14 @@ namespace HelpDeskTeamProject.Services
             var role = db.TeamRoles.Find(newRoleId);
 
             if (team == null || user == null || role == null)
+                return false;
+
+            var currentUserRole = team.UserPermissions
+                .Where(perm => perm.User == currentUser && perm.TeamId == team.Id)
+                .FirstOrDefault()
+                .TeamRole;
+
+            if (!currentUserRole.Permissions.CanSetUserRoles)
                 return false;
 
             var userPermission = team.UserPermissions
@@ -238,8 +246,13 @@ namespace HelpDeskTeamProject.Services
         {
             var team = db.Teams.Find(teamId);
 
-            bool isUserAlreadyInvited = team.InvitedUsers.Where(user => user.Email.ToLower() == email.ToLower()).Count() > 0;
-            bool isUserAlreadyTeamMember = team.Users.Where(user => user.Email.ToLower() == email.ToLower()).Count() > 0;
+            bool isUserAlreadyInvited = team.InvitedUsers
+                .Where(user => user.Email.ToLower() == email.ToLower()).
+                Count() > 0;
+
+            bool isUserAlreadyTeamMember = team.Users
+                .Where(user => user.Email.ToLower() == email.ToLower())
+                .Count() > 0;
 
             if (!isUserAlreadyInvited && !isUserAlreadyTeamMember)
             {
@@ -308,6 +321,14 @@ namespace HelpDeskTeamProject.Services
             var team = db.Teams.Find(teamId);
 
             if (team == null || team.OwnerId != currentUser.Id)
+                return null;
+
+            var currentUserRole = team.UserPermissions
+                .Where(perm => perm.User == currentUser && perm.TeamId == teamId)
+                .FirstOrDefault()
+                .TeamRole;
+
+            if (!currentUserRole.Permissions.CanInviteToTeam)
                 return null;
 
             var viewModel = new InviteUserToTeamViewModel()

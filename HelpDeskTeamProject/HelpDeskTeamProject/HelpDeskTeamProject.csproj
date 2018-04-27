@@ -272,6 +272,7 @@
     <Content Include="Content\bootstrap.min.css" />
     <Content Include="Content\Icons\group_icon.png" />
     <Content Include="Content\comments.png" />
+    <Content Include="Content\index.png" />
     <Content Include="Content\MaterialStyles.css" />
     <Content Include="Content\ticket.png" />
     <Content Include="favicon.ico" />
@@ -293,6 +294,7 @@
     <Content Include="Scripts\jquery.validate.min.js" />
     <Content Include="Scripts\jquery.validate.unobtrusive.js" />
     <Content Include="Scripts\jquery.validate.unobtrusive.min.js" />
+    <Content Include="Scripts\ManageTeam.js" />
     <Content Include="Scripts\modernizr-2.6.2.js" />
     <Content Include="Scripts\respond.js" />
     <Content Include="Scripts\respond.min.js" />

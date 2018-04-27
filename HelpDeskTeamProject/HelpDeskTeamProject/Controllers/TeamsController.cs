@@ -53,7 +53,12 @@ namespace HelpDeskTeamProject.Controllers
         [Authorize]
         public ActionResult Create()
         {
-            return View();
+            var currentUser = GetCurrentUser();
+
+            if(currentUser.AppRole.Permissions.CanCreateTeams)
+                return View();
+
+            return HttpNotFound();
         }
         
 
@@ -100,7 +105,9 @@ namespace HelpDeskTeamProject.Controllers
         [HttpPost]
         public ActionResult ChangeUserRoleInTeam(int userId, int teamId, int roleId)
         {
-            bool successfulChanged = teamService.ChangeUserRoleInTeam(userId, teamId, roleId);
+            var currentUser = GetCurrentUser();
+
+            bool successfulChanged = teamService.ChangeUserRoleInTeam(userId, teamId, roleId, currentUser);
 
             if (!successfulChanged)
                 return HttpNotFound();
@@ -144,6 +151,9 @@ namespace HelpDeskTeamProject.Controllers
         [Authorize]
         public ActionResult InviteUser(int? teamId)
         {
+            if (teamId == null)
+                return HttpNotFound();
+
             var currentUser = GetCurrentUser();
             
             var viewModel = teamService.CreateInviteUserToTeamViewModel((int)teamId, currentUser);

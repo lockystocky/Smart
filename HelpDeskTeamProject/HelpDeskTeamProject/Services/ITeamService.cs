@@ -18,7 +18,7 @@ namespace HelpDeskTeamProject.Services
 
         ManageTeamViewModel CreateManageTeamViewModel(int teamId);
 
-        bool ChangeUserRoleInTeam(int userId, int teamId, int newRoleId);
+        bool ChangeUserRoleInTeam(int userId, int teamId, int newRoleId, User currentUser);
 
         bool DeleteUserFromTeam(int userId, int teamId);
 
