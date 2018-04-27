@@ -254,9 +254,28 @@ namespace HelpDeskTeamProject.Controllers
             User appUser = await GetCurrentUser();
             if (appUser != null && teamId != null)
             {
-                TeamPermissions curPerms = appUser.Teams.SingleOrDefault(x => x.Id == teamId).UserPermissions
+                if (appUser.AppRole.Permissions.IsAdmin)
+                {
+                    TeamPermissions teamPerms = new TeamPermissions()
+                    {
+                        CanChangeTicketState = true,
+                        CanCommentTicket = true,
+                        CanCreateTicket = true,
+                        CanDeleteComments = true,
+                        CanDeleteTickets = true,
+                        CanEditComments = true,
+                        CanEditTickets = true,
+                        CanInviteToTeam = true,
+                        CanSetUserRoles = true
+                    };
+                    return Json(teamPerms, JsonRequestBehavior.AllowGet);
+                }
+                else
+                {
+                    TeamPermissions curPerms = appUser.Teams.SingleOrDefault(x => x.Id == teamId).UserPermissions
                     .SingleOrDefault(x => x.User.Id == appUser.Id).TeamRole.Permissions;
-                return Json(curPerms, JsonRequestBehavior.AllowGet);
+                    return Json(curPerms, JsonRequestBehavior.AllowGet);
+                }
             }
             return Json(null, JsonRequestBehavior.AllowGet);
         }

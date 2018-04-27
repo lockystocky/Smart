@@ -213,11 +213,16 @@ namespace HelpDeskTeamProject.Controllers
                 if (curTeam != null)
                 {
                     User curUser = await GetCurrentUser();
-                    if (curTeam.Users.Find(x => x.Id == curUser.Id) != null){
+                    if (curTeam.Users.Find(x => x.Id == curUser.Id) != null || curUser.AppRole.Permissions.IsAdmin)
+                    {
                         UserPermission curUserPerms = curTeam.UserPermissions.SingleOrDefault(x => x.User.Id == curUser.Id);
                         if ((curUser != null && curUserPerms != null) || (curUser != null && curUser.AppRole.Permissions.IsAdmin))
                         {
-                            TeamRole curTeamUserRole = curUserPerms.TeamRole;
+                            TeamRole curTeamUserRole = null;
+                            if (curUserPerms != null)
+                            {
+                                curTeamUserRole = curUserPerms.TeamRole;
+                            }
                             List<Ticket> curTickets = await db.Tickets.Include(x => x.ChildTickets).Include(y => y.Comments).Include(z => z.User)
                                 .Where(s => s.ParentTicket == null).Where(q => q.TeamId == curTeam.Id).ToListAsync();
                             List<TicketDTO> curTicketsDto = new List<TicketDTO>();
