@@ -1,4 +1,5 @@
-﻿using HelpDeskTeamProject.Context;
+﻿using HelpDeskTeamProject.Classes;
+using HelpDeskTeamProject.Context;
 using HelpDeskTeamProject.DataModels;
 using HelpDeskTeamProject.Models;
 using System;
@@ -76,15 +77,14 @@ namespace HelpDeskTeamProject.Services
                 Tickets = new List<Ticket>(),
                 Users = new List<User>()
             };
+            
 
             var ownerRole = db.TeamRoles
                .Where(tr => tr.Name == TEAM_OWNER_ROLE_NAME)
                .FirstOrDefault();
 
-
             if (ownerRole == null)
-                ownerRole = CreateTeamOwnerRole();
-
+                ownerRole = CreateTeamOwnerRole();  
 
             var ownerPermission = new UserPermission()
             {
@@ -94,7 +94,6 @@ namespace HelpDeskTeamProject.Services
             };
 
             team.UserPermissions.Add(ownerPermission);
-
 
             return team;
         }

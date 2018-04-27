@@ -42,13 +42,15 @@
                     <input type="submit" value="Invite User" class="btn btn-default" />
                 </div>
             </div>
+            <br />
+            <div>
+                @Html.ActionLink("Back to Team Management", "ManageTeam", "Teams", new { teamId = Model.TeamToInvite.Id }, new { @style = "margin-left:80px;" })
+
+
+            </div>
         </div>
 
-        <div>
-            @Html.ActionLink("Back to Team Management", "ManageTeam", "Teams", new { teamId = Model.TeamToInvite.Id}, null )
-
-
-        </div>
+        
 }
     </div>
     <div class="col-md-3">
