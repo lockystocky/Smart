@@ -34,8 +34,13 @@ namespace HelpDeskTeamProject.Controllers
         public ActionResult GetCurrentUserTeamsList()
         {            
             var currentUser = GetCurrentUser();
-            var currentUserTeamsList = teamService.GetUserTeamsList(currentUser);     
-
+            List<TeamMenuItem> currentUserTeamsList;
+            if (currentUser.AppRole.Permissions.IsAdmin)
+            {
+                currentUserTeamsList = teamService.GetTeamsList();
+                return Json(currentUserTeamsList, JsonRequestBehavior.AllowGet);
+            }
+            currentUserTeamsList = teamService.GetUserTeamsList(currentUser);     
             return Json(currentUserTeamsList, JsonRequestBehavior.AllowGet);
         }
 

@@ -21,6 +21,18 @@ namespace HelpDeskTeamProject.Classes
                 scriptTagCount++;
             }
 
+            var nodesWithStyle = doc.DocumentNode.Descendants()
+                            .Select(y => y.Descendants()
+                            .Where(x => x.Attributes["style"].Value.Length > 0))
+                            .ToList()
+                            .Count();
+
+           /* var nodesWithEvents = doc.DocumentNode.Descendants()
+                            .Select(y => y.Descendants()
+                            .Where(x => x.))
+                            .ToList()
+                            .Count();*/
+
             var errors = new List<string>();
             if (scriptTagCount > 0)
                 errors.Add("You cannot enter script tag in your text.");
