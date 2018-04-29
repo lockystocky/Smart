@@ -7,11 +7,12 @@ namespace HelpDeskTeamProject.DataModels
 {
     public enum TicketAction
     {
-        Create,
-        Delete,
-        Edit,
-        Comment,
-        Resolve
+        CreateComment,
+        DeleteComment,
+        CreateTicket,
+        DeleteTicket,
+        EditTicket,
+        StateChange
     }
 
     public class TicketLog : Log

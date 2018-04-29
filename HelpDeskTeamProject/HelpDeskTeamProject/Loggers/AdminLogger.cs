@@ -67,7 +67,7 @@ namespace HelpDeskTeamProject.Loggers
             {
                 Text = "User #" + user.Id + ": " + state,
                 Time = DateTime.Now,
-                UserId = user.Id
+                User = user
             });
             db.SaveChanges();
         }

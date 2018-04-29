@@ -230,6 +230,7 @@
     <Compile Include="DataModels\TicketBase.cs" />
     <Compile Include="DataModels\TicketDTO.cs" />
     <Compile Include="DataModels\TicketLog.cs" />
+    <Compile Include="DataModels\TicketLogDTO.cs" />
     <Compile Include="DataModels\TicketType.cs" />
     <Compile Include="DataModels\User.cs" />
     <Compile Include="DataModels\UserDTO.cs" />
@@ -249,6 +250,14 @@
     <Compile Include="Migrations\201804271024540_finalMigration.cs" />
     <Compile Include="Migrations\201804271024540_finalMigration.Designer.cs">
       <DependentUpon>201804271024540_finalMigration.cs</DependentUpon>
+    </Compile>
+    <Compile Include="Migrations\201804291351464_logsUserAdded.cs" />
+    <Compile Include="Migrations\201804291351464_logsUserAdded.Designer.cs">
+      <DependentUpon>201804291351464_logsUserAdded.cs</DependentUpon>
+    </Compile>
+    <Compile Include="Migrations\201804291403210_commentsTicketIdAdded.cs" />
+    <Compile Include="Migrations\201804291403210_commentsTicketIdAdded.Designer.cs">
+      <DependentUpon>201804291403210_commentsTicketIdAdded.cs</DependentUpon>
     </Compile>
     <Compile Include="Models\AppAndTeamRolesViewModel.cs" />
     <Compile Include="Models\TeamMenuItem.cs" />
@@ -394,6 +403,12 @@
     </EmbeddedResource>
     <EmbeddedResource Include="Migrations\201804271024540_finalMigration.resx">
       <DependentUpon>201804271024540_finalMigration.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Migrations\201804291351464_logsUserAdded.resx">
+      <DependentUpon>201804291351464_logsUserAdded.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Migrations\201804291403210_commentsTicketIdAdded.resx">
+      <DependentUpon>201804291403210_commentsTicketIdAdded.cs</DependentUpon>
     </EmbeddedResource>
   </ItemGroup>
   <PropertyGroup>

@@ -17,8 +17,10 @@
     var curTeamId = @Model.TeamId;
     var emptyTickets = false;
     var emptyComments = false;
+    var emptyLogs = false;
     var teamPermissions = null;
     var canChangeTicketState = false;
+    var commentsOrLogs = true; //true - comments, false - logs
     var statusNames = @Html.Raw(Json.Encode(ticketStateNames));
     var statusColorsJs = @Html.Raw(Json.Encode(statusColorsArray));
 
@@ -47,6 +49,7 @@
             <div class="divideLine"></div>
             <div class="replyRectangle">
                 @*<div class="replyTextMargin">Reply</div>*@
+                <div class="replyTextMargin" id="commentsOrLogsButton" onclick="commentsOrLogsButtonClick()">Logs</div>
                 @if (Model.CanEdit)
                 {
                     <div class="replyTextMargin" onclick="editButtonClick(@Model.Id)">Edit</div>
@@ -90,6 +93,30 @@
                 <div class="card">
                     <div class="systemMessageText">
                         This ticket does not have any comments, try adding more by clicking reply button.
+                    </div>
+                </div>
+            }
+        </div>
+        <div id="logsDisplay" style="display: none;">
+            @if (Model.Logs.Count > 0)
+            {
+                foreach (var log in Model.Logs)
+                {
+                    <div class="card">
+                    <h5 class="headerMargin"><b>@log.UserName</b> <b>@log.UserSurname</b></h5>
+                    <h5 class="dateTime">@log.Time</h5>
+                        <div class="commentText">
+                            <p>@log.Text</p>
+                        </div>
+                    </div>
+                }
+            }
+            else
+            {
+                <script>emptyLogs = true;</script>
+                <div class="card">
+                    <div class="systemMessageText">
+                        This ticket does not have any logs, they appear when something changes.
                     </div>
                 </div>
             }

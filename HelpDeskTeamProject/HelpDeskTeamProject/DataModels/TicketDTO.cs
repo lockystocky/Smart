@@ -35,6 +35,8 @@ namespace HelpDeskTeamProject.DataModels
 
         public List<TicketDTO> ChildTickets { get; set; }
 
+        public List<TicketLogDTO> Logs { get; set; }
+
         public TicketDTO()
         {
 

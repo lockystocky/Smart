@@ -29,6 +29,8 @@ namespace HelpDeskTeamProject.Context
 
         DbSet<Comment> Comments { get; set; }
 
+        DbSet<TicketLog> TicketLogs { get; set; }
+
         int SaveChanges();
 
         Task<int> SaveChangesAsync();

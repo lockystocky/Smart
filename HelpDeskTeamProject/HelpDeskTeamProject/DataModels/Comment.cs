@@ -20,17 +20,20 @@ namespace HelpDeskTeamProject.DataModels
 
         public int TeamId { get; set; }
 
+        public int BaseTicketId { get; set; }
+
         public Comment()
         {
 
         }
 
-        public Comment(string text, User user, DateTime time, int teamId)
+        public Comment(string text, User user, DateTime time, int teamId, int baseTicketId)
         {
             Text = text;
             User = user;
             TimeCreated = time;
             TeamId = teamId;
+            BaseTicketId = baseTicketId;
         }
     }
 }

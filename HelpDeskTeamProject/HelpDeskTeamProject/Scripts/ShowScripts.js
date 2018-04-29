@@ -37,9 +37,30 @@ function uploadTicket(text, type) {
         var parsedTicket = JSON.parse(xhr.responseText);
         if (parsedTicket != null) {
             displayNewTicket(parsedTicket);
+            getLastLog();
         }
     };
     xhr.send(formData);
+}
+
+function commentsOrLogsButtonClick() {
+    var curButton = document.getElementById("commentsOrLogsButton");
+    var commentsDiv = document.getElementById("mainDisplay");
+    var logsDiv = document.getElementById("logsDisplay");
+    var inputCommentDiv = document.getElementById("inputCommentDiv");
+    if (commentsOrLogs) {//show logs
+        inputCommentDiv.style.display = "none";
+        commentsDiv.style.display = "none";
+        logsDiv.style.display = "";
+        commentsOrLogs = false;
+        curButton.innerText = "Comments";
+    } else {//show comments
+        inputCommentDiv.style.display = "";
+        commentsDiv.style.display = "";
+        logsDiv.style.display = "none";
+        commentsOrLogs = true;
+        curButton.innerText = "Logs";
+    }
 }
 
 function editButtonClick(id) {
@@ -58,6 +79,11 @@ function clearTicketsDiv() {
 function clearCommentsDiv() {
     var commentsDiv = document.getElementById("mainDisplay");
     commentsDiv.innerHTML = "";
+}
+
+function clearLogsDiv() {
+    var logsDiv = document.getElementById("logsDisplay");
+    logsDiv.innerHTML = "";
 }
 
 function displayNewTicket(ticket) {
@@ -179,6 +205,7 @@ function sendTicketState(id, state) {
         if (parsedTicket != null) {
             console.log(parsedTicket);
         }
+        getLastLog();
     };
     xhr.send(formData);
 }
@@ -206,6 +233,8 @@ function deleteThisTicket() {
 
 function deleteAndHide(delId) {
     deleteTicket(delId);
+    var curTicketChildsCount = document.getElementById("ticketChildsCount");
+    curTicketChildsCount.innerText = " " + (parseInt(curTicketChildsCount.innerText) - 1);
     var delTicket = document.getElementById("ticket_" + delId);
     delTicket.style.display = "none";
 }
@@ -218,6 +247,7 @@ function deleteTicket(id) {
         console.log(xhr.responseText);
         var parsedResp = JSON.parse(xhr.responseText);
         if (parsedResp != null) {
+            getLastLog();
             console.log("Ticket deletion result - " + parsedResp);
         }
     };
@@ -226,6 +256,8 @@ function deleteTicket(id) {
 
 function deleteComAndHide(delId) {
     deleteComment(delId);
+    var curTicketCommentsCount = document.getElementById("ticketCommentsCount");
+    curTicketCommentsCount.innerText = " " + (parseInt(curTicketCommentsCount.innerText) - 1);
     var delCom = document.getElementById("comment_" + delId);
     delCom.style.display = "none";
 }
@@ -238,6 +270,7 @@ function deleteComment(id) {
         console.log(xhr.responseText);
         var parsedResp = JSON.parse(xhr.responseText);
         if (parsedResp != null) {
+            getLastLog();
             console.log("Comment deletion result - " + parsedResp);
         }
     };
@@ -255,6 +288,7 @@ function uploadComment(text) {
         var parsedCom = JSON.parse(xhr.responseText);
         if (parsedCom != null) {
             displayNewComment(parsedCom);
+            getLastLog();
         }
     };
     xhr.send(formData);
@@ -332,4 +366,46 @@ function getTeamPermissions() {
 
 function themeTextClick() {
     window.location.href = "/Ticket/Filter";
+}
+
+function displayNewLog(log) {
+    if (emptyLogs == true) {
+        clearLogsDiv();
+        emptyLogs = false;
+    }
+    var mainDisp = document.getElementById("logsDisplay");
+
+    var cardDiv = document.createElement("div");
+    cardDiv.className = "card";
+    mainDisp.appendChild(cardDiv);
+
+    var userNameDisp = document.createElement("h5");
+    userNameDisp.className = "headerMargin";
+    userNameDisp.innerHTML = "<b>" + log.UserName + "</b> <b>" + log.UserSurname + "</b>";
+    cardDiv.appendChild(userNameDisp);
+
+    var timeDisp = document.createElement("h5");
+    timeDisp.className = "dateTime";
+    timeDisp.innerText = log.Time;
+    cardDiv.appendChild(timeDisp);
+
+    var comText = document.createElement("div");
+    comText.className = "commentText";
+    var comPar = document.createElement("p");
+    comPar.innerText = log.Text;
+    comText.appendChild(comPar);
+    cardDiv.appendChild(comText);
+}
+
+function getLastLog() {
+    var uploaderUrl = "/Ticket/GetLastTicketLog?ticketId=" + curTicketId;
+    var xhr = new XMLHttpRequest();
+    xhr.open('GET', uploaderUrl, true);
+    xhr.onloadend = function () {
+        var parsedResp = JSON.parse(xhr.responseText);
+        if (parsedResp != null && parsedResp !== false) {
+            displayNewLog(parsedResp);
+        }
+    };
+    xhr.send(null);
 }
