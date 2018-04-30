@@ -5,7 +5,7 @@
         data: "{'userId':'" + userId + "', teamId:'" + teamId + "', roleId:'" + roleId + "'}",
         contentType: "application/json; charset=utf-8",
         dataType: "json"
-    })
+    });
 }
 
 function deleteUserFromTeam(userId, teamId) {
@@ -17,6 +17,30 @@ function deleteUserFromTeam(userId, teamId) {
         dataType: "json"
     }).done(function () {
         alert('Ok');
+    });
+}
+
+
+function reinviteUserToTeam(userId, teamId){
+    $.ajax({
+        type: "POST",
+        url: "/teams/reinviteUserToTeam/",
+        data: "{'invUserId':'" + userId + "', teamId:'" + teamId + "'}",
+        contentType: "application/json; charset=utf-8",
+        dataType: "json"
+    }).done(function (data) {
+        if (!data) {
+            var errorMsg = $('#inverror').clone();
+            $(errorMsg).removeClass('hidden');
+            $('#invmsg').text('');
+            $('#invmsg').append(errorMsg);
+        }
+        else {
+            var successMsg = $('#invsuc').clone();
+            $(successMsg).removeClass('hidden');
+            $('#invmsg').text('');
+            $('#invmsg').append(successMsg);
+        }
     });
 }
 
@@ -37,6 +61,12 @@ $(function () {
             deleteUserFromTeam(userId, teamId);
             $(this).parents('.userinfo').hide();
         }
+    });
+
+    $('.invbtn').click(function () {
+        var userId = $(this).parents('.inviteduser').attr('id');
+        var teamId = $(this).parents('.invitedusers').attr('id');
+        reinviteUserToTeam(userId, teamId);
     });
 
 });
