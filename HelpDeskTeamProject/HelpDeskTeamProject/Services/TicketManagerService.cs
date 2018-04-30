@@ -129,7 +129,7 @@ namespace HelpDeskTeamProject.Services
         {
             if (id != null)
             {
-                Ticket ticket = await db.Tickets.SingleOrDefaultAsync(x => x.Id == id);
+                Ticket ticket = await db.Tickets.Include(t => t.User).SingleOrDefaultAsync(x => x.Id == id);
                 return ticket;
             }
             throw new ArgumentNullException();

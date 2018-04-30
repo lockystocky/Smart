@@ -143,7 +143,7 @@ namespace HelpDeskTeamProject.Controllers
         {
             if (id != null)
             {
-                Ticket ticket = await db.Tickets.Include(z => z.ParentTicket).SingleOrDefaultAsync(x => x.Id == id);
+                Ticket ticket = await db.Tickets.Include(z => z.ParentTicket).Include(z => z.User).SingleOrDefaultAsync(x => x.Id == id);
                 User curUser = await userManager.GetCurrentUser();
                 TeamPermissions teamPerms = await GetCurrentTeamPermissions(ticket.TeamId, curUser.Id);
                 if (ticket != null && teamPerms != null)
