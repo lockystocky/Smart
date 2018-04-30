@@ -11,17 +11,20 @@ using HelpDeskTeamProject.Models;
 using Microsoft.AspNet.Identity.Owin;
 using Microsoft.AspNet.Identity;
 using Newtonsoft.Json;
+using HelpDeskTeamProject.Services;
 
 namespace HelpDeskTeamProject.Controllers
 {
     [Authorize]
     public class TicketController : Controller
     {
-        IAppContext db;// = new AppContext();
+        IAppContext db;
+        ITicketTypeManager typeManager;
 
-        public TicketController(IAppContext context)
+        public TicketController(IAppContext context, ITicketTypeManager typeMan)
         {
             db = context;
+            typeManager = typeMan;
         }
 
         public ActionResult NoPermissionError()
@@ -192,11 +195,8 @@ namespace HelpDeskTeamProject.Controllers
                 {
                     if (curUser.AppRole.Permissions.CanManageTicketTypes || curUser.AppRole.Permissions.IsAdmin)
                     {
-                        TicketType type = await db.TicketTypes.SingleOrDefaultAsync(x => x.Name.Equals(newType.Name));
-                        if (type == null)
+                        if (await typeManager.CreateNew(newType))
                         {
-                            db.TicketTypes.Add(newType);
-                            await db.SaveChangesAsync();
                             return RedirectToAction("TypeList", "Ticket");
                         }
                         else
@@ -216,7 +216,7 @@ namespace HelpDeskTeamProject.Controllers
             User curUser = await GetCurrentUser();
             if (curUser.AppRole.Permissions.CanManageTicketTypes || curUser.AppRole.Permissions.IsAdmin)
             {
-                List<TicketType> ticketTypes = await db.TicketTypes.ToListAsync();
+                List<TicketType> ticketTypes = await typeManager.GetAllTypes();
                 return View(ticketTypes);
             }
             return RedirectToAction("NoPermissionError", "Ticket");

@@ -42,52 +42,52 @@ namespace HelpDeskTeamProject.Models
     public class ForgotViewModel
     {
         [Required]
-        [Display(Name = "Адрес электронной почты")]
+        [Display(Name = "Email")]
         public string Email { get; set; }
     }
 
     public class LoginViewModel
     {
         [Required]
-        [Display(Name = "Адрес электронной почты")]
+        [Display(Name = "Email")]
         [EmailAddress]
         public string Email { get; set; }
 
         [Required]
         [DataType(DataType.Password)]
-        [Display(Name = "Пароль")]
+        [Display(Name = "Password")]
         public string Password { get; set; }
 
-        [Display(Name = "Запомнить меня")]
+        [Display(Name = "Remember me")]
         public bool RememberMe { get; set; }
     }
 
     public class RegisterViewModel
     {
         [Required]
-        [Display(Name = "Ваше имя")]
-        [StringLength(200, ErrorMessage = "Значение имени должно содержать не более 200 символов.")]
+        [Display(Name = "Your name")]
+        [StringLength(200, ErrorMessage = "Name cannot have more that 200 characters or less than 4.", MinimumLength = 4)]
         public string Name { get; set; }
 
         [Required]
-        [Display(Name = "Ваша фамилия")]
-        [StringLength(200, ErrorMessage = "Значение фамилии должно содержать не более 200 символов.")]
+        [Display(Name = "Your surname")]
+        [StringLength(200, ErrorMessage = "Surname cannot have more that 200 characters or less than 4.", MinimumLength = 4)]
         public string Surname { get; set; }
 
         [Required]
         [EmailAddress]
-        [Display(Name = "Адрес электронной почты")]
+        [Display(Name = "Email")]
         public string Email { get; set; }
 
         [Required]
-        [StringLength(100, ErrorMessage = "Значение {0} должно содержать не менее {2} символов.", MinimumLength = 6)]
+        [StringLength(100, ErrorMessage = "{0} length has to be at least {2} characters.", MinimumLength = 6)]
         [DataType(DataType.Password)]
-        [Display(Name = "Пароль")]
+        [Display(Name = "Password")]
         public string Password { get; set; }
 
         [DataType(DataType.Password)]
-        [Display(Name = "Подтверждение пароля")]
-        [Compare("Password", ErrorMessage = "Пароль и его подтверждение не совпадают.")]
+        [Display(Name = "Confirm password")]
+        [Compare("Password", ErrorMessage = "Password and confirmation does not match.")]
         public string ConfirmPassword { get; set; }
     }
 
@@ -95,18 +95,18 @@ namespace HelpDeskTeamProject.Models
     {
         [Required]
         [EmailAddress]
-        [Display(Name = "Адрес электронной почты")]
+        [Display(Name = "Email")]
         public string Email { get; set; }
 
         [Required]
-        [StringLength(100, ErrorMessage = "Значение {0} должно содержать не менее {2} символов.", MinimumLength = 6)]
+        [StringLength(100, ErrorMessage = "{0} length has to be at least {2} characters.", MinimumLength = 6)]
         [DataType(DataType.Password)]
-        [Display(Name = "Пароль")]
+        [Display(Name = "Password")]
         public string Password { get; set; }
 
         [DataType(DataType.Password)]
-        [Display(Name = "Подтверждение пароля")]
-        [Compare("Password", ErrorMessage = "Пароль и его подтверждение не совпадают.")]
+        [Display(Name = "Confirm password")]
+        [Compare("Password", ErrorMessage = "Password and confirmation does not match.")]
         public string ConfirmPassword { get; set; }
 
         public string Code { get; set; }
@@ -116,7 +116,7 @@ namespace HelpDeskTeamProject.Models
     {
         [Required]
         [EmailAddress]
-        [Display(Name = "Почта")]
+        [Display(Name = "Email")]
         public string Email { get; set; }
     }
 }

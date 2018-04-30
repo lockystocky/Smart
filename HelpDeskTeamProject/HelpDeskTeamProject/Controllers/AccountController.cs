@@ -73,14 +73,6 @@ namespace HelpDeskTeamProject.Controllers
         [ValidateAntiForgeryToken]
         public async Task<ActionResult> Login(LoginViewModel model, string returnUrl)
         {
-            var userName = model.Email;
-            var currentUser = dbContext.Users.Where(u => u.Email == userName).FirstOrDefault();
-
-            if (currentUser.IsBanned)
-            {
-                return View("Lockout");
-            }
-
             if (!ModelState.IsValid)
             {
                 return View(model);
@@ -89,6 +81,23 @@ namespace HelpDeskTeamProject.Controllers
             // Сбои при входе не приводят к блокированию учетной записи
             // Чтобы ошибки при вводе пароля инициировали блокирование учетной записи, замените на shouldLockout: true
             var result = await SignInManager.PasswordSignInAsync(model.Email, model.Password, model.RememberMe, shouldLockout: false);
+
+            var userName = model.Email;
+            var currentUser = await dbContext.Users.SingleOrDefaultAsync((u => u.Email.ToLower().Equals(userName.ToLower())));
+
+            if (currentUser != null)
+            {
+                if (currentUser.IsBanned)
+                {
+                    LogOff();
+                    return View("Lockout");
+                }
+            }
+            else
+            {
+                LogOff();
+            }
+
             switch (result)
             {
                 case SignInStatus.Success:
