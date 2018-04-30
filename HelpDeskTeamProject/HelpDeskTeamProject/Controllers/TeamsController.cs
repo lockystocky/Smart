@@ -178,6 +178,22 @@ namespace HelpDeskTeamProject.Controllers
 
         [HttpPost]
         [Authorize]
+        public ActionResult ReinviteUserToTeam(int? teamId, int? invUserId)
+        {
+            if(teamId == null || invUserId == null || !teamService.TeamExists((int)teamId))
+                return Json(false, JsonRequestBehavior.AllowGet);
+
+
+            bool successfullyReinvited = teamService.ReinviteUserToTeam((int)invUserId, (int)teamId, DateTime.Now);
+
+            if(!successfullyReinvited)
+                return Json(false, JsonRequestBehavior.AllowGet);
+
+            return Json(true, JsonRequestBehavior.AllowGet);
+        }
+
+        [HttpPost]
+        [Authorize]
         public ActionResult InviteUser(InviteUserToTeamViewModel viewModel)
         {
             if (ModelState.IsValid)

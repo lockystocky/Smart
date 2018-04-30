@@ -282,7 +282,8 @@ namespace HelpDeskTeamProject.Services
                 var invitedUser = new InvitedUser()
                 {
                     Email = email,
-                    Code = userCode
+                    Code = userCode,
+                    TimeOfLastInvitation = DateTime.Now
                 };
 
                 team.InvitedUsers.Add(invitedUser);
@@ -300,6 +301,32 @@ namespace HelpDeskTeamProject.Services
                 return "User with this email address is already invited to team.";
 
             return "User with this email address is already in team.";
+        }
+
+        public bool ReinviteUserToTeam(int invUserId, int teamId, DateTime currentTime)
+        {
+            var team = db.Teams.Find(teamId);
+            var invitedUser = team.InvitedUsers.Find(user => user.Id == invUserId);
+
+            if (invitedUser == null)
+                return false;
+
+            var invitedEarlierThanDayAgo = currentTime - invitedUser.TimeOfLastInvitation > TimeSpan.FromHours(24);
+
+
+            if (invitedEarlierThanDayAgo)
+            {
+                string invitationLink = team.InvitationLink + invitedUser.Id.ToString();
+                string emailMessage = CreateInvitationEmailMessage(team.Name, invitationLink, invitedUser.Code);
+
+                SendInvitationEmail(invitedUser.Email, emailMessage);
+                invitedUser.TimeOfLastInvitation = currentTime;
+                db.SaveChanges();
+
+                return true;
+            }
+
+            return false;
         }
 
         private void SendInvitationEmail(string emailTo, string emailText)

@@ -20,6 +20,8 @@ namespace HelpDeskTeamProject.Services
 
         List<TeamMenuItem> GetTeamsList();
 
+        bool ReinviteUserToTeam(int invUserId, int teamId, DateTime currentTime);
+
         bool ChangeUserRoleInTeam(int userId, int teamId, int newRoleId, User currentUser);
 
         bool DeleteUserFromTeam(int userId, int teamId);

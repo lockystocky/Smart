@@ -56,15 +56,42 @@ else
 }
 else
 {
-    <p>Invited users:</p>
+    
+    
+        <div id="inverror" class="alert alert-danger alert-dismissible hidden">
+            <a href="#" class="close" data-dismiss="alert" aria-label="close">&times;</a>
+            <strong>Danger!</strong> You can not send an invitation more than once a day.
+        </div>
+    
+    
+        <div id="invsuc" class="alert alert-success alert-dismissible hidden">
+            <a href="#" class="close" data-dismiss="alert" aria-label="close">&times;</a>
+            <strong>Success!</strong> Invitation email was sent successfully.
+        </div>
+    
+        <div id="invmsg"></div>
+        
+        <p>Invited users:</p>
+        <table id="@Model.Team.Id" class="table invitedusers">
+            <tr>
+                <th>Email</th>
+                <th>Invitation Time</th>
+                <th></th>
+            </tr>
+            @foreach (var invitedUser in Model.Team.InvitedUsers)
+        {
+            <tr class="inviteduser" id="@invitedUser.Id">
+                <td>@invitedUser.Email</td>
+                <td>@invitedUser.TimeOfLastInvitation</td>
+                <td><button type="button" class="btn btn-primary invbtn">Invite again</button></td>
+            </tr>
+    }
+
+        </table>
 
 
-foreach (var invitedUser in Model.Team.InvitedUsers)
-{
-    <p>@invitedUser.Email</p>
-}
 
-}
+        }
     </div>
     <div class="col-md-2">
 

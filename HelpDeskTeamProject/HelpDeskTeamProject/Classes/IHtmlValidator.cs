@@ -8,6 +8,6 @@ namespace HelpDeskTeamProject.Classes
 {
     public interface IHtmlValidator
     {
-        List<string> ValidateHtml(string html);
+        string ValidateHtml(string html);
     }
 }
