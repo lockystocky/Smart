@@ -10,6 +10,7 @@ using HelpDeskTeamProject.DataModels;
 using HelpDeskTeamProject.Models;
 using Microsoft.AspNet.Identity.Owin;
 using Microsoft.AspNet.Identity;
+using HelpDeskTeamProject.Services;
 
 namespace HelpDeskTeamProject.Controllers
 {
@@ -17,16 +18,18 @@ namespace HelpDeskTeamProject.Controllers
     public class RoleController : Controller
     {
         IAppContext dbContext;// = new AppContext();
+        IUserManager userManager;
 
-        public RoleController(IAppContext context)
+        public RoleController(IAppContext context, IUserManager userMan)
         {
             dbContext = context;
+            userManager = userMan;
         }
 
 
         public async Task<ActionResult> CreateTeamRole()
         {
-            User curUser = await GetCurrentUser();
+            User curUser = await userManager.GetCurrentUser();
             if (curUser.AppRole.Permissions.CanManageUserRoles == true || curUser.AppRole.Permissions.IsAdmin == true)
             {
                 return View();
@@ -40,7 +43,7 @@ namespace HelpDeskTeamProject.Controllers
         {
             if (ModelState.IsValid)
             {
-                User curUser = await GetCurrentUser();
+                User curUser = await userManager.GetCurrentUser();
                 if (curUser.AppRole.Permissions.CanManageUserRoles == true || curUser.AppRole.Permissions.IsAdmin == true)
                 {
                     if (await dbContext.TeamRoles.SingleOrDefaultAsync(x => x.Name.Equals(newTeamRole.Name)) == null)
@@ -65,7 +68,7 @@ namespace HelpDeskTeamProject.Controllers
 
         public async Task<ActionResult> CreateAppRole()
         {
-            User curUser = await GetCurrentUser();
+            User curUser = await userManager.GetCurrentUser();
             if (curUser.AppRole.Permissions.CanManageUserRoles == true || curUser.AppRole.Permissions.IsAdmin == true)
             {
                 return View();
@@ -79,7 +82,7 @@ namespace HelpDeskTeamProject.Controllers
         {
             if (ModelState.IsValid)
             {
-                User curUser = await GetCurrentUser();
+                User curUser = await userManager.GetCurrentUser();
                 if (curUser.AppRole.Permissions.CanManageUserRoles == true || curUser.AppRole.Permissions.IsAdmin == true)
                 {
                     if (await dbContext.AppRoles.SingleOrDefaultAsync(x => x.Name.Equals(newAppRole.Name)) == null)
@@ -104,7 +107,7 @@ namespace HelpDeskTeamProject.Controllers
 
         public async Task<ActionResult> List()
         {
-            User curUser = await GetCurrentUser();
+            User curUser = await userManager.GetCurrentUser();
             if (curUser.AppRole.Permissions.CanManageUserRoles == true || curUser.AppRole.Permissions.IsAdmin == true)
             {
                 var appRoles = await dbContext.AppRoles.ToListAsync();
@@ -127,7 +130,7 @@ namespace HelpDeskTeamProject.Controllers
         {
             if (roleId != null || roleId < 1)
             {
-                User curUser = await GetCurrentUser();
+                User curUser = await userManager.GetCurrentUser();
                 if (curUser.AppRole.Permissions.CanManageUserRoles == true || curUser.AppRole.Permissions.IsAdmin == true)
                 {
                     int goodId = Convert.ToInt32(roleId);
@@ -149,7 +152,7 @@ namespace HelpDeskTeamProject.Controllers
         {
             if (roleId != null || roleId < 1)
             {
-                User curUser = await GetCurrentUser();
+                User curUser = await userManager.GetCurrentUser();
                 if (curUser.AppRole.Permissions.CanManageUserRoles == true || curUser.AppRole.Permissions.IsAdmin == true)
                 {
                     int goodId = Convert.ToInt32(roleId);
@@ -173,7 +176,7 @@ namespace HelpDeskTeamProject.Controllers
         {
             if (ModelState.IsValid)
             {
-                User curUser = await GetCurrentUser();
+                User curUser = await userManager.GetCurrentUser();
                 if (curUser.AppRole.Permissions.CanManageUserRoles == true || curUser.AppRole.Permissions.IsAdmin == true)
                 {
                     var appRoles = dbContext.AppRoles.Where(x => x.Name.Equals(role.Name));
@@ -214,7 +217,7 @@ namespace HelpDeskTeamProject.Controllers
         {
             if (ModelState.IsValid)
             {
-                User curUser = await GetCurrentUser();
+                User curUser = await userManager.GetCurrentUser();
                 if (curUser.AppRole.Permissions.CanManageUserRoles == true || curUser.AppRole.Permissions.IsAdmin == true)
                 {
                     var teamRoles = dbContext.TeamRoles.Where(x => x.Name.Equals(role.Name));
@@ -251,7 +254,7 @@ namespace HelpDeskTeamProject.Controllers
 
         public async Task<JsonResult> GetUserTeamPermissions(int? teamId)
         {
-            User appUser = await GetCurrentUser();
+            User appUser = await userManager.GetCurrentUser();
             if (appUser != null && teamId != null)
             {
                 if (appUser.AppRole.Permissions.IsAdmin)
@@ -282,7 +285,7 @@ namespace HelpDeskTeamProject.Controllers
 
         public async Task<JsonResult> GetUserAppPermissions()
         {
-            User appUser = await GetCurrentUser();
+            User appUser = await userManager.GetCurrentUser();
             if (appUser != null)
             {
                 ApplicationPermissions curPerms = appUser.AppRole.Permissions;
@@ -292,13 +295,6 @@ namespace HelpDeskTeamProject.Controllers
                 }
             }
             return Json(null, JsonRequestBehavior.AllowGet);
-        }
-
-        private async Task<User> GetCurrentUser()
-        {
-            string userAppId = System.Web.HttpContext.Current.User.Identity.GetUserId();
-            User curUser = await dbContext.Users.SingleOrDefaultAsync(x => x.AppId.Equals(userAppId));
-            return curUser;
         }
     }
 }
