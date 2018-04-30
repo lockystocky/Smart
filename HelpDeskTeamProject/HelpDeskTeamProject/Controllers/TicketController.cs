@@ -12,6 +12,7 @@ using Microsoft.AspNet.Identity.Owin;
 using Microsoft.AspNet.Identity;
 using Newtonsoft.Json;
 using HelpDeskTeamProject.Services;
+using HelpDeskTeamProject.Classes;
 
 namespace HelpDeskTeamProject.Controllers
 {
@@ -25,8 +26,9 @@ namespace HelpDeskTeamProject.Controllers
         ICommentManager commentManager;
         ITicketManager ticketManager;
         IDtoConverter dtoConverter;
+        IHtmlValidator htmlValidator;
 
-        public TicketController(IAppContext context, ITicketTypeManager typeMan, ITicketLogger tickLog, ICommentManager comManage, ITicketManager tikMan, IUserManager userMan, IDtoConverter dtoConver)
+        public TicketController(IAppContext context, ITicketTypeManager typeMan, ITicketLogger tickLog, ICommentManager comManage, ITicketManager tikMan, IUserManager userMan, IDtoConverter dtoConver, IHtmlValidator htmlValid)
         {
             db = context;
             typeManager = typeMan;
@@ -35,6 +37,7 @@ namespace HelpDeskTeamProject.Controllers
             ticketManager = tikMan;
             userManager = userMan;
             dtoConverter = dtoConver;
+            htmlValidator = htmlValid;
         }
 
         public ActionResult NoPermissionError()
@@ -277,7 +280,8 @@ namespace HelpDeskTeamProject.Controllers
         public async Task<JsonResult> AddTicket(TicketBase newTicket)
         {
             User curUser = await userManager.GetCurrentUser();
-            //newTicket.Description = HttpUtility.UrlDecode(newTicket.Description);
+            string unescapedText = HttpUtility.UrlDecode(newTicket.Description);
+            //unescapedText = htmlValidator.ValidateHtml(unescapedText);
             TeamPermissions userPerms = await GetCurrentTeamPermissions(newTicket.BaseTeamId, curUser.Id);
             if (userPerms.CanCreateTicket == true || curUser.AppRole.Permissions.IsAdmin == true)
             {

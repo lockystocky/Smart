@@ -18,7 +18,8 @@
         typeChoser.style.border = "";
         typeChoser.style.borderColor = "";
         typeChoser.style.borderWidth = "";
-        uploadTicket(textBox.value, typeChoser.value);
+        var escapedText = escape(textBox.value);
+        uploadTicket(escapedText, typeChoser.value);
         textBox.value = "";
         typeChoser.value = "0";
     }
@@ -221,7 +222,8 @@ function addComment() {
         commentBox.style.border = "";
         commentBox.style.borderColor = "";
         commentBox.style.borderWidth = "";
-        uploadComment(commentBox.value);
+        var escapedText = escape(commentBox.value);
+        uploadComment(escapedText);
         commentBox.value = "";
     }
 }

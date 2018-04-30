@@ -186,8 +186,8 @@ function addTicket() {
         typeChoser.style.border = "";
         typeChoser.style.borderColor = "";
         typeChoser.style.borderWidth = "";
-        //var escapedValue = window.escape(textBox.value);
-        uploadTicket(textBox.value, typeChoser.value, teamId);
+        var escapedText = escape(textBox.value);
+        uploadTicket(escapedText, typeChoser.value);
         textBox.value = "";
         typeChoser.value = "0";
     }
