@@ -38,14 +38,18 @@ namespace HelpDeskTeamProject.Services
 
         public async Task<bool> Delete(int? id, User user, Ticket ticket)
         {
-            if (id != null)
+            if (id != null && user != null && ticket != null)
             {
                 Comment delComment = await db.Comments.SingleOrDefaultAsync(x => x.Id == id);
                 db.Comments.Remove(delComment);
                 ticketLogger.WriteTicketLog(user, TicketAction.DeleteComment, ticket);
                 await db.SaveChangesAsync();
+                return true;
             }
-            return true;
+            else
+            {
+                throw new ArgumentNullException();
+            }
         }
     }
 }
