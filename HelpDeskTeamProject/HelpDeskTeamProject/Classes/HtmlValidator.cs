@@ -9,52 +9,15 @@ namespace HelpDeskTeamProject.Classes
 {
     public class HtmlValidator : IHtmlValidator
     {
-        public List<string> ValidateHtml(string html)
+        public string ValidateHtml(string html)
         {
-            HtmlDocument doc = new HtmlDocument();
-            doc.LoadHtml(html);
+            var sanitizer = new Ganss.XSS.HtmlSanitizer();
 
-            int scriptTagCount = 0;
-            var scripts = doc.DocumentNode.Descendants("script");
-            foreach (var script in scripts)
-            {
-                scriptTagCount++;
-            }
+            sanitizer.AllowedAttributes.Remove("style");
 
-            var nodesWithStyle = doc.DocumentNode.Descendants()
-                            .Select(y => y.Descendants()
-                            .Where(x => x.Attributes["style"].Value.Length > 0))
-                            .ToList()
-                            .Count();
+            var result = sanitizer.Sanitize(html);
 
-           /* var nodesWithEvents = doc.DocumentNode.Descendants()
-                            .Select(y => y.Descendants()
-                            .Where(x => x.))
-                            .ToList()
-                            .Count();*/
-
-            var errors = new List<string>();
-            if (scriptTagCount > 0)
-                errors.Add("You cannot enter script tag in your text.");
-
-            int styleTagCount = 0;
-            var styles = doc.DocumentNode.Descendants("style");
-            foreach (var script in scripts)
-            {
-                styleTagCount++;
-            }
-
-            if (styleTagCount > 0)
-                errors.Add("You cannot enter style tag in your text.");
-
-            var otherErrors = doc.ParseErrors;
-
-            foreach (var error in otherErrors)
-            {
-                errors.Add(error.Reason);
-            }
-
-            return errors;
+            return result;
         }
     }
 }
