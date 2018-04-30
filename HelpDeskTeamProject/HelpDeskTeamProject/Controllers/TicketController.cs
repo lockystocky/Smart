@@ -19,12 +19,14 @@ namespace HelpDeskTeamProject.Controllers
     public class TicketController : Controller
     {
         IAppContext db;
+        ITicketLogger ticketLogger;
         ITicketTypeManager typeManager;
 
-        public TicketController(IAppContext context, ITicketTypeManager typeMan)
+        public TicketController(IAppContext context, ITicketTypeManager typeMan, ITicketLogger tickLog)
         {
             db = context;
             typeManager = typeMan;
+            ticketLogger = tickLog;
         }
 
         public ActionResult NoPermissionError()
@@ -37,8 +39,7 @@ namespace HelpDeskTeamProject.Controllers
             User curUser = await GetCurrentUser();
             if (curUser != null)
             {
-                List<TicketType> ticketTypes = await db.TicketTypes.ToListAsync();
-                ViewBag.TicketTypes = ticketTypes;
+                await FillTypeList();
                 List<Team> teams = curUser.Teams;
                 return View(teams);
             }
@@ -71,8 +72,7 @@ namespace HelpDeskTeamProject.Controllers
         {
             if (id != null)
             {
-                List<TicketType> ticketTypes = await db.TicketTypes.ToListAsync();
-                ViewBag.TicketTypes = ticketTypes;
+                await FillTypeList();
                 Ticket ticket = await db.Tickets.Include(z => z.User).Include(x => x.ChildTickets).Include(y => y.Comments)
                     .SingleOrDefaultAsync(x => x.Id == id);
                 User curUser = await GetCurrentUser();
@@ -271,8 +271,7 @@ namespace HelpDeskTeamProject.Controllers
 
         public async Task<ActionResult> Tickets()
         {
-            List<TicketType> ticketTypes = await db.TicketTypes.ToListAsync();
-            ViewBag.TicketTypes = ticketTypes;
+            await FillTypeList();
             return View();
         }
 
@@ -354,8 +353,7 @@ namespace HelpDeskTeamProject.Controllers
                     }
                     ticketDto.Logs = logsDto;
 
-                    List<TicketType> ticketTypes = await db.TicketTypes.ToListAsync();
-                    ViewBag.TicketTypes = ticketTypes;
+                    await FillTypeList();
                     return View(ticketDto);
                 }
             }
@@ -469,6 +467,12 @@ namespace HelpDeskTeamProject.Controllers
                 }
             }
             return Json(false, JsonRequestBehavior.AllowGet);
+        }
+
+        private async Task FillTypeList()
+        {
+            List<TicketType> ticketTypes = await typeManager.GetAllTypes();
+            ViewBag.TicketTypes = ticketTypes;
         }
 
         private async Task<User> GetCurrentUser()

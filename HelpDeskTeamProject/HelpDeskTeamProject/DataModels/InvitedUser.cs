@@ -17,5 +17,7 @@ namespace HelpDeskTeamProject.DataModels
         [Required]
         [Range(0, 999999)]
         public int Code { get; set; }
+
+        public DateTime TimeOfLastInvitation { get; set; }
     }
 }

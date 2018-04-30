@@ -22,6 +22,7 @@ namespace HelpDeskTeamProject.Autofac
             builder.RegisterType<TeamService>().As<ITeamService>().InstancePerRequest();
             builder.RegisterType<HtmlValidator>().As<IHtmlValidator>().InstancePerRequest();
             builder.RegisterType<TicketTypeService>().As<ITicketTypeManager>().InstancePerRequest();
+            builder.RegisterType<TicketLoggerService>().As<ITicketLogger>().InstancePerRequest();
             var container = builder.Build();
             System.Web.Mvc.DependencyResolver.SetResolver(new AutofacDependencyResolver(container));
         }
