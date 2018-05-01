@@ -95,7 +95,7 @@ namespace HelpDeskTeamProject.Controllers
             var currentUser = dbContext.Users.Where(u => u.Email == userName).FirstOrDefault();
             if (currentUser != null)
             {
-                if (currentUser.AppRole.Permissions.IsAdmin)
+                if (currentUser.IsAdmin)
                 {
                     dynamic compositeModel = new ExpandoObject();
                     compositeModel.Users = GetUsers();

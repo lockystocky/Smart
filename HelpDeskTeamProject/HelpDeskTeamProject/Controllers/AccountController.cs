@@ -12,6 +12,8 @@ using HelpDeskTeamProject.Models;
 using HelpDeskTeamProject.Context;
 using HelpDeskTeamProject.DataModels;
 using System.Data.Entity;
+using HelpDeskTeamProject.Loggers;
+using System.Collections.Generic;
 
 namespace HelpDeskTeamProject.Controllers
 {
@@ -101,6 +103,9 @@ namespace HelpDeskTeamProject.Controllers
             switch (result)
             {
                 case SignInStatus.Success:
+                    List<AdminAction> actions = new List<AdminAction>();
+                    actions.Add(AdminAction.Login);
+                    AdminLogger.PostLogToDb(dbContext, currentUser, actions);
                     return RedirectToLocal(returnUrl);
                 case SignInStatus.LockedOut:
                     return View("Lockout");
