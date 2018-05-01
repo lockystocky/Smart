@@ -18,7 +18,8 @@
         typeChoser.style.border = "";
         typeChoser.style.borderColor = "";
         typeChoser.style.borderWidth = "";
-        uploadTicket(textBox.value, typeChoser.value);
+        var escapedText = escape(textBox.value);
+        uploadTicket(escapedText, typeChoser.value);
     }
 }
 

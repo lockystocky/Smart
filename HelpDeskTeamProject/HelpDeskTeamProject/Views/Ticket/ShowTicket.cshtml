@@ -43,7 +43,7 @@
                 <h5 class="deleteButton" onclick="deleteThisTicket()">Delete</h5>
             }
             <div class="cardText">
-                <p>@Model.Description</p>
+                <p>@Html.Raw(Model.Description)</p>
                 <div class="themeText" onclick="themeTextClick()">@Model.Type.Name</div>
             </div>
             <div class="divideLine"></div>
@@ -82,7 +82,7 @@
                         <h5 class="deleteButton" onclick="deleteComAndHide(@comment.Id)">Delete</h5>
                     }
                         <div class="commentText">
-                            <p>@comment.Text</p>
+                            <p>@Html.Raw(comment.Text)</p>
                         </div>
                     </div>
                 }
@@ -158,7 +158,7 @@
                             <h5 class="deleteButton" onclick="deleteAndHide(@childTicket.Id)">Delete</h5>
                         }
                         <div class="cardText">
-                            <p>@childTicket.Description</p>
+                            <p>@Html.Raw(childTicket.Description)</p>
                             <div class="themeText" onclick="themeTextClick()">@childTicket.Type.Name</div>
                         </div>
                         <div class="divideLine"></div>

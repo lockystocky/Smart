@@ -106,6 +106,8 @@ namespace HelpDeskTeamProject.Controllers
         {
             if (id != null && description != null && type != null && description != "")
             {
+                string unescapedText = htmlValidator.ValidateHtml(HttpUtility.UrlDecode(description));
+                description = unescapedText;
                 Ticket ticket = await ticketManager.GetTicketNoInclude(id);
                 User curUser = await userManager.GetCurrentUser();
                 TeamPermissions teamPerms = await GetCurrentTeamPermissions(ticket.TeamId, curUser.Id);
@@ -280,8 +282,8 @@ namespace HelpDeskTeamProject.Controllers
         public async Task<JsonResult> AddTicket(TicketBase newTicket)
         {
             User curUser = await userManager.GetCurrentUser();
-            string unescapedText = HttpUtility.UrlDecode(newTicket.Description);
-            //unescapedText = htmlValidator.ValidateHtml(unescapedText);
+            string unescapedText = htmlValidator.ValidateHtml(HttpUtility.UrlDecode(newTicket.Description));
+            newTicket.Description = unescapedText;
             TeamPermissions userPerms = await GetCurrentTeamPermissions(newTicket.BaseTeamId, curUser.Id);
             if (userPerms.CanCreateTicket == true || curUser.AppRole.Permissions.IsAdmin == true)
             {
@@ -297,6 +299,8 @@ namespace HelpDeskTeamProject.Controllers
         {
             if (text != null && ticketId != null && ticketId > 0)
             {
+                string unescapedText = htmlValidator.ValidateHtml(HttpUtility.UrlDecode(text));
+                text = unescapedText;
                 User curUser = await userManager.GetCurrentUser();
                 Ticket curTicket = await db.Tickets.Include(y => y.Comments).SingleOrDefaultAsync(x => x.Id == ticketId);
                 TeamPermissions userPerms = await GetCurrentTeamPermissions(curTicket.TeamId, curUser.Id);

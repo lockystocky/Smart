@@ -136,7 +136,7 @@ function displayNewTicket(ticket) {
     var cardText = document.createElement("div");
     cardText.className = "cardText";
     var ticketDescr = document.createElement("p");
-    ticketDescr.innerText = ticket.Description;
+    ticketDescr.innerHTML = ticket.Description;
     cardText.appendChild(ticketDescr);
     var themeText = document.createElement("div");
     themeText.className = "themeText";
@@ -329,7 +329,7 @@ function displayNewComment(comment) {
     var comText = document.createElement("div");
     comText.className = "commentText";
     var comPar = document.createElement("p");
-    comPar.innerText = comment.Text;
+    comPar.innerHTML = comment.Text;
     comText.appendChild(comPar);
     cardDiv.appendChild(comText);
 }

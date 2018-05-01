@@ -71,7 +71,7 @@ function displayOneTicket(ticket) {
     var cardText = document.createElement("div");
     cardText.className = "cardText";
     var ticketDescr = document.createElement("p");
-    ticketDescr.innerText = ticket.Description;
+    ticketDescr.innerHTML = ticket.Description;
     cardText.appendChild(ticketDescr);
     var themeText = document.createElement("div");
     themeText.className = "themeText";
@@ -187,7 +187,7 @@ function addTicket() {
         typeChoser.style.borderColor = "";
         typeChoser.style.borderWidth = "";
         var escapedText = escape(textBox.value);
-        uploadTicket(escapedText, typeChoser.value);
+        uploadTicket(escapedText, typeChoser.value, teamId);
         textBox.value = "";
         typeChoser.value = "0";
     }
