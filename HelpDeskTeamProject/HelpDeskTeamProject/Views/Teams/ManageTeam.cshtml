@@ -25,7 +25,7 @@ else
             <th>Last Name</th>
             <th>Role</th>
             <th></th>
-            <th></th>
+            <!--<th></th>-->
         </tr>
 
         @foreach (var item in Model.TeamMembers)
@@ -37,7 +37,7 @@ else
                 @Html.DropDownList("UserRole", item.AvailableTeamRoles, htmlAttributes: new { @class = "form-control", @style = "width:200px;" })
             </td>
             <td><button type="button" class="btn btn-primary savebtn">Save</button></td>
-            <td><button type="button" class="btn btn-primary delbtn">Delete</button></td>
+            <!--<td><button type="button" class="btn btn-primary delbtn">Delete</button></td>-->
         </tr>
 
 }
