@@ -25,7 +25,8 @@
                 }
                 @if(team.InvitedUsers.Where(p => p.Email.ToLower() == Model.Email.ToLower()).FirstOrDefault() != null)
                 {
-                    <td>Invited user</td>
+                    @*<td>@team.UserPermissions.Where(p => p.m.Id == )</td>*@
+                    <td></td>
                 }
                 @*else
                 {
