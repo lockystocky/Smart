@@ -48,7 +48,7 @@ namespace HelpDeskTeamProject.Loggers
             }
             if (adminActions.Contains(AdminAction.Login))
             {
-                state += "user " + user.Email + "was logged in";
+                state += "user " + user.Email + " was logged in";
             }
 
             db.AdminLogs.Add(new AdminLog
