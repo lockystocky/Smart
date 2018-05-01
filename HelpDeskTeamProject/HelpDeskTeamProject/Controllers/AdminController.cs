@@ -14,6 +14,7 @@ using HelpDeskTeamProject.Loggers;
 using System.Reflection;
 using System.Threading.Tasks;
 using Newtonsoft.Json;
+using HelpDeskTeamProject.Statistics;
 
 namespace HelpDeskTeamProject.Controllers
 {
@@ -25,6 +26,20 @@ namespace HelpDeskTeamProject.Controllers
         public AdminController(IAppContext context)
         {
             dbContext = context;
+        }
+
+        public ActionResult ShowStats()
+        {
+            List<DataPoint> dataPoints = new List<DataPoint>();
+            int numberOfVisits;
+            var users = dbContext.Users.ToList();
+            foreach (var user in users)
+            {
+                numberOfVisits = dbContext.AdminLogs.Where(p => p.Text.Contains("logged") && p.User.Id == user.Id).ToList().Count();
+                dataPoints.Add(new DataPoint(numberOfVisits, user.Email));
+            }
+            ViewBag.DataPoints = JsonConvert.SerializeObject(dataPoints);
+            return View();
         }
         
         public async Task<ActionResult> EditRolesList()
@@ -95,7 +110,7 @@ namespace HelpDeskTeamProject.Controllers
             var currentUser = dbContext.Users.Where(u => u.Email == userName).FirstOrDefault();
             if (currentUser != null)
             {
-                if (currentUser.AppRole.Permissions.IsAdmin)
+                if (currentUser.IsAdmin)
                 {
                     dynamic compositeModel = new ExpandoObject();
                     compositeModel.Users = GetUsers();

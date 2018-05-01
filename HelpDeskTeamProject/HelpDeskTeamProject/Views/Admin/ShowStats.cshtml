@@ -1,0 +1,36 @@
+﻿
+@{
+    ViewBag.Title = "ShowStats";
+}
+
+<h2>ShowStats</h2>
+
+<div id="chartContainer"></div>
+
+<script src="https://canvasjs.com/assets/script/canvasjs.min.js"></script>
+<script type="text/javascript">
+
+    window.onload = function () {
+        var chart = new CanvasJS.Chart("chartContainer", {
+            theme: "theme2",
+            animationEnabled: true,
+            title: {
+                text: "Statistics of log-ins"
+            },
+            legend: {
+                maxWidth: 350,
+                itemWidth: 120
+            },
+            data: [
+                {
+                    type: "pie",
+                    //showInLegend: true,
+                    labelText: "{IndexLabel}",
+                    dataPoints: @Html.Raw(ViewBag.DataPoints),
+                }
+            ]
+        });
+        chart.render();
+    };
+</script>
+
