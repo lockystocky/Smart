@@ -231,23 +231,78 @@ namespace HelpDeskTeamProject.Services
 
             var userPermission = team.UserPermissions
                 .Where(up => up.User == user && up.TeamId == team.Id)
-                .FirstOrDefault();
+                .FirstOrDefault();            
+
+            var deletedUser = GetDeletedUser();            
+
+            var userTicketsInTeam = db.Tickets
+                .Where(ticket => ticket.User.Id == user.Id && ticket.TeamId == teamId)
+                .ToList();
+
+            foreach(var ticket in userTicketsInTeam)
+            {
+                ticket.User = deletedUser;
+                var logs = ticket.Logs;
+                foreach(var log in logs)
+                {
+                    log.User = deletedUser;
+                }
+            }
+
+            var userCommentsInTeam = db.Comments
+                .Where(comment => comment.TeamId == teamId && comment.User.Id == user.Id)
+                .ToList();
+
+            foreach(var comment in userCommentsInTeam)
+            {
+                comment.User = deletedUser;
+            }
 
             team.UserPermissions.Remove(userPermission);
             user.Teams.Remove(team);
             team.Users.Remove(user);
-            var userTickets = team.Tickets.Where(t => t.User == user).ToList();
-            team.Tickets.RemoveAll(ticket => userTickets.Contains(ticket));
-            var teamTickets = team.Tickets.ToList();
-            foreach (var ticket in teamTickets)
-            {
-                var userComments = ticket.Comments.Where(comment => comment.User == user);
-                ticket.Comments.RemoveAll(t => userComments.Contains(t));
-            }
             db.Permissions.Remove(userPermission);
             db.SaveChanges();
 
             return true;
+        }
+
+        private User GetDeletedUser()
+        {
+            var deletedUser = db.Users
+                .Where(user => user.Name == "Deleted" && user.Surname == "User" && user.AppId == null)
+                .FirstOrDefault();
+
+            if (deletedUser == null)
+                deletedUser = CreateDeletedUser();
+
+            return deletedUser;
+        }
+
+        private User CreateDeletedUser()
+        {
+            ApplicationRole defaultRole = db.AppRoles.SingleOrDefault(x => x.Name.Equals("default-user"));
+            if (defaultRole == null)
+            {
+                defaultRole = new ApplicationRole("default-user", new ApplicationPermissions(false, false, false, false, false, false, true, false));
+            }
+
+            User deletedUser = new User()
+            {
+                AppId = null,
+                Email = "deleted@gmail.com",
+                IsAdmin = false,
+                IsBanned = false,
+                Name = "Deleted",
+                Surname = "User",
+                Teams = new List<Team>(),
+                AppRole = defaultRole
+            };
+
+            db.Users.Add(deletedUser);
+            db.SaveChanges();
+
+            return deletedUser;
         }
 
         public bool IsUserAbleToManageTeam(int teamId, User user)
